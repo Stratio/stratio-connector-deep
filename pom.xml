@@ -45,6 +45,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>com.stratio.deep</groupId>
+            <artifactId>deep-core</artifactId>
+            <version>0.4.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.8</version>
