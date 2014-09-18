@@ -31,8 +31,7 @@ public class DeepContextConnectorTest {
         // Creating the Deep Context
         String job = "java:deepSparkContext";
         String [] args = null;
-        ContextProperties p = new ContextProperties(args);
-        context = new DeepSparkContext(p.getCluster(), job, p.getSparkHome(), p.getJars());
+
 
 
         //TODO loadTestData
