@@ -30,8 +30,6 @@ import java.util.Map;
 public class DeepContextConnector implements IConnector {
 
 
-    private Map<String, ExtractorConfig> extractorClusters;
-
     /**
      * The connectionHandler.
      */
@@ -46,13 +44,9 @@ public class DeepContextConnector implements IConnector {
 
     public static void main(String[] args) {
 
-
         DeepContextConnector conn = new DeepContextConnector();
 
-
-
     }
-
 
     @Override
     public String getConnectorName() {
@@ -67,8 +61,6 @@ public class DeepContextConnector implements IConnector {
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
 
-
-
     }
 
     @Override
@@ -80,7 +72,6 @@ public class DeepContextConnector implements IConnector {
             e.printStackTrace();
         }
 
-
     }
 
     @Override
@@ -91,9 +82,6 @@ public class DeepContextConnector implements IConnector {
 
     @Override
     public boolean isConnected(ClusterName name) {
-
-
-
 
         return connectionHandler.isConnected(name.getName());
     }

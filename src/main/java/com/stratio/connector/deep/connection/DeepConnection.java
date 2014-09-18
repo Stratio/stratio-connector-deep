@@ -29,10 +29,10 @@ public class DeepConnection implements Connection<DeepSparkContext> {
     /**
      * Constructor.
      *
-     * @param credentiasl the credentials.
+     * @param credentials the credentials.
      * @param config      The cluster configuration.
      */
-    public DeepConnection(ICredentials credentiasl, ConnectorClusterConfig config) {
+    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) {
         ClusterName clusterName = config.getName();
         Map<String, String> clusterOptions = config.getOptions();
 
@@ -52,12 +52,16 @@ public class DeepConnection implements Connection<DeepSparkContext> {
 
         extractorConfigMap.put(clusterName.getName(), extractorconfig);
 
-        deepSparkContext= ConnectionConfiguration.getDeepContext();
+        deepSparkContext = ConnectionConfiguration.getDeepContext();
     }
 
 
     @Override
     public void close() {
+        if (deepSparkContext != null) {
+            deepSparkContext.stop();
+            isConnect = false;
+        }
 
     }
 
@@ -73,4 +77,7 @@ public class DeepConnection implements Connection<DeepSparkContext> {
     }
 
 
+    public Map<String, ExtractorConfig> getExtractorConfigMap() {
+        return extractorConfigMap;
+    }
 }
