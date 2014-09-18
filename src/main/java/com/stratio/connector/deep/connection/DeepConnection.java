@@ -23,7 +23,7 @@ public class DeepConnection implements Connection<DeepSparkContext> {
 
     private boolean isConnect = false;
 
-    private Map<String,ExtractorConfig> extractorConfigMap ;
+    private static Map<String,ExtractorConfig> extractorConfigMap ;
 
 
     /**
