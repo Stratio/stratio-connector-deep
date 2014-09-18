@@ -1,9 +1,11 @@
 package com.stratio.connector.deep.connection;
 
 
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.util.ContextProperties;
 import com.stratio.deep.core.context.DeepSparkContext;
 import org.apache.log4j.Logger;
+import org.junit.Test;
 import org.testng.annotations.BeforeClass;
 
 /**
@@ -37,19 +39,22 @@ public class DeepContextConnectorTest {
         //TODO loadTestData
     }
 
+    @Test
+    public void testInit() throws Exception{
+
+    }
 
     /**
      * Establish the connection with DeepSparkContext in order to be able to retrieve metadata from the
      * system columns with the connection config.
      *
-     * @param host The target host.
+     * @param
      * @return Whether the connection has been established or not.
      */
 
-    protected static boolean connect(String host) {
-        boolean result = false;
+    @Test
+    public void testConnect() throws Exception, HandlerConnectionException {
 
-        return result;
     }
 
 }

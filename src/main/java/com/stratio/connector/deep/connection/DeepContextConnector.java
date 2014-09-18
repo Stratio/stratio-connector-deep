@@ -2,6 +2,7 @@ package com.stratio.connector.deep.connection;
 
 
 import com.stratio.connector.ConnectorApp;
+import com.stratio.connector.commons.connection.exceptions.CreateNativeConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
@@ -45,10 +46,9 @@ public class DeepContextConnector implements IConnector {
 
     public static void main(String[] args) {
 
-        ConnectorApp connectorApp = new ConnectorApp();
 
         DeepContextConnector conn = new DeepContextConnector();
-        connectorApp.startup(conn);
+
 
 
     }
@@ -74,24 +74,11 @@ public class DeepContextConnector implements IConnector {
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
-        ClusterName clusterName = config.getName();
-        Map<String, String> clusterOptions = config.getOptions();
-
-        // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> extractorconfig = new ExtractorConfig();
-
-
-        Map<String, String> values = new HashMap<String, String>();
-
-        values.put(ExtractorConnectConstants.PORT,  clusterOptions.get("Port"));
-        String[] hosts =   clusterOptions.get("Hosts").substring(1,clusterOptions.get("Hosts").length()-1).split(",");
-
-        values.put(ExtractorConnectConstants.HOST, hosts[0] );
-        values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get("Hosts").substring(1,clusterOptions.get("Hosts").length()-1) );
-
-        extractorconfig.setValues(values);
-
-        extractorClusters.put(clusterName.getName(), extractorconfig);
+        try{
+            connectionHandler.createNativeConnection(credentials,config);
+        } catch (CreateNativeConnectionException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -99,28 +86,16 @@ public class DeepContextConnector implements IConnector {
     @Override
     public void close(ClusterName name) throws ConnectionException {
 
-        if(extractorClusters.containsValue(name.getName())){
-
-            extractorClusters.remove(name.getName());
-
-        }
+        connectionHandler.closeConnection(name.getName());
     }
 
     @Override
     public boolean isConnected(ClusterName name) {
 
-        boolean connected = false;
 
-        if(extractorClusters.containsValue(name.getName())) {
 
-            RDD rdd = deepContext.createRDD(extractorClusters.get(name.getName()));
-            rdd.count();
-            connected=true;
 
-        }else{
-            connected = false;
-        }
-        return connected;
+        return connectionHandler.isConnected(name.getName());
     }
 
     @Override
