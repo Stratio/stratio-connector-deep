@@ -3,9 +3,11 @@ package com.stratio.connector.deep.connection;
 
 import com.stratio.connector.ConnectorApp;
 import com.stratio.connector.commons.connection.exceptions.CreateNativeConnectionException;
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
+import com.stratio.connector.deep.engine.DeepStorageEngine;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 
@@ -33,7 +35,7 @@ public class DeepContextConnector implements IConnector {
     /**
      * The connectionHandler.
      */
-    private DeepConnectionHandler connectionHandler = null;
+    private DeepConnectionHandler connectionHandler;
 
 
     DeepSparkContext deepContext = ConnectionConfiguration.getDeepContext();
@@ -61,14 +63,18 @@ public class DeepContextConnector implements IConnector {
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
 
+        connectionHandler = new DeepConnectionHandler(configuration);
+
     }
 
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
         try{
-            connectionHandler.createNativeConnection(credentials,config);
-        } catch (CreateNativeConnectionException e) {
+
+            connectionHandler.createConnection(credentials, config);
+
+        } catch (HandlerConnectionException e) {
             e.printStackTrace();
         }
 
@@ -96,7 +102,9 @@ public class DeepContextConnector implements IConnector {
 
     @Override
     public IQueryEngine getQueryEngine() throws UnsupportedException {
-        return null;
+
+        return new DeepStorageEngine(connectionHandler);
+
     }
 
     @Override

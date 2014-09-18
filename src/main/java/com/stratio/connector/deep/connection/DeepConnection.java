@@ -16,14 +16,14 @@ import java.util.Map;
 /**
  * Created by dgomez on 18/09/14.
  */
-public class DeepConnection implements Connection<DeepSparkContext> {
+public class DeepConnection implements Connection {
 
 
     private DeepSparkContext deepSparkContext;
 
     private boolean isConnect = false;
 
-    private static Map<String,ExtractorConfig> extractorConfigMap ;
+    private ExtractorConfig extractorConfig ;
 
 
     /**
@@ -50,7 +50,7 @@ public class DeepConnection implements Connection<DeepSparkContext> {
 
         extractorconfig.setValues(values);
 
-        extractorConfigMap.put(clusterName.getName(), extractorconfig);
+        extractorConfig =  extractorconfig;
 
         deepSparkContext = ConnectionConfiguration.getDeepContext();
     }
@@ -77,7 +77,7 @@ public class DeepConnection implements Connection<DeepSparkContext> {
     }
 
 
-    public Map<String, ExtractorConfig> getExtractorConfigMap() {
-        return extractorConfigMap;
+    public ExtractorConfig getExtractorConfig() {
+        return extractorConfig;
     }
 }
