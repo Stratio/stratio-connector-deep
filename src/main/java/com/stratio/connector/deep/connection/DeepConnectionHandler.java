@@ -21,13 +21,16 @@ import java.util.Map;
  */
 public class DeepConnectionHandler extends ConnectionHandler {
 
-    private Map<String, ExtractorConfig> extractorClusters;
 
-    DeepSparkContext deepContext = ConnectionConfiguration.getDeepContext();
 
 
     public DeepConnectionHandler(IConfiguration configuration) {
         super(configuration);
+    }
+
+    @Override
+    public boolean isConnected(String clusterName) {
+        return super.isConnected(clusterName);
     }
 
 
@@ -35,27 +38,11 @@ public class DeepConnectionHandler extends ConnectionHandler {
     protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig) throws CreateNativeConnectionException {
 
         Connection connection;
-        ClusterName clusterName = connectorClusterConfig.getName();
-        Map<String, String> clusterOptions = connectorClusterConfig.getOptions();
 
-        // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> extractorconfig = new ExtractorConfig();
+        connection = new DeepConnection(iCredentials,connectorClusterConfig) ;
 
-
-        Map<String, String> values = new HashMap<String, String>();
-
-        values.put(ExtractorConnectConstants.PORT,  clusterOptions.get("Port"));
-        String[] hosts =   clusterOptions.get("Hosts").substring(1,clusterOptions.get("Hosts").length()-1).split(",");
-
-        values.put(ExtractorConnectConstants.HOST, hosts[0] );
-        values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get("Hosts").substring(1,clusterOptions.get("Hosts").length()-1) );
-
-        extractorconfig.setValues(values);
-
-        deepContext = ConnectionConfiguration.getDeepContext();
-
-        extractorClusters.put(clusterName.getName(), extractorconfig);
-
-        return null;
+        return connection;
     }
+
+
 }

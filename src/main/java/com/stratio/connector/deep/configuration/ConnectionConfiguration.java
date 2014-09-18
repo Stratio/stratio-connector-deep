@@ -31,7 +31,7 @@ public class ConnectionConfiguration implements IConfiguration{
         logger.info("-------------StartUp the SparkContext------------ ");
 
         String [] args = new String [0];
-        String job = "java:testJob";
+        String job = "java:testJob_1";
 
         ContextProperties p = new ContextProperties(args);
 
