@@ -51,6 +51,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>com.stratio.connector</groupId>
+            <artifactId>connector-commons-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.8</version>
