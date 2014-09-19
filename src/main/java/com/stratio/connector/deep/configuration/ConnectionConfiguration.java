@@ -48,7 +48,7 @@ public class ConnectionConfiguration implements IConfiguration{
         logger.info("spark.serializer: "       + System.getProperty("spark.serializer"));
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
-        DeepSparkContext deepContext = new DeepSparkContext(p.getCluster(), job, p.getSparkHome(), p.getJars());
+        DeepSparkContext deepContext = new DeepSparkContext(sc);
 
         logger.info("-------------End StartUp the SparkContext------------ ");
         logger.info("-------------End StartUp the SparkContext------------ ");

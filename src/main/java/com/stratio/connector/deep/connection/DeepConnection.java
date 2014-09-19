@@ -42,11 +42,11 @@ public class DeepConnection implements Connection {
 
         Map<String, String> values = new HashMap<String, String>();
 
-        values.put(ExtractorConnectConstants.PORT,  clusterOptions.get("Port"));
-        String[] hosts =   clusterOptions.get("Hosts").substring(1,clusterOptions.get("Hosts").length()-1).split(",");
+        values.put(ExtractorConnectConstants.PORT,  clusterOptions.get(ExtractorConnectConstants.PORT));
+        String[] hosts =   clusterOptions.get(ExtractorConnectConstants.HOSTS).substring(1,clusterOptions.get(ExtractorConnectConstants.HOSTS).length()-1).split(",");
 
         values.put(ExtractorConnectConstants.HOST, hosts[0] );
-        values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get("Hosts").substring(1,clusterOptions.get("Hosts").length()-1) );
+        values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get(ExtractorConnectConstants.HOSTS).substring(1,clusterOptions.get(ExtractorConnectConstants.HOSTS).length()-1) );
 
         extractorconfig.setValues(values);
 

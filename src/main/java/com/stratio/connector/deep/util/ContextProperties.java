@@ -70,7 +70,7 @@ public class ContextProperties {
         Options options = new Options();
 
         options.addOption("m","master", true, "The spark's master endpoint");
-        options.addOption("h","sparkHome", true, "The spark's home, eg. /opt/spark");
+        options.addOption("h","sparkHome", true, "/opt/stratio/deep");
         options.addOption("H","host", true, "endpoint");
 
         options.addOption(OptionBuilder.hasArg().withType(Integer.class).withLongOpt("cassandraCqlPort").withArgName("cassandra_cql_port").withDescription("cassandra's cql port, defaults to 9042").create());
@@ -97,7 +97,7 @@ public class ContextProperties {
             jar = (line.hasOption("jars") ? line.getOptionValues("jars") : new String[]{});
             cluster = line.getOptionValue ("master", defaultIfEmpty(System.getProperty("spark.master"), "local"));
             sparkHome = line.getOptionValue ("sparkHome", defaultIfEmpty(System.getProperty("spark.home"), ""));
-            host = line.getOptionValue ("host", Constants.DEFAULT_CASSANDRA_HOST);
+            host = line.getOptionValue ("host", "127.0.0.1");
             port = line.hasOption ("port") ? Integer.parseInt(line.getOptionValue("port")): Constants.DEFAULT_CASSANDRA_CQL_PORT;
             thriftPort = line.hasOption ("thriftPort") ? Integer.parseInt(line.getOptionValue("cassandraThriftPort")): Constants.DEFAULT_CASSANDRA_RPC_PORT;
 

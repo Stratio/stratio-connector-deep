@@ -24,12 +24,12 @@ public class DeepStorageEngine implements IQueryEngine{
     /**
      * The connection handler.
      */
-    private DeepConnectionHandler connectionHandle;
+    private DeepConnectionHandler connectionHandler;
 
 
-    public DeepStorageEngine(DeepConnectionHandler connectionHandle) {
+    public DeepStorageEngine(DeepConnectionHandler connectionHandler) {
 
-        this.connectionHandle = connectionHandle;
+        this.connectionHandler = connectionHandler;
 
     }
 
