@@ -1,5 +1,7 @@
 package com.stratio.connector.deep.engine;
 
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.meta.common.connector.IQueryEngine;
 import com.stratio.meta.common.exceptions.ExecutionException;
@@ -35,6 +37,21 @@ public class DeepStorageEngine implements IQueryEngine{
 
     @Override
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
+
+        try {
+            DeepConnection connection = (DeepConnection) connectionHandler.getConnection(targetCluster.getName());
+
+            //Return the Extractor Config for this ClusterName
+            connection.getExtractorConfig();
+
+            //Return the DeeSparkpContext
+            connection.getNativeConnection();
+
+        } catch (HandlerConnectionException e) {
+            e.printStackTrace();
+        }
+
+
         return null;
     }
 }

@@ -21,6 +21,10 @@ import com.stratio.deep.commons.utils.Constants;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import static org.apache.commons.lang.StringUtils.defaultIfEmpty;
 
 /**
@@ -66,7 +70,12 @@ public class ContextProperties {
     /**
      * Public constructor.
      */
-    public ContextProperties(String[] args) {
+    public ContextProperties() {
+
+        Properties prop = new Properties();
+        InputStream input = null;
+
+
         Options options = new Options();
 
         options.addOption("m","master", true, "The spark's master endpoint");
@@ -86,22 +95,24 @@ public class ContextProperties {
         HelpFormatter formatter = new HelpFormatter();
 
         try {
-            CommandLine line = parser.parse( options, args );
 
-            if (line.hasOption("help")){
-                formatter.printHelp( "", options );
-
-                throw new DeepGenericException("Help command issued");
+            String filename = "context.properties";
+            input = getClass().getClassLoader().getResourceAsStream(filename);
+            if (input == null) {
+                System.out.println("Sorry, unable to find " + filename);
+                return;
             }
 
-            jar = (line.hasOption("jars") ? line.getOptionValues("jars") : new String[]{});
-            cluster = line.getOptionValue ("master", defaultIfEmpty(System.getProperty("spark.master"), "local"));
-            sparkHome = line.getOptionValue ("sparkHome", defaultIfEmpty(System.getProperty("spark.home"), ""));
-            host = line.getOptionValue ("host", "127.0.0.1");
-            port = line.hasOption ("port") ? Integer.parseInt(line.getOptionValue("port")): Constants.DEFAULT_CASSANDRA_CQL_PORT;
-            thriftPort = line.hasOption ("thriftPort") ? Integer.parseInt(line.getOptionValue("cassandraThriftPort")): Constants.DEFAULT_CASSANDRA_RPC_PORT;
+            prop.load(input);
 
-        } catch (ParseException e) {
+            jar = prop.get("jars")!=null ?((String) prop.get("jars")).split(","):new String[]{};
+            cluster =  defaultIfEmpty( (String)prop.get("master"), "local");
+            sparkHome = defaultIfEmpty( (String)prop.get("spark.home"), "");
+            host = ! prop.get("host").equals("")  ? (String) prop.get("host"): Constants.DEFAULT_CASSANDRA_HOST;
+            port = ! prop.get("port").equals("") ? Integer.valueOf((String)prop.get("port")): Constants.DEFAULT_CASSANDRA_CQL_PORT;
+            thriftPort = ! prop.get("thriftPort").equals("") ? Integer.valueOf((String)prop.get("thriftPort")): Constants.DEFAULT_CASSANDRA_RPC_PORT;
+
+        } catch (IOException e) {
             formatter.printHelp( "", options );
             LOG.error("Unexpected exception: ", e);
         }

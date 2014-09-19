@@ -30,10 +30,10 @@ public class ConnectionConfiguration implements IConfiguration{
         logger.info("-------------StartUp the SparkContext------------ ");
         logger.info("-------------StartUp the SparkContext------------ ");
 
-        String [] args = new String [0];
+
         String job = "java:testJob_1";
 
-        ContextProperties p = new ContextProperties(args);
+        ContextProperties p = new ContextProperties();
 
         SparkConf sparkConf = new SparkConf()
                 .setMaster(p.getCluster())

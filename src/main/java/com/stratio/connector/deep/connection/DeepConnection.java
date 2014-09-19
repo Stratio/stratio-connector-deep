@@ -59,7 +59,7 @@ public class DeepConnection implements Connection {
     @Override
     public void close() {
         if (deepSparkContext != null) {
-            deepSparkContext.stop();
+            //deepSparkContext.stop();
             isConnect = false;
         }
 

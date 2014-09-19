@@ -6,6 +6,7 @@ import com.stratio.connector.deep.util.ContextProperties;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.connector.IConfiguration;
+import com.stratio.meta.common.exceptions.ConnectionException;
 import com.stratio.meta.common.security.ICredentials;
 import com.stratio.meta2.common.data.ClusterName;
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -94,5 +96,29 @@ public class DeepContextConnectorTest {
 
         verify(connectionHandler, times(1)).createConnection(iCredentials, config);
     }
+
+    @Test
+    //(expected = HandlerConnectionException.class)
+    public void testClose() throws ConnectionException, HandlerConnectionException {
+
+        ICredentials iCredentials = mock(ICredentials.class);
+        ClusterName clusterName = new ClusterName(CLUSTER_NAME);
+
+        Map<String, String> options = new HashMap<>();
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options);
+        DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
+        Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
+
+
+        deepConnector.connect(iCredentials, config);
+
+
+        connectionHandler.closeConnection(clusterName.getName());
+
+        DeepConnection conn = (DeepConnection) connectionHandler.getConnection(clusterName.getName());
+        assertNull(conn);
+
+    }
+
 
 }
