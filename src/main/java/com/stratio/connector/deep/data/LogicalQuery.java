@@ -4,10 +4,13 @@
 package com.stratio.connector.deep.data;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
+import org.apache.spark.rdd.RDD;
+
+import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta.common.logicalplan.Filter;
 import com.stratio.meta.common.logicalplan.Project;
-import com.stratio.meta.common.logicalplan.Select;
 
 /**
  * @author Óscar Puertas
@@ -15,33 +18,47 @@ import com.stratio.meta.common.logicalplan.Select;
  */
 public class LogicalQuery {
   
-  private List<Select> selectors;
+  private final Project projection;
   
-  private List<Project> projections;
+  private final List<Filter> filters;
   
-  private List<Filter> filters;
+  private final RDD<Cells> initialRdd;
+  
+  private Future<RDD<Cells>> rdd;
 
-  public List<Select> getSelectors() {
-    return selectors;
+  public LogicalQuery(Project projection, List<Filter> filters) {
+    this.projection = projection;
+    this.filters = filters;
+    this.initialRdd = null;
   }
 
-  public void setSelectors(List<Select> selectors) {
-    this.selectors = selectors;
+  public LogicalQuery(Project projection, List<Filter> filters, RDD<Cells> initialRdd) {
+    this.projection = projection;
+    this.filters = filters;
+    this.initialRdd = initialRdd;
   }
-
-  public List<Project> getProjections() {
-    return projections;
-  }
-
-  public void setProjections(List<Project> projections) {
-    this.projections = projections;
+  
+  public Project getProjection() {
+    return projection;
   }
 
   public List<Filter> getFilters() {
     return filters;
   }
 
-  public void setFilters(List<Filter> filters) {
-    this.filters = filters;
+  public RDD<Cells> getInitialRdd() {
+    return initialRdd;
+  }
+
+  public Future<RDD<Cells>> getRdd() {
+    return rdd;
+  }
+
+  public void setRdd(Future<RDD<Cells>> rdd) {
+    this.rdd = rdd;
+  }
+  
+  public boolean hasInitialRdd() {
+    return initialRdd != null;
   }
 }

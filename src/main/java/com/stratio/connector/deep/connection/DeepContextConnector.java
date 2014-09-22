@@ -1,27 +1,25 @@
 package com.stratio.connector.deep.connection;
 
+import java.util.Map;
 
-import com.stratio.connector.ConnectorApp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.stratio.connector.commons.connection.exceptions.CreateNativeConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
-
-import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.commons.config.ExtractorConfig;
-import com.stratio.deep.commons.entity.Cells;
-
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.*;
+import com.stratio.meta.common.connector.ConnectorClusterConfig;
+import com.stratio.meta.common.connector.IConfiguration;
+import com.stratio.meta.common.connector.IConnector;
+import com.stratio.meta.common.connector.IMetadataEngine;
+import com.stratio.meta.common.connector.IQueryEngine;
+import com.stratio.meta.common.connector.IStorageEngine;
 import com.stratio.meta.common.exceptions.ConnectionException;
 import com.stratio.meta.common.exceptions.InitializationException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.security.ICredentials;
 import com.stratio.meta2.common.data.ClusterName;
-import org.apache.spark.rdd.RDD;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
