@@ -1,7 +1,7 @@
 package com.stratio.connector.deep.connection;
 
 
-import com.stratio.connector.ConnectorApp;
+
 import com.stratio.connector.commons.connection.exceptions.CreateNativeConnectionException;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
@@ -14,6 +14,7 @@ import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.*;
 import com.stratio.meta.common.exceptions.ConnectionException;
+import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.InitializationException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.security.ICredentials;
@@ -22,7 +23,9 @@ import org.apache.spark.rdd.RDD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -75,7 +78,9 @@ public class DeepContextConnector implements IConnector {
             connectionHandler.createConnection(credentials, config);
 
         } catch (HandlerConnectionException e) {
-            e.printStackTrace();
+            String msg ="fail creating the Connection. "+e.getMessage();
+            logger.error(msg);
+            throw new ConnectionException(msg, e);
         }
 
     }
@@ -87,6 +92,19 @@ public class DeepContextConnector implements IConnector {
     }
 
     @Override
+    public void shutdown() throws ExecutionException {
+
+        Iterator it = connectionHandler.getConnections().values().iterator();
+        while (it.hasNext() ){
+            DeepConnection conn =(DeepConnection) it.next();
+            while(conn.getWorkInProgress()){
+
+            }
+        }
+        deepContext.stop();
+    }
+
+    @Override
     public boolean isConnected(ClusterName name) {
 
         return connectionHandler.isConnected(name.getName());
@@ -94,6 +112,7 @@ public class DeepContextConnector implements IConnector {
 
     @Override
     public IStorageEngine getStorageEngine() throws UnsupportedException {
+
 
         //TODO throw new UnsupportedException("");
         return null;

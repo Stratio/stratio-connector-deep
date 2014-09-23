@@ -1,6 +1,7 @@
 package com.stratio.connector.deep.connection;
 
 import com.stratio.connector.commons.connection.Connection;
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.commons.config.ExtractorConfig;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * Created by dgomez on 18/09/14.
  */
-public class DeepConnection implements Connection {
+public class DeepConnection extends Connection {
 
 
     private DeepSparkContext deepSparkContext;
@@ -41,6 +42,7 @@ public class DeepConnection implements Connection {
 
 
         Map<String, String> values = new HashMap<String, String>();
+
 
         values.put(ExtractorConnectConstants.PORT,  clusterOptions.get(ExtractorConnectConstants.PORT));
         String[] hosts =   clusterOptions.get(ExtractorConnectConstants.HOSTS).substring(1,clusterOptions.get(ExtractorConnectConstants.HOSTS).length()-1).split(",");
@@ -80,4 +82,11 @@ public class DeepConnection implements Connection {
     public ExtractorConfig getExtractorConfig() {
         return extractorConfig;
     }
+
+
+    public void forceShutDown()throws HandlerConnectionException{
+        deepSparkContext.stop();
+    }
+
+
 }

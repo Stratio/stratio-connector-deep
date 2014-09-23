@@ -1,6 +1,8 @@
 package com.stratio.connector.deep.engine;
 
+import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.meta.common.connector.IQueryEngine;
@@ -15,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by dgomez on 18/09/14.
  */
-public class DeepStorageEngine implements IQueryEngine{
+public class DeepStorageEngine extends CommonsQueryEngine {
 
     /**
      * The log.
@@ -23,35 +25,32 @@ public class DeepStorageEngine implements IQueryEngine{
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    /**
-     * The connection handler.
-     */
-    private DeepConnectionHandler connectionHandler;
+
 
 
     public DeepStorageEngine(DeepConnectionHandler connectionHandler) {
 
-        this.connectionHandler = connectionHandler;
+       super(connectionHandler);
 
     }
 
     @Override
-    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
+    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow, Connection connection) throws UnsupportedException, ExecutionException {
+
+
+        DeepConnection deepConnection = (DeepConnection) connection;
+
+        //Return the Extractor Config for this ClusterName
+        deepConnection.getExtractorConfig();
+
+        //Return the DeeSparkpContext
+        deepConnection.getNativeConnection();
 
         try {
-            DeepConnection connection = (DeepConnection) connectionHandler.getConnection(targetCluster.getName());
-
-            //Return the Extractor Config for this ClusterName
-            connection.getExtractorConfig();
-
-            //Return the DeeSparkpContext
-            connection.getNativeConnection();
-
-        } catch (HandlerConnectionException e) {
+            wait(10000000000L);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
         return null;
     }
 }
