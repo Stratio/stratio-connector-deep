@@ -12,5 +12,4 @@ public class DeepClientConfiguration {
      */
     private Parser parser = new Parser();
 
-
 }
