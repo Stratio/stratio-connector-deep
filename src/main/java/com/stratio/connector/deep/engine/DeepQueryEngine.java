@@ -157,6 +157,7 @@ public class DeepQueryEngine implements IQueryEngine {
             currentStep = currentStep.getNextStep();
         }
 
+        // FIXME We need to add the union id (joinId) when it's coming from an union, not the table name...
         partialResultsMap.put(tableName, rdd);
 
         return rdd;
