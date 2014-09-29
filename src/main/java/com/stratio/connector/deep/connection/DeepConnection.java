@@ -1,5 +1,9 @@
 package com.stratio.connector.deep.connection;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
@@ -11,19 +15,16 @@ import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.security.ICredentials;
 import com.stratio.meta2.common.data.ClusterName;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by dgomez on 18/09/14.
  */
 public class DeepConnection extends Connection {
 
-    private DeepSparkContext deepSparkContext;
+    private final DeepSparkContext deepSparkContext;
 
     private boolean isConnect = false;
 
-    private ExtractorConfig extractorConfig;
+    private final ExtractorConfig extractorConfig;
 
     /**
      * Constructor.
@@ -38,9 +39,9 @@ public class DeepConnection extends Connection {
         Map<String, String> clusterOptions = config.getOptions();
 
         // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> extractorconfig = new ExtractorConfig();
+        ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
 
-        Map<String, String> values = new HashMap<String, String>();
+        Map<String, Serializable> values = new HashMap<String, Serializable>();
 
         values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
         String[] hosts = clusterOptions.get(ExtractorConnectConstants.HOSTS)
