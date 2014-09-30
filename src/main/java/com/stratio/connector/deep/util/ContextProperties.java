@@ -16,8 +16,8 @@
 
 package com.stratio.connector.deep.util;
 
+import com.stratio.connector.deep.configuration.Constants;
 import com.stratio.deep.commons.exception.DeepGenericException;
-import com.stratio.deep.commons.utils.Constants;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 
@@ -80,10 +80,10 @@ public class ContextProperties {
         options.addOption("h", "sparkHome", true, "/opt/stratio/deep");
         options.addOption("H", "host", true, "endpoint");
 
-        options.addOption(OptionBuilder.hasArg().withType(Integer.class).withLongOpt("cassandraCqlPort")
-                .withArgName("cassandra_cql_port").withDescription("cassandra's cql port, defaults to 9042").create());
-        options.addOption(OptionBuilder.hasArg().withType(Integer.class).withLongOpt("cassandraThriftPort")
-                .withArgName("cassandra_thrift_port").withDescription("cassandra's thrift port, " + "defaults to 9160")
+        options.addOption(OptionBuilder.hasArg().withType(Integer.class).withLongOpt("Port")
+                .withArgName("_port").withDescription("port, defaults to 9042").create());
+        options.addOption(OptionBuilder.hasArg().withType(Integer.class).withLongOpt("ThriftPort")
+                .withArgName("_thrift_port").withDescription("thrift port, " + "defaults to 9160")
                 .create());
         options.addOption(OptionBuilder.hasArg().withValueSeparator(',').withLongOpt("jars").withArgName("jars_to_add")
                 .withDescription("comma separated list of jars to add").create());
@@ -107,11 +107,11 @@ public class ContextProperties {
             jar = prop.get("jars") != null ? ((String) prop.get("jars")).split(",") : new String[] {};
             cluster = defaultIfEmpty((String) prop.get("master"), "local");
             sparkHome = defaultIfEmpty((String) prop.get("spark.home"), "");
-            host = !prop.get("host").equals("") ? (String) prop.get("host") : Constants.DEFAULT_CASSANDRA_HOST;
+            host = !prop.get("host").equals("") ? (String) prop.get("host") : Constants.DEFAULT_HOST;
             port = !prop.get("port").equals("") ? Integer.valueOf((String) prop.get("port"))
-                    : Constants.DEFAULT_CASSANDRA_CQL_PORT;
+                    : Constants.DEFAULT_PORT;
             thriftPort = !prop.get("thriftPort").equals("") ? Integer.valueOf((String) prop.get("thriftPort"))
-                    : Constants.DEFAULT_CASSANDRA_RPC_PORT;
+                    : Constants.DEFAULT_RPC_PORT;
 
         } catch (IOException e) {
             formatter.printHelp("", options);

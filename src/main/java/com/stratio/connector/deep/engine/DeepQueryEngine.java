@@ -21,13 +21,16 @@ import java.util.Map;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
+import com.stratio.connector.deep.mappings.CommonsBridgeUtils;
 import com.stratio.deep.commons.config.DeepJobConfig;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
+import com.stratio.meta.common.connector.Operations;
 import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.Filter;
@@ -38,11 +41,12 @@ import com.stratio.meta.common.logicalplan.Project;
 import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.logicalplan.UnionStep;
 import com.stratio.meta.common.result.QueryResult;
+import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 
-public class DeepQueryEngine implements IQueryEngine {
+public class DeepQueryEngine extends CommonsQueryEngine {
 
     private final DeepSparkContext deepContext;
 
@@ -51,15 +55,17 @@ public class DeepQueryEngine implements IQueryEngine {
     private final Map<String, JavaRDD<Cells>> partialResultsMap = new HashMap<>();
 
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
+        super(deepConnectionHandler);
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
     }
 
-    @Override
-    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
-            ExecutionException {
 
-        List<LogicalStep> initialSteps = workflow.getInitialSteps();
+
+    @Override
+    protected QueryResult executeWorkFlow(LogicalWorkflow logicalWorkflow) throws UnsupportedException, ExecutionException {
+
+        List<LogicalStep> initialSteps = logicalWorkflow.getInitialSteps();
         JavaRDD<Cells> partialResultRdd = null;
         for (LogicalStep initialStep : initialSteps) {
             Project project = (Project) initialStep;
@@ -202,17 +208,37 @@ public class DeepQueryEngine implements IQueryEngine {
      * @param selectStep
      * @param rdd
      */
-    private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) {
-        // TODO Auto-generated method stub
-        // TODO Call to DeepUtils to keep the requested columns and remove the rest of them
+    private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
+
+
+        // TODO Confirm that the select Operation is SELECT_OPERATOR ¿¿¿???
+        if(selectStep.getOperation().equals(Operations.SELECT_OPERATOR)){
+
+            rdd = CommonsBridgeUtils.returnSelect(rdd,selectStep);
+
+        } else {
+
+            throw new ExecutionException("Unknown Select found [" + selectStep.getOperation().toString() + "]");
+
+        }
     }
 
     /**
      * @param filterStep
      * @param rdd
      */
-    private void executeFilter(Filter filterStep, JavaRDD<Cells> rdd) {
-        // TODO Auto-generated method stub
-        // TODO Call to DeepUtils to apply a filter from an operator (filterStep.relation.operator)
+    private void executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException {
+        Relation relation = filterStep.getRelation();
+        CommonsBridgeUtils deepUtils = new CommonsBridgeUtils();
+        if(relation.getOperator().isInGroup(Operator.Group.COMPARATOR)){
+
+            deepUtils.doWhere(rdd,relation);
+
+        } else {
+
+            throw new ExecutionException("Unknown Filter found [" + filterStep.getRelation().getOperator().toString() + "]");
+
+        }
+
     }
 }
