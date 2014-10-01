@@ -31,18 +31,18 @@ public class ConnectionConfiguration implements IConfiguration {
 
         String job = "java:testJob_1";
 
-        ContextProperties p = new ContextProperties();
+        ContextProperties p = new ContextProperties(new String [0]);
 
         SparkConf sparkConf = new SparkConf().setMaster(p.getCluster()).setAppName(job).setJars(p.getJars())
                 .setSparkHome(p.getSparkHome()).set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
                 .set("spark.kryo.registrator", "com.stratio.deep.serializer.DeepKryoRegistrator");
 
-        SparkContext sc = new SparkContext(p.getCluster(), job, sparkConf);
+//        SparkContext sc = new SparkContext(p.getCluster(), job, sparkConf);
 
         logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
-        DeepSparkContext deepContext = new DeepSparkContext(sc);
+        DeepSparkContext deepContext = new DeepSparkContext(p.getCluster(), job, p.getSparkHome(), p.getJars());
 
         logger.info("-------------End StartUp the SparkContext------------ ");
         logger.info("-------------End StartUp the SparkContext------------ ");
