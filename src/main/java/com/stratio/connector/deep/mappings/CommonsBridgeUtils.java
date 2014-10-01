@@ -180,6 +180,40 @@ public class CommonsBridgeUtils {
         return cellsInRDD;
     }
 
+    public static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd,JavaRDD<Cells> rightRdd, List<Relation> joinRelations){
 
+        JavaRDD<Cells> rddTableLeft = leftRdd;
+        JavaRDD<Cells> rddTableRight = rightRdd;
+        JavaRDD<Cells> result = null ;
+
+        for(Relation relation : joinRelations){
+
+            ColumnSelector selectorRight = (ColumnSelector)relation.getRightTerm();
+            ColumnSelector selectorLeft  = (ColumnSelector)relation.getLeftTerm();
+
+            // JOIN
+
+            String keyTableLeft = selectorRight.getName().getName();
+            String keyTableRight = selectorLeft.getName().getName();
+
+            LOG.debug("INNER JOIN on: " + keyTableLeft + " - " + keyTableRight);
+
+            JavaPairRDD<Cells, Cells> rddLeft  = rddTableLeft.mapToPair(new MapKeyForJoin<Cells>(keyTableLeft));
+            JavaPairRDD<Cells, Cells> rddRight = rddTableRight.mapToPair(new MapKeyForJoin<Cells>(keyTableRight));
+
+
+            JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
+
+            JavaRDD<Cells>  joinedResult = joinRDD.map(new JoinCells<Cells>(keyTableLeft));
+
+             result = joinedResult;
+        }
+
+
+
+        return result;
+
+
+    }
 
 }
