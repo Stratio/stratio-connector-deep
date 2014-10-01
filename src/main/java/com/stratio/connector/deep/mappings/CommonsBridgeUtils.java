@@ -184,34 +184,34 @@ public class CommonsBridgeUtils {
 
         JavaRDD<Cells> rddTableLeft = leftRdd;
         JavaRDD<Cells> rddTableRight = rightRdd;
-        JavaRDD<Cells> result = null ;
 
         for(Relation relation : joinRelations){
-
             ColumnSelector selectorRight = (ColumnSelector)relation.getRightTerm();
             ColumnSelector selectorLeft  = (ColumnSelector)relation.getLeftTerm();
 
-            // JOIN
+            if(relation.getOperator().equals(Operator.EQ)){
+                // JOIN
 
-            String keyTableLeft = selectorRight.getName().getName();
-            String keyTableRight = selectorLeft.getName().getName();
+                String keyTableLeft = selectorRight.getName().getName();
+                String keyTableRight = selectorLeft.getName().getName();
 
-            LOG.debug("INNER JOIN on: " + keyTableLeft + " - " + keyTableRight);
+                LOG.debug("INNER JOIN on: " + keyTableLeft + " - " + keyTableRight);
 
-            JavaPairRDD<Cells, Cells> rddLeft  = rddTableLeft.mapToPair(new MapKeyForJoin<Cells>(keyTableLeft));
-            JavaPairRDD<Cells, Cells> rddRight = rddTableRight.mapToPair(new MapKeyForJoin<Cells>(keyTableRight));
+                JavaPairRDD<Cells, Cells> rddLeft  = rddTableLeft.mapToPair(new MapKeyForJoin<Cells>(keyTableLeft));
+                JavaPairRDD<Cells, Cells> rddRight = rddTableRight.mapToPair(new MapKeyForJoin<Cells>(keyTableRight));
 
 
-            JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
+                JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
 
-            JavaRDD<Cells>  joinedResult = joinRDD.map(new JoinCells<Cells>(keyTableLeft));
+                JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells<Cells>(keyTableLeft));
 
-             result = joinedResult;
+                JavaRDD<Cells> result = joinedResult;
+            }
+
         }
 
 
-
-        return result;
+        return null;
 
 
     }
