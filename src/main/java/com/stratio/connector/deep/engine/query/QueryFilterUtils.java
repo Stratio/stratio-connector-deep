@@ -15,9 +15,9 @@ import com.stratio.connector.deep.engine.query.functions.NotEquals;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
+import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
@@ -51,7 +51,6 @@ public final class QueryFilterUtils {
         ColumnSelector columnSelector = (ColumnSelector) leftTerm;
         String field = columnSelector.getName().getName();
 
-        LOG.info("Rdd input size: " + rdd.count());
         switch (operator.toString().toLowerCase()) {
         case "=":
             result = rdd.filter(new DeepEquals(field, rightTerm));
@@ -139,33 +138,28 @@ public final class QueryFilterUtils {
      * Build JavaRDD<Cells> from list of Cells and select Columns.
      * 
      * @param rdd
-     *            list of JavaRDD Cells
+     *            Cells RDD
      * @param selectedCols
-     *            List of fields selected in the SelectStatement.
+     *            Set of fields selected in the SelectStatement.
      * @return JavaRDD<Cells>
      */
-    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, Select selectedCols) {
+    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<ColumnName> selectedCols) {
 
-        final Set<String> maps = selectedCols.getColumnMap().keySet();
-
-        JavaRDD<Cells> cellsInRDD = rdd.map(new Function<Cells, Cells>() {
+        return rdd.map(new Function<Cells, Cells>() {
 
             private static final long serialVersionUID = -5704730871386839898L;
 
             @Override
             public Cells call(Cells cells) throws Exception {
-                Cells cellsout = new Cells();
-                for (Cell deepCell : cells.getCells()) {
-                    if (maps.contains(deepCell.getCellName())) {
-                        cellsout.add(deepCell);
-                    }
+                Cells cellsOut = new Cells();
+
+                for (ColumnName columnName : selectedCols) {
+                    Cell cell = cells.getCellByName(columnName.getTableName().getQualifiedName(), columnName.getName());
+                    cellsOut.add(cell);
                 }
 
-                return cellsout;
+                return cellsOut;
             }
         });
-
-        return cellsInRDD;
     }
-
 }

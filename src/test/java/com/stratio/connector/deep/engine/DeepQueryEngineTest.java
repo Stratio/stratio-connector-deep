@@ -261,8 +261,10 @@ public class DeepQueryEngineTest {
 
     private Select createSelect() {
 
-        Map<String, String> columnsAliases = new HashMap<>();
-        columnsAliases.put("demo.users.name", "nameAlias");
+        ColumnName columnName = new ColumnName("demo", "users", "name");
+
+        Map<ColumnName, String> columnsAliases = new HashMap<>();
+        columnsAliases.put(columnName, "nameAlias");
 
         Map<String, ColumnType> columnsTypes = new HashMap<>();
         columnsTypes.put("demo.users.name", ColumnType.BIGINT);

@@ -226,7 +226,7 @@ public class DeepQueryEngine implements IQueryEngine {
      */
     private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
-        rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep);
+        rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
     }
 
     /**
