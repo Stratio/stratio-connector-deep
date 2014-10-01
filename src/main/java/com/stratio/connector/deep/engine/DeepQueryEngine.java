@@ -56,8 +56,20 @@ public class DeepQueryEngine implements IQueryEngine {
     }
 
     @Override
+    @Deprecated
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
             ExecutionException {
+
+        return execute(workflow);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.stratio.meta.common.connector.IQueryEngine#execute(com.stratio.meta.common.logicalplan.LogicalWorkflow)
+     */
+    @Override
+    public QueryResult execute(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
 
         List<LogicalStep> initialSteps = workflow.getInitialSteps();
         JavaRDD<Cells> partialResultRdd = null;
@@ -140,6 +152,7 @@ public class DeepQueryEngine implements IQueryEngine {
     private JavaRDD<Cells> executeInitialStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
             throws ExecutionException {
 
+        String stepId = tableName;
         LogicalStep currentStep = logicalStep;
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
@@ -147,8 +160,16 @@ public class DeepQueryEngine implements IQueryEngine {
             } else if (currentStep instanceof Select) {
                 prepareResult((Select) currentStep, rdd);
             } else if (currentStep instanceof UnionStep) {
-                if (!executeUnion((UnionStep) currentStep, rdd)) {
+                UnionStep unionStep = (UnionStep) currentStep;
+                if (!executeUnion(unionStep, rdd)) {
                     break;
+                } else {
+                    if (unionStep instanceof Join) {
+                        stepId = ((Join) unionStep).getId();
+                    } else {
+                        throw new ExecutionException("Unknown union step found ["
+                                + unionStep.getOperation().toString() + "]");
+                    }
                 }
             } else {
                 throw new ExecutionException("Unexpected step found [" + currentStep.getOperation().toString() + "]");
@@ -157,8 +178,7 @@ public class DeepQueryEngine implements IQueryEngine {
             currentStep = currentStep.getNextStep();
         }
 
-        // FIXME We need to add the union id (joinId) when it's coming from an union, not the table name...
-        partialResultsMap.put(tableName, rdd);
+        partialResultsMap.put(stepId, rdd);
 
         return rdd;
     }
