@@ -70,9 +70,9 @@ public class JoinCells<T> implements Function<Tuple2<T, Tuple2<Cells, Cells>>, C
     }
 
     for (Cell cell : right.getCells()) {
-      if (!cell.getCellName().equals(key1)) {
+
         joinedCells.add(cell);
-      }
+
     }
 
     return joinedCells;

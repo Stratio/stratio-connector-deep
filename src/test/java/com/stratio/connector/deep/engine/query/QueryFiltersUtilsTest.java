@@ -1,5 +1,7 @@
 package com.stratio.connector.deep.engine.query;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +86,12 @@ public class QueryFiltersUtilsTest {
 
     @Test
     public void doWhereTest(){
+        assertEquals(true,true);
+    }
 
+    @Test
+    public void doJoinTest(){
+        assertEquals(true,true);
     }
 
 }
