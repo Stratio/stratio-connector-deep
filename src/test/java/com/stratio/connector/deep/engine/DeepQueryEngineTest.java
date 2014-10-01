@@ -103,7 +103,7 @@ public class DeepQueryEngineTest {
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
         // Execution
-        deepQueryEngine.execute(CLUSTERNAME_CONSTANT, logicalWorkflow);
+        deepQueryEngine.executeWorkFlow(logicalWorkflow);
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
@@ -126,7 +126,7 @@ public class DeepQueryEngineTest {
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
         // Execution
-        deepQueryEngine.execute(CLUSTERNAME_CONSTANT, logicalWorkflow);
+        deepQueryEngine.executeWorkFlow(logicalWorkflow);
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
@@ -151,7 +151,7 @@ public class DeepQueryEngineTest {
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
         // Execution
-        deepQueryEngine.execute(CLUSTERNAME_CONSTANT, logicalWorkflow);
+        deepQueryEngine.executeWorkFlow( logicalWorkflow);
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
@@ -180,7 +180,7 @@ public class DeepQueryEngineTest {
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
         // Execution
-        deepQueryEngine.execute(CLUSTERNAME_CONSTANT, logicalWorkflow);
+        deepQueryEngine.executeWorkFlow(logicalWorkflow);
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
@@ -210,7 +210,7 @@ public class DeepQueryEngineTest {
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
         // Execution
-        deepQueryEngine.execute(CLUSTERNAME_CONSTANT, logicalWorkflow);
+        deepQueryEngine.executeWorkFlow( logicalWorkflow);
 
         // Assertions
         verify(deepContext, times(2)).createJavaRDD(any(DeepJobConfig.class));
