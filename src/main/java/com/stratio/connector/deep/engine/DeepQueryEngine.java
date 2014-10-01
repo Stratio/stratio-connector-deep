@@ -212,7 +212,8 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
 
         // TODO Confirm that the select Operation is SELECT_OPERATOR ¿¿¿???
-        if(selectStep.getOperation().equals(Operations.SELECT_OPERATOR)){
+        if(selectStep.getOperation().equals(Operations.SELECT_OPERATOR) || selectStep.getOperation().equals
+                (Operations.PROJECT)){
 
             rdd = CommonsBridgeUtils.returnSelect(rdd,selectStep);
 
