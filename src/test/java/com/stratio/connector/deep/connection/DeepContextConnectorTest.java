@@ -2,8 +2,8 @@ package com.stratio.connector.deep.connection;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.ContextProperties;
 import com.stratio.connector.deep.engine.DeepStorageEngine;
-import com.stratio.connector.deep.util.ContextProperties;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.connector.IConfiguration;
@@ -14,6 +14,7 @@ import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.LogicalWorkflow;
 import com.stratio.meta.common.security.ICredentials;
 import com.stratio.meta2.common.data.ClusterName;
+
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;

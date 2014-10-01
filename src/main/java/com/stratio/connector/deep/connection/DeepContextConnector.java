@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.engine.DeepStorageEngine;
+import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.connector.IConfiguration;
@@ -86,8 +87,7 @@ public class DeepContextConnector implements IConnector {
         Iterator it = connectionHandler.getConnections().values().iterator();
         while (it.hasNext()) {
             DeepConnection conn = (DeepConnection) it.next();
-            while (conn.getWorkInProgress()) {
-
+            while (conn.isWorkInProgress()) {
             }
         }
         deepContext.stop();
@@ -110,7 +110,7 @@ public class DeepContextConnector implements IConnector {
     @Override
     public IQueryEngine getQueryEngine() throws UnsupportedException {
 
-        return new DeepStorageEngine(connectionHandler);
+        return new DeepQueryEngine(deepContext,connectionHandler);
 
     }
 

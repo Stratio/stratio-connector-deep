@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.stratio.connector.deep.engine;
+package com.stratio.connector.deep.engine.query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +38,7 @@ import com.stratio.meta.common.logicalplan.Project;
 import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.logicalplan.UnionStep;
 import com.stratio.meta.common.result.QueryResult;
+import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
@@ -148,9 +149,10 @@ public class DeepQueryEngine implements IQueryEngine {
      * @param rdd
      * @return
      * @throws ExecutionException
+     * @throws UnsupportedException
      */
     private JavaRDD<Cells> executeInitialStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
-            throws ExecutionException {
+            throws ExecutionException, UnsupportedException {
 
         String stepId = tableName;
         LogicalStep currentStep = logicalStep;
@@ -222,17 +224,28 @@ public class DeepQueryEngine implements IQueryEngine {
      * @param selectStep
      * @param rdd
      */
-    private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) {
-        // TODO Auto-generated method stub
-        // TODO Call to DeepUtils to keep the requested columns and remove the rest of them
+    private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
+
+        rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep);
     }
 
     /**
      * @param filterStep
      * @param rdd
+     * @throws UnsupportedException
      */
-    private void executeFilter(Filter filterStep, JavaRDD<Cells> rdd) {
-        // TODO Auto-generated method stub
-        // TODO Call to DeepUtils to apply a filter from an operator (filterStep.relation.operator)
+    private void executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException, UnsupportedException {
+        Relation relation = filterStep.getRelation();
+        if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
+
+            QueryFilterUtils.doWhere(rdd, relation);
+
+        } else {
+
+            throw new ExecutionException("Unknown Filter found [" + filterStep.getRelation().getOperator().toString()
+                    + "]");
+
+        }
+
     }
 }

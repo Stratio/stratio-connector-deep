@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stratio.connector.deep.util;
+package com.stratio.connector.deep.configuration;
 
 import com.stratio.deep.commons.exception.DeepGenericException;
 import com.stratio.deep.commons.utils.Constants;
