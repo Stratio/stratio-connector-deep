@@ -49,6 +49,15 @@ public class JoinCells<T> implements Function<Tuple2<T, Tuple2<Cells, Cells>>, C
     new HashMap<String, Object>();
   }
 
+    /**
+     * JoinCells join the fields of two Cells as a result of InnerJoin.
+     *
+
+     */
+    public JoinCells() {
+
+    }
+
   @Override
   public Cells call(Tuple2<T, Tuple2<Cells, Cells>> result) {
     Cells left = result._2()._1();

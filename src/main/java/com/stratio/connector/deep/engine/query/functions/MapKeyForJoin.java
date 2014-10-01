@@ -18,13 +18,15 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.util.List;
+
 import org.apache.spark.api.java.function.PairFunction;
 
 import com.stratio.deep.commons.entity.Cells;
 
 import scala.Tuple2;
 
-public class MapKeyForJoin<T> implements PairFunction<Cells, T, Cells> {
+public class MapKeyForJoin<T> implements PairFunction<Cells, T , Cells> {
 
   /**
    * Serial version UID.
@@ -34,19 +36,25 @@ public class MapKeyForJoin<T> implements PairFunction<Cells, T, Cells> {
   /**
    * Map key.
    */
-  private String key;
+  private List<String> keys;
 
   /**
    * MapKeyForJoin maps a field in a Cell.
    * 
-   * @param key Field to map
+   * @param keys Field to map
    */
-  public MapKeyForJoin(String key) {
-    this.key = key;
+  public MapKeyForJoin(List<String> keys) {
+    this.keys = keys;
   }
 
   @Override
   public Tuple2<T, Cells> call(Cells cells) {
-    return new Tuple2<>((T) cells.getCellByName(key).getCellValue(), cells);
+     Cells cellsvalues = new Cells();
+
+     for (String key : keys){
+         cellsvalues.add(cells.getCellByName(key));
+     }
+
+    return new Tuple2<>((T) cellsvalues, cells);
   }
 }

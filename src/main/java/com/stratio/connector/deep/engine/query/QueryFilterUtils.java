@@ -1,16 +1,21 @@
 package com.stratio.connector.deep.engine.query;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
+import com.stratio.connector.deep.engine.query.functions.JoinCells;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
 import com.stratio.connector.deep.engine.query.functions.LessThan;
+import com.stratio.connector.deep.engine.query.functions.MapKeyForJoin;
 import com.stratio.connector.deep.engine.query.functions.NotEquals;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
@@ -20,6 +25,8 @@ import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
+
+import scala.Tuple2;
 
 /**
  * Created by dgomez on 26/09/14.
@@ -166,6 +173,43 @@ public final class QueryFilterUtils {
         });
 
         return cellsInRDD;
+    }
+
+
+    public static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd,JavaRDD<Cells> rightRdd, List<Relation> joinRelations){
+
+        JavaRDD<Cells> rddTableLeft = leftRdd;
+        JavaRDD<Cells> rddTableRight = rightRdd;
+
+        List<String> leftTables = new ArrayList<String>();
+        List<String> rightTables = new ArrayList<String>();
+
+
+        for(Relation relation : joinRelations){
+
+            ColumnSelector selectorRight = (ColumnSelector)relation.getRightTerm();
+            ColumnSelector selectorLeft  = (ColumnSelector)relation.getLeftTerm();
+
+            if(relation.getOperator().equals(Operator.EQ)){
+                leftTables.add(selectorRight.getName().getName());
+                rightTables.add( selectorLeft.getName().getName());
+                LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - " + selectorLeft.getName().getName());
+            }
+
+        }
+
+        JavaPairRDD<Cells, Cells> rddLeft  = rddTableLeft.mapToPair(new MapKeyForJoin<Cells>(leftTables));
+        JavaPairRDD<Cells, Cells> rddRight = rddTableRight.mapToPair(new MapKeyForJoin<Cells>(rightTables));
+
+        JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
+
+        JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells<Cells>());
+
+        JavaRDD<Cells> result = joinedResult;
+
+        return result;
+
+
     }
 
 }
