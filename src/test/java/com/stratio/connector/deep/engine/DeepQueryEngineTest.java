@@ -107,8 +107,6 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
-
-        // TODO Add deep utils calls verifications
     }
 
     @Test
