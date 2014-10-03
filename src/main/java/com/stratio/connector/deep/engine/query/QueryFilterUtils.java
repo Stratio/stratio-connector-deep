@@ -9,6 +9,8 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 
+import scala.Tuple2;
+
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
@@ -20,13 +22,11 @@ import com.stratio.connector.deep.engine.query.functions.NotEquals;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
+import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
-
-import scala.Tuple2;
 
 /**
  * Created by dgomez on 26/09/14.
@@ -58,7 +58,6 @@ public final class QueryFilterUtils {
         ColumnSelector columnSelector = (ColumnSelector) leftTerm;
         String field = columnSelector.getName().getName();
 
-        LOG.info("Rdd input size: " + rdd.count());
         switch (operator.toString().toLowerCase()) {
         case "=":
             result = rdd.filter(new DeepEquals(field, rightTerm));
@@ -146,65 +145,58 @@ public final class QueryFilterUtils {
      * Build JavaRDD<Cells> from list of Cells and select Columns.
      * 
      * @param rdd
-     *            list of JavaRDD Cells
+     *            Cells RDD
      * @param selectedCols
-     *            List of fields selected in the SelectStatement.
+     *            Set of fields selected in the SelectStatement.
      * @return JavaRDD<Cells>
      */
-    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, Select selectedCols) {
+    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<ColumnName> selectedCols) {
 
-        final Set<String> maps = selectedCols.getColumnMap().keySet();
-
-        JavaRDD<Cells> cellsInRDD = rdd.map(new Function<Cells, Cells>() {
+        return rdd.map(new Function<Cells, Cells>() {
 
             private static final long serialVersionUID = -5704730871386839898L;
 
             @Override
             public Cells call(Cells cells) throws Exception {
-                Cells cellsout = new Cells();
-                for (Cell deepCell : cells.getCells()) {
-                    if (maps.contains(deepCell.getCellName())) {
-                        cellsout.add(deepCell);
-                    }
+                Cells cellsOut = new Cells();
+
+                for (ColumnName columnName : selectedCols) {
+                    Cell cell = cells.getCellByName(columnName.getTableName().getQualifiedName(), columnName.getName());
+                    cellsOut.add(cell);
                 }
 
-                return cellsout;
+                return cellsOut;
             }
         });
-
-        return cellsInRDD;
     }
 
-
-    public static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd,JavaRDD<Cells> rightRdd, List<Relation> joinRelations){
-
+    public static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
 
         List<String> leftTables = new ArrayList<String>();
         List<String> rightTables = new ArrayList<String>();
 
+        for (Relation relation : joinRelations) {
 
-        for(Relation relation : joinRelations){
+            ColumnSelector selectorRight = (ColumnSelector) relation.getRightTerm();
+            ColumnSelector selectorLeft = (ColumnSelector) relation.getLeftTerm();
 
-            ColumnSelector selectorRight = (ColumnSelector)relation.getRightTerm();
-            ColumnSelector selectorLeft  = (ColumnSelector)relation.getLeftTerm();
-
-            if(relation.getOperator().equals(Operator.EQ)){
+            if (relation.getOperator().equals(Operator.EQ)) {
                 leftTables.add(selectorRight.getName().getName());
-                rightTables.add( selectorLeft.getName().getName());
-                LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - " + selectorLeft.getName().getName());
+                rightTables.add(selectorLeft.getName().getName());
+                LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
+                        + selectorLeft.getName().getName());
             }
 
         }
 
-        JavaPairRDD<Cells, Cells> rddLeft  = leftRdd.mapToPair(new MapKeyForJoin<Cells>(leftTables));
-
+        JavaPairRDD<Cells, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin<Cells>(leftTables));
 
         System.out.println("**************************************************************");
         System.out.println("imprimo el left1 " + rddLeft.first()._1());
         System.out.println("imprimo el left2 " + rddLeft.first()._2());
         System.out.println("**************************************************************");
         JavaPairRDD<Cells, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin<Cells>(rightTables));
-        LOG.debug("------------------Right count is :"+rddRight.count());
+        LOG.debug("------------------Right count is :" + rddRight.count());
 
         System.out.println("**************************************************************");
         System.out.println("imprimo el right1 " + rddRight.first()._1());
@@ -217,62 +209,61 @@ public final class QueryFilterUtils {
 
         return joinedResult;
 
-//
-//        List<String> leftTables = new ArrayList<String>();
-//        List<String> rightTables = new ArrayList<String>();
-//
-//
-//        for(Relation relation : joinRelations){
-//
-//            ColumnSelector selectorRight = (ColumnSelector)relation.getRightTerm();
-//            ColumnSelector selectorLeft  = (ColumnSelector)relation.getLeftTerm();
-//
-//            if(relation.getOperator().equals(Operator.EQ)){
-//                leftTables.add(selectorRight.getName().getName());
-//                rightTables.add( selectorLeft.getName().getName());
-//                LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - " + selectorLeft.getName().getName());
-//            }
-//
-//        }
-//
-//        JavaPairRDD<String, Cells> rddLeft  = leftRdd.mapToPair(new MapKeyForJoin<String>(leftTables));
-//
-//
-//        LOG.debug("------------------Left count is :" + rddLeft.count());
-//
-//        JavaPairRDD<String, Cells> rddLeft2 = rddLeft.distinct();
-//        System.out.println("**************************************************************");
-//        System.out.println("imprimo el left1 " + rddLeft.first()._1());
-//        System.out.println("imprimo el left2 " + rddLeft.first()._2());
-//        System.out.println("**************************************************************");
-//        JavaPairRDD<String, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin<String>(rightTables));
-//        LOG.debug("------------------Right count is :"+rddRight.count());
-//
-//        JavaPairRDD<String, Cells> rddRight2 =  rddRight.distinct();
-//        List<Tuple2<String, Cells>> cellsList = rddRight2.collect();
-//
-//        rddRight2.flatMapToPair(new MapPairKeyForJoin());
-//        System.out.println("**************************************************************");
-//        System.out.println("**************************************************************");
-//        for(Tuple2<String, Cells> stringCellsTuple2 : cellsList){
-//            System.out.println("imprimo el 1 " +stringCellsTuple2._1());
-//            System.out.println("imprimo el 2 " +stringCellsTuple2._2());
-//        }
-//        System.out.println("**************************************************************");
-//        System.out.println("**************************************************************");
-//        System.out.println("");
-//        System.out.println("**************************************************************");
-//        System.out.println("imprimo el right1 " + rddRight.first()._1());
-//        System.out.println("imprimo el right2 " + rddRight.first()._2());
-//        System.out.println("**************************************************************");
-//        JavaPairRDD<String, Tuple2<Cells, Cells>> joinRDD = rddLeft2.join(rddRight2);
-//        LOG.debug("Result count is :" + joinRDD.count());
-//        System.out.println("imprimo esto a ver "  + joinRDD.count());
-//
-//        JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells<String>());
-//
-//        return joinedResult;
-
+        //
+        // List<String> leftTables = new ArrayList<String>();
+        // List<String> rightTables = new ArrayList<String>();
+        //
+        //
+        // for(Relation relation : joinRelations){
+        //
+        // ColumnSelector selectorRight = (ColumnSelector)relation.getRightTerm();
+        // ColumnSelector selectorLeft = (ColumnSelector)relation.getLeftTerm();
+        //
+        // if(relation.getOperator().equals(Operator.EQ)){
+        // leftTables.add(selectorRight.getName().getName());
+        // rightTables.add( selectorLeft.getName().getName());
+        // LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - " + selectorLeft.getName().getName());
+        // }
+        //
+        // }
+        //
+        // JavaPairRDD<String, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin<String>(leftTables));
+        //
+        //
+        // LOG.debug("------------------Left count is :" + rddLeft.count());
+        //
+        // JavaPairRDD<String, Cells> rddLeft2 = rddLeft.distinct();
+        // System.out.println("**************************************************************");
+        // System.out.println("imprimo el left1 " + rddLeft.first()._1());
+        // System.out.println("imprimo el left2 " + rddLeft.first()._2());
+        // System.out.println("**************************************************************");
+        // JavaPairRDD<String, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin<String>(rightTables));
+        // LOG.debug("------------------Right count is :"+rddRight.count());
+        //
+        // JavaPairRDD<String, Cells> rddRight2 = rddRight.distinct();
+        // List<Tuple2<String, Cells>> cellsList = rddRight2.collect();
+        //
+        // rddRight2.flatMapToPair(new MapPairKeyForJoin());
+        // System.out.println("**************************************************************");
+        // System.out.println("**************************************************************");
+        // for(Tuple2<String, Cells> stringCellsTuple2 : cellsList){
+        // System.out.println("imprimo el 1 " +stringCellsTuple2._1());
+        // System.out.println("imprimo el 2 " +stringCellsTuple2._2());
+        // }
+        // System.out.println("**************************************************************");
+        // System.out.println("**************************************************************");
+        // System.out.println("");
+        // System.out.println("**************************************************************");
+        // System.out.println("imprimo el right1 " + rddRight.first()._1());
+        // System.out.println("imprimo el right2 " + rddRight.first()._2());
+        // System.out.println("**************************************************************");
+        // JavaPairRDD<String, Tuple2<Cells, Cells>> joinRDD = rddLeft2.join(rddRight2);
+        // LOG.debug("Result count is :" + joinRDD.count());
+        // System.out.println("imprimo esto a ver " + joinRDD.count());
+        //
+        // JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells<String>());
+        //
+        // return joinedResult;
 
     }
 

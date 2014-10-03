@@ -16,8 +16,10 @@ package com.stratio.connector.deep.engine.query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
 
@@ -29,6 +31,10 @@ import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
+import com.stratio.meta.common.connector.IResultHandler;
+import com.stratio.meta.common.data.Cell;
+import com.stratio.meta.common.data.ResultSet;
+import com.stratio.meta.common.data.Row;
 import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.Filter;
@@ -38,11 +44,13 @@ import com.stratio.meta.common.logicalplan.LogicalWorkflow;
 import com.stratio.meta.common.logicalplan.Project;
 import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.logicalplan.UnionStep;
+import com.stratio.meta.common.metadata.structures.ColumnMetadata;
 import com.stratio.meta.common.result.QueryResult;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
+import com.stratio.meta2.common.metadata.ColumnType;
 
 public class DeepQueryEngine implements IQueryEngine {
 
@@ -55,14 +63,6 @@ public class DeepQueryEngine implements IQueryEngine {
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
-    }
-
-    @Override
-    @Deprecated
-    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
-            ExecutionException {
-
-        return execute(workflow);
     }
 
     /*
@@ -83,7 +83,7 @@ public class DeepQueryEngine implements IQueryEngine {
                     .toString());
         }
 
-        return buildQueryResult(partialResultRdd);
+        return buildQueryResult(partialResultRdd, (Select) workflow.getLastStep());
     }
 
     /**
@@ -115,10 +115,60 @@ public class DeepQueryEngine implements IQueryEngine {
      * @param partialResultRdd
      * @return
      */
-    private QueryResult buildQueryResult(JavaRDD<Cells> partialResultRdd) {
+    private QueryResult buildQueryResult(JavaRDD<Cells> resultRdd, Select selectStep) {
 
-        QueryResult queryResult = QueryResult.createSuccessQueryResult();
+        // TODO Build the ResultSet
+        List<Cells> resultCells = resultRdd.collect();
+
+        Map<ColumnName, String> columnMap = selectStep.getColumnMap();
+        Map<String, ColumnType> columnType = selectStep.getTypeMap();
+
+        // Adding column metadata information
+        List<ColumnMetadata> resultMetadata = new LinkedList<>();
+        for (Entry<ColumnName, String> columnItem : columnMap.entrySet()) {
+
+            ColumnName columnName = columnItem.getKey();
+            String columnAlias = columnItem.getValue();
+
+            ColumnMetadata columnMetadata = new ColumnMetadata(columnName.getTableName().getQualifiedName(),
+                    columnName.getName());
+            columnMetadata.setColumnAlias(columnAlias);
+            columnMetadata.setType(columnType.get(columnAlias));
+        }
+
+        List<Row> resultRows = new LinkedList<>();
+        for (Cells cells : resultCells) {
+            resultRows.add(buildRowFromCells(cells, columnMap));
+        }
+
+        ResultSet resultSet = new ResultSet();
+        resultSet.setRows(resultRows);
+        QueryResult queryResult = QueryResult.createQueryResult(resultSet);
+
         return queryResult;
+    }
+
+    /**
+     * @param cells
+     * @return
+     */
+    private Row buildRowFromCells(Cells cells, Map<ColumnName, String> columnMap) {
+
+        Row row = new Row();
+        for (Entry<ColumnName, String> columnItem : columnMap.entrySet()) {
+            ColumnName columnName = columnItem.getKey();
+
+            // Retrieving the cell to create a new meta cell with its value
+            com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
+                    .getQualifiedName(),
+                    columnName.getName());
+            Cell rowCell = new Cell(cellsCell.getCellValue());
+
+            // Adding the cell by column alias
+            row.addCell(columnItem.getValue(), rowCell);
+        }
+
+        return row;
     }
 
     /**
@@ -231,7 +281,7 @@ public class DeepQueryEngine implements IQueryEngine {
      */
     private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
-        rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep);
+        rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
     }
 
     /**
@@ -251,6 +301,30 @@ public class DeepQueryEngine implements IQueryEngine {
                     + "]");
 
         }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.stratio.meta.common.connector.IQueryEngine#asyncExecute(java.lang.String,
+     * com.stratio.meta.common.logicalplan.LogicalWorkflow, com.stratio.meta.common.connector.IResultHandler)
+     */
+    @Override
+    public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
+            throws UnsupportedException, ExecutionException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.stratio.meta.common.connector.IQueryEngine#stop(java.lang.String)
+     */
+    @Override
+    public void stop(String queryId) throws UnsupportedException, ExecutionException {
+        // TODO Auto-generated method stub
 
     }
 }

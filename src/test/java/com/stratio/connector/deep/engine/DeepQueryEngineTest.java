@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +25,8 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
-
 import com.stratio.deep.commons.config.ExtractorConfig;
+import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.Operations;
@@ -95,25 +96,10 @@ public class DeepQueryEngineTest {
     }
 
     @Test
-    public void simpleProjectQueryTest() throws UnsupportedException, ExecutionException, HandlerConnectionException {
-
-        // Input data
-        List<LogicalStep> stepList = new ArrayList<>();
-        stepList.add(createProject(CLUSTERNAME_CONSTANT, TABLE1_CONSTANT));
-        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
-
-        // Execution
-        deepQueryEngine.execute(logicalWorkflow);
-
-        // Assertions
-        verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
-
-        // TODO Add deep utils calls verifications
-    }
-
-    @Test
     public void simpleProjectAndSelectQueryTest() throws UnsupportedException, ExecutionException,
             HandlerConnectionException {
+
+        when(rdd.collect()).thenReturn(generateListOfCells(3));
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -130,8 +116,7 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
-
-        // TODO Add deep utils calls verifications
+        verify(rdd, times(1)).map(any(Function.class));
     }
 
     @Test
@@ -214,7 +199,6 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(2)).createJavaRDD(any(ExtractorConfig.class));
-
         // TODO Add deep utils calls verifications
     }
 
@@ -261,8 +245,10 @@ public class DeepQueryEngineTest {
 
     private Select createSelect() {
 
-        Map<String, String> columnsAliases = new HashMap<>();
-        columnsAliases.put("demo.users.name", "nameAlias");
+        ColumnName columnName = new ColumnName("demo", "users", "name");
+
+        Map<ColumnName, String> columnsAliases = new HashMap<>();
+        columnsAliases.put(columnName, "nameAlias");
 
         Map<String, ColumnType> columnsTypes = new HashMap<>();
         columnsTypes.put("demo.users.name", ColumnType.BIGINT);
@@ -270,5 +256,30 @@ public class DeepQueryEngineTest {
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes);
 
         return select;
+    }
+
+    private List<Cells> generateListOfCells(int numElements) {
+
+        List<Cells> cellsList = new ArrayList<>();
+        for (int i = 0; i < numElements; i++) {
+            cellsList.add(generateCells(null));
+        }
+
+        return cellsList;
+    }
+
+    private Cells generateCells(Cell cellValue) {
+
+        Cells cells = new Cells();
+
+        if (cellValue != null) {
+            cells.add(TABLE1_CONSTANT.getQualifiedName(), cellValue);
+        }
+
+        cells.add(TABLE1_CONSTANT.getName(), Cell.create(COLUMN1_CONSTANT, DATA_CONSTANT));
+        cells.add(TABLE1_CONSTANT.getName(), Cell.create(COLUMN2_CONSTANT, DATA_CONSTANT));
+
+        return cells;
+
     }
 }
