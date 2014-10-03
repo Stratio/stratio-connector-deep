@@ -21,14 +21,16 @@ package com.stratio.connector.deep.engine.query.functions;
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
+import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 public class DeepEquals implements Function<Cells, Boolean> {
 
   /**
    * Serial version UID.
    */
-  private static final long serialVersionUID = -6143471452730703044L;
+  private static final long serialVersionUID = -614353453245235444L;
 
   /**
    * Term to compare.
@@ -54,6 +56,14 @@ public class DeepEquals implements Function<Cells, Boolean> {
   @Override
   public Boolean call(Cells cells) {
     Object currentValue = cells.getCellByName(field).getCellValue();
-    return term.equals(currentValue);
+    Object value = null;
+    if(term instanceof StringSelector){
+        value = ((StringSelector) term).getValue();
+    }else if(term instanceof IntegerSelector){
+         value = ((IntegerSelector) term).getValue();
+    }
+
+
+    return value.equals(currentValue);
   }
 }

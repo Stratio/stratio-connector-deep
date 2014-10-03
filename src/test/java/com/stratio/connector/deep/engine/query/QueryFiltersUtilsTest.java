@@ -50,7 +50,7 @@ import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
  * Created by dgomez on 30/09/14.
  */
 @RunWith(PowerMockRunner.class)
-public class QueryFiltersUtilsTest {
+public class QueryFiltersUtilsTest implements Serializable  {
 
     private QueryFilterUtils queryFilterUtils = new QueryFilterUtils();
 
@@ -60,7 +60,7 @@ public class QueryFiltersUtilsTest {
 
     private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable");
 
-    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable2");
+    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable3");
 
     private static final String COLUMN1_CONSTANT = "author";
 
@@ -140,32 +140,36 @@ public class QueryFiltersUtilsTest {
     @Test
     public void doWhereTest() throws UnsupportedException {
 
-//        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
-//                COLUMN1_CONSTANT));
-//
-//        StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
-//
-//        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
-//
-//        JavaRDD<Cells> rdd  = QueryFilterUtils.doWhere(leftRdd, relation);
-//
-//        rdd.collect();
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
+                COLUMN1_CONSTANT));
+
+        StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
+
+        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
+
+        JavaRDD<Cells> rdd  = QueryFilterUtils.doWhere(leftRdd, relation);
+
+        logger.info("-------------------resultado de filterSelectedColumns--------------"+rdd.first().toString());
+        rdd.collect();
         assertEquals(true, true);
     }
 
     @Test
     public void filterSelectedColumns(){
-//        Map<String, String> columnsAliases = new HashMap<>();
-//        columnsAliases.put("test.tweets.author", "nameAlias");
-//
-//        Map<String, ColumnType> columnsTypes = new HashMap<>();
-//        columnsTypes.put("test.tweets.author", ColumnType.TEXT);
-//
-//        Select select = new Select(Operations.SELECT_OPERATOR, columnsAliases, columnsTypes);
-//
-//        JavaRDD<Cells> rdd  = QueryFilterUtils.filterSelectedColumns(leftRdd, select);
-//
-//        rdd.collect();
+        Map<ColumnName, String> columnsAliases = new HashMap<>();
+
+        columnsAliases.put( new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
+                COLUMN1_CONSTANT), "nameAlias");
+
+        Map<String, ColumnType> columnsTypes = new HashMap<>();
+        columnsTypes.put("test.tweets.author", ColumnType.TEXT);
+
+        Select select = new Select(Operations.SELECT_OPERATOR, columnsAliases, columnsTypes);
+
+        JavaRDD<Cells> rdd  = QueryFilterUtils.filterSelectedColumns(leftRdd, select);
+
+        logger.info("-------------------resultado de filterSelectedColumns--------------"+rdd.first().toString());
+        rdd.collect();
         assertEquals(true, true);
     }
     @Test
@@ -185,6 +189,13 @@ public class QueryFiltersUtilsTest {
         JavaRDD<Cells> outputrdd = QueryFilterUtils.doJoin(leftRdd, rightRdd, relations);
 
         logger.info("El resultado es :"+outputrdd.count());
+        logger.info("resultado "+outputrdd.first().toString());
+        int i=0;
+        for (Cells cell: outputrdd.collect()){
+
+            logger.info("-----------------resultado "+(i++)+"  "+cell.getCellValues());
+        }
+
         assertEquals(true, true);
     }
 
