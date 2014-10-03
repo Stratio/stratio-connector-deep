@@ -30,6 +30,7 @@ import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
+import com.stratio.meta.common.connector.IResultHandler;
 import com.stratio.meta.common.data.Cell;
 import com.stratio.meta.common.data.ResultSet;
 import com.stratio.meta.common.data.Row;
@@ -61,14 +62,6 @@ public class DeepQueryEngine implements IQueryEngine {
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
-    }
-
-    @Override
-    @Deprecated
-    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
-            ExecutionException {
-
-        return execute(workflow);
     }
 
     /*
@@ -303,6 +296,30 @@ public class DeepQueryEngine implements IQueryEngine {
                     + "]");
 
         }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.stratio.meta.common.connector.IQueryEngine#asyncExecute(java.lang.String,
+     * com.stratio.meta.common.logicalplan.LogicalWorkflow, com.stratio.meta.common.connector.IResultHandler)
+     */
+    @Override
+    public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
+            throws UnsupportedException, ExecutionException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.stratio.meta.common.connector.IQueryEngine#stop(java.lang.String)
+     */
+    @Override
+    public void stop(String queryId) throws UnsupportedException, ExecutionException {
+        // TODO Auto-generated method stub
 
     }
 }
