@@ -13,6 +13,7 @@
  */
 package com.stratio.connector.deep.engine.query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +24,9 @@ import org.apache.spark.api.java.JavaRDD;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.deep.commons.config.DeepJobConfig;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
 import com.stratio.meta.common.exceptions.ExecutionException;
@@ -127,18 +128,22 @@ public class DeepQueryEngine implements IQueryEngine {
      */
     private JavaRDD<Cells> createRDD(Project projection, ExtractorConfig<Cells> extractorConfig) {
 
-        DeepJobConfig<Cells> jobConfig = new DeepJobConfig<>(extractorConfig);
+        ExtractorConfig<Cells> jobConfig = new ExtractorConfig();
 
         // Retrieving project information
         List<String> columnsList = new ArrayList<>();
         for (ColumnName columnName : projection.getColumnList()) {
             columnsList.add(columnName.getName());
         }
-        // TODO Review data in deepJobConfig / extractorConfig; not sure it's reachable
-        jobConfig.inputColumns(columnsList.toArray(new String[columnsList.size()]));
-        jobConfig.tableName(projection.getTableName().getName());
-        jobConfig.catalogName(projection.getCatalogName());
 
+        jobConfig.setExtractorImplClass(extractorConfig.getExtractorImplClass());
+
+        Map<String, Serializable> values = new HashMap<String, Serializable>();
+        values.put(ExtractorConstants.KEYSPACE, projection.getCatalogName());
+        values.put(ExtractorConstants.TABLE, projection.getTableName().getName());
+        values.put(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
+
+        jobConfig.setValues(values);
         JavaRDD<Cells> rdd = deepContext.createJavaRDD(jobConfig);
 
         return rdd;
@@ -216,8 +221,8 @@ public class DeepQueryEngine implements IQueryEngine {
      * @param joinRelations
      */
     private void executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
-        // TODO Auto-generated method stub
-        // TODO Call to DeepUtils to apply rdd.join(leftRdd)
+
+        rdd = QueryFilterUtils.doJoin(leftRdd,rdd,joinRelations);
     }
 
     /**

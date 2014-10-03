@@ -24,7 +24,7 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
-import com.stratio.deep.commons.config.DeepJobConfig;
+
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
@@ -91,7 +91,7 @@ public class DeepQueryEngineTest {
         // Stubs
         when(deepConnectionHandler.getConnection(CLUSTERNAME_CONSTANT.getName())).thenReturn(deepConnection);
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
-        when(deepContext.createJavaRDD(any(DeepJobConfig.class))).thenReturn(rdd);
+        when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(rdd);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class DeepQueryEngineTest {
         deepQueryEngine.execute(logicalWorkflow);
 
         // Assertions
-        verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
+        verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
 
         // TODO Add deep utils calls verifications
     }
@@ -129,7 +129,7 @@ public class DeepQueryEngineTest {
         deepQueryEngine.execute(logicalWorkflow);
 
         // Assertions
-        verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
+        verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
 
         // TODO Add deep utils calls verifications
     }
@@ -154,7 +154,7 @@ public class DeepQueryEngineTest {
         deepQueryEngine.execute(logicalWorkflow);
 
         // Assertions
-        verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
+        verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
 
         // TODO Add deep utils calls verifications
     }
@@ -183,7 +183,7 @@ public class DeepQueryEngineTest {
         deepQueryEngine.execute(logicalWorkflow);
 
         // Assertions
-        verify(deepContext, times(1)).createJavaRDD(any(DeepJobConfig.class));
+        verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
 
         // TODO Add deep utils calls verifications
     }
@@ -213,7 +213,7 @@ public class DeepQueryEngineTest {
         deepQueryEngine.execute(logicalWorkflow);
 
         // Assertions
-        verify(deepContext, times(2)).createJavaRDD(any(DeepJobConfig.class));
+        verify(deepContext, times(2)).createJavaRDD(any(ExtractorConfig.class));
 
         // TODO Add deep utils calls verifications
     }
