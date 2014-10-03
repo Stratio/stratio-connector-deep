@@ -93,13 +93,12 @@ public class DeepQueryEngineTest {
         when(deepConnectionHandler.getConnection(CLUSTERNAME_CONSTANT.getName())).thenReturn(deepConnection);
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(rdd);
+        when(rdd.collect()).thenReturn(generateListOfCells(3));
     }
 
     @Test
     public void simpleProjectAndSelectQueryTest() throws UnsupportedException, ExecutionException,
             HandlerConnectionException {
-
-        when(rdd.collect()).thenReturn(generateListOfCells(3));
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -249,13 +248,13 @@ public class DeepQueryEngineTest {
 
     private Select createSelect() {
 
-        ColumnName columnName = new ColumnName("demo", "users", "name");
+        ColumnName columnName = new ColumnName("catalogname", "tablename1", "column1Name");
 
         Map<ColumnName, String> columnsAliases = new HashMap<>();
         columnsAliases.put(columnName, "nameAlias");
 
         Map<String, ColumnType> columnsTypes = new HashMap<>();
-        columnsTypes.put("demo.users.name", ColumnType.BIGINT);
+        columnsTypes.put("catalogname.tablename1.column1Name", ColumnType.BIGINT);
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes);
 
@@ -280,8 +279,8 @@ public class DeepQueryEngineTest {
             cells.add(TABLE1_CONSTANT.getQualifiedName(), cellValue);
         }
 
-        cells.add(TABLE1_CONSTANT.getName(), Cell.create(COLUMN1_CONSTANT, DATA_CONSTANT));
-        cells.add(TABLE1_CONSTANT.getName(), Cell.create(COLUMN2_CONSTANT, DATA_CONSTANT));
+        cells.add(TABLE1_CONSTANT.getQualifiedName(), Cell.create(COLUMN1_CONSTANT, DATA_CONSTANT));
+        cells.add(TABLE1_CONSTANT.getQualifiedName(), Cell.create(COLUMN2_CONSTANT, DATA_CONSTANT));
 
         return cells;
 
