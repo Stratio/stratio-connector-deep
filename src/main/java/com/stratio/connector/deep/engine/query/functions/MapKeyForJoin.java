@@ -22,39 +22,43 @@ import java.util.List;
 
 import org.apache.spark.api.java.function.PairFunction;
 
-import com.stratio.deep.commons.entity.Cells;
-
 import scala.Tuple2;
 
-public class MapKeyForJoin<T> implements PairFunction<Cells, T , Cells> {
+import com.stratio.deep.commons.entity.Cells;
+import com.stratio.meta2.common.data.ColumnName;
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = -6677647619149716567L;
+public class MapKeyForJoin<T> implements PairFunction<Cells, Cells, Cells> {
 
-  /**
-   * Map key.
-   */
-  private List<String> keys;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -6677647619149716567L;
 
-  /**
-   * MapKeyForJoin maps a field in a Cell.
-   * 
-   * @param keys Field to map
-   */
-  public MapKeyForJoin(List<String> keys) {
-    this.keys = keys;
-  }
+    /**
+     * Map key.
+     */
+    private final List<ColumnName> keys;
 
-  @Override
-  public Tuple2<T, Cells> call(Cells cells) {
-     Cells cellsvalues = new Cells();
+    /**
+     * MapKeyForJoin maps a field in a Cell.
+     * 
+     * @param keys
+     *            Field to map
+     */
+    public MapKeyForJoin(List<ColumnName> keys) {
+        this.keys = keys;
+    }
 
-     for (String key : keys){
-         cellsvalues.add(cells.getCellByName(key));
-     }
+    @Override
+    public Tuple2<Cells, Cells> call(Cells cells) {
+        Cells cellsvalues = new Cells();
 
-    return new Tuple2<>((T) cellsvalues, cells);
-  }
+        for (ColumnName columnKey : keys) {
+            String tableName = columnKey.getTableName().getQualifiedName();
+            cellsvalues.add(tableName,
+                    cells.getCellByName(tableName, columnKey.getName()));
+        }
+
+        return new Tuple2<>(cellsvalues, cells);
+    }
 }
