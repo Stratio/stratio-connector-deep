@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-core</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -104,11 +104,6 @@
             <groupId>com.stratio.meta</groupId>
             <artifactId>meta-common</artifactId>
             <version>0.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.stratio.deep</groupId>
-            <artifactId>deep-core</artifactId>
-            <version>0.4.0</version>
         </dependency>
     </dependencies>
     <build>

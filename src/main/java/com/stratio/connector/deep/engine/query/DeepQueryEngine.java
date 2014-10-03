@@ -25,9 +25,9 @@ import org.apache.spark.api.java.JavaRDD;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.deep.commons.config.DeepJobConfig;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
 import com.stratio.meta.common.connector.IResultHandler;
@@ -177,19 +177,17 @@ public class DeepQueryEngine implements IQueryEngine {
      */
     private JavaRDD<Cells> createRDD(Project projection, ExtractorConfig<Cells> extractorConfig) {
 
-        DeepJobConfig<Cells> jobConfig = new DeepJobConfig<>(extractorConfig);
-
         // Retrieving project information
         List<String> columnsList = new ArrayList<>();
         for (ColumnName columnName : projection.getColumnList()) {
             columnsList.add(columnName.getName());
         }
-        // TODO Review data in deepJobConfig / extractorConfig; not sure it's reachable
-        jobConfig.inputColumns(columnsList.toArray(new String[columnsList.size()]));
-        jobConfig.tableName(projection.getTableName().getName());
-        jobConfig.catalogName(projection.getCatalogName());
 
-        JavaRDD<Cells> rdd = deepContext.createJavaRDD(jobConfig);
+        extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
+        extractorConfig.putValue(ExtractorConstants.TABLE, projection.getTableName().getName());
+        extractorConfig.putValue(ExtractorConstants.CATALOG, projection.getCatalogName());
+
+        JavaRDD<Cells> rdd = deepContext.createJavaRDD(extractorConfig);
 
         return rdd;
     }

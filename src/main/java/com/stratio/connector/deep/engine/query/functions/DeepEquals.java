@@ -25,35 +25,37 @@ import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
 public class DeepEquals implements Function<Cells, Boolean> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = -6143471452730703044L;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -6143471452730703044L;
 
-  /**
-   * Term to compare.
-   */
-  private Selector term;
+    /**
+     * Term to compare.
+     */
+    private final Selector term;
 
-  /**
-   * Name of the field of the cell to compare.
-   */
-  private String field;
+    /**
+     * Name of the field of the cell to compare.
+     */
+    private final String field;
 
-  /**
-   * DeepEquals apply = filter to a field in a Deep Cell.
-   * 
-   * @param field Name of the field to check.
-   * @param term Term to compare to.
-   */
-  public DeepEquals(String field, Selector term) {
-    this.term = term;
-    this.field = field;
-  }
+    /**
+     * DeepEquals apply = filter to a field in a Deep Cell.
+     * 
+     * @param field
+     *            Name of the field to check.
+     * @param term
+     *            Term to compare to.
+     */
+    public DeepEquals(String field, Selector term) {
+        this.term = term;
+        this.field = field;
+    }
 
-  @Override
-  public Boolean call(Cells cells) {
-    Object currentValue = cells.getCellByName(field).getCellValue();
-    return term.equals(currentValue);
-  }
+    @Override
+    public Boolean call(Cells cells) {
+        Object currentValue = cells.getCellByName(field).getCellValue();
+        return term.equals(currentValue);
+    }
 }
