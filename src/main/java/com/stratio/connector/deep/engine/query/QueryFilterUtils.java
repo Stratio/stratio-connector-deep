@@ -189,23 +189,32 @@ public final class QueryFilterUtils {
 
         }
 
-        JavaPairRDD<Cells, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin<>(leftTables));
+        JavaPairRDD<Cells, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
 
-        LOG.debug("**************************************************************");
-        LOG.debug("imprimo el left1 " + rddLeft.first()._1());
-        LOG.debug("imprimo el left2 " + rddLeft.first()._2());
-        LOG.debug("**************************************************************");
-        JavaPairRDD<Cells, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin<>(rightTables));
-        LOG.debug("------------------Right count is :" + rddRight.count());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("**************************************************************");
+            LOG.debug("imprimo el left1 " + rddLeft.first()._1());
+            LOG.debug("imprimo el left2 " + rddLeft.first()._2());
+            LOG.debug("**************************************************************");
+        }
 
-        LOG.debug("**************************************************************");
-        LOG.debug("imprimo el right1 " + rddRight.first()._1());
-        LOG.debug("imprimo el right2 " + rddRight.first()._2());
-        LOG.debug("**************************************************************");
+        JavaPairRDD<Cells, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("------------------Right count is :" + rddRight.count());
+            LOG.debug("**************************************************************");
+            LOG.debug("imprimo el right1 " + rddRight.first()._1());
+            LOG.debug("imprimo el right2 " + rddRight.first()._2());
+            LOG.debug("**************************************************************");
+        }
+
         JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
-        LOG.debug("Result count is :" + joinRDD.count());
 
-        JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells<Cells>());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Result count is :" + joinRDD.count());
+        }
+
+        JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells());
 
         return joinedResult;
     }

@@ -24,10 +24,9 @@ import org.apache.spark.api.java.function.Function;
 
 import scala.Tuple2;
 
-import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 
-public class JoinCells<T> implements Function<Tuple2<T, Tuple2<Cells, Cells>>, Cells> {
+public class JoinCells implements Function<Tuple2<Cells, Tuple2<Cells, Cells>>, Cells> {
 
     /**
      * Serial version UID.
@@ -36,27 +35,27 @@ public class JoinCells<T> implements Function<Tuple2<T, Tuple2<Cells, Cells>>, C
 
     /**
      * JoinCells join the fields of two Cells as a result of InnerJoin.
-     * 
-     * @param key1
-     *            Indicates field which inner join has been applied
      */
     public JoinCells() {
         new HashMap<String, Object>();
     }
 
     @Override
-    public Cells call(Tuple2<T, Tuple2<Cells, Cells>> result) {
+    public Cells call(Tuple2<Cells, Tuple2<Cells, Cells>> result) {
+
         Cells left = result._2()._1();
         Cells right = result._2()._2();
+
         Cells joinedCells = new Cells();
-
-        for (Cell cell : left.getCells()) {
-            joinedCells.add(cell);
-        }
-
-        for (Cell cell : right.getCells()) {
-            joinedCells.add(cell);
-        }
+        joinedCells.addAll(left.getInternalCells());
+        joinedCells.addAll(right.getInternalCells());
+        // for (Cell cell : left.getCells()) {
+        // joinedCells.add(cell);
+        // }
+        //
+        // for (Cell cell : right.getCells()) {
+        // joinedCells.add(cell);
+        // }
 
         return joinedCells;
     }

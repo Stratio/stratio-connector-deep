@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFunction;
@@ -22,11 +23,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import scala.Tuple2;
+
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
+import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cell;
@@ -88,6 +92,21 @@ public class DeepQueryEngineTest {
     @Mock
     private JavaRDD<Cells> rightRdd;
 
+    @Mock
+    private JavaRDD<Cells> joinedRdd;
+
+    @Mock
+    private JavaPairRDD<Cells, Cells> leftRddWithKey;
+
+    @Mock
+    private JavaPairRDD<Cells, Cells> rightRddWithKey;
+
+    @Mock
+    private JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinedTuplesRddWithKey;
+
+    @Mock
+    private Tuple2<Cells, Cells> tuple;
+
     private DeepQueryEngine deepQueryEngine;
 
     @Before
@@ -100,6 +119,12 @@ public class DeepQueryEngineTest {
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(leftRdd, rightRdd);
         when(leftRdd.collect()).thenReturn(generateListOfCells(3));
+        when(leftRdd.mapToPair(any(PairFunction.class))).thenReturn(leftRddWithKey);
+        when(rightRdd.mapToPair(any(PairFunction.class))).thenReturn(rightRddWithKey);
+        when(leftRddWithKey.first()).thenReturn(tuple);
+        when(rightRddWithKey.first()).thenReturn(tuple);
+        when(leftRddWithKey.join(rightRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        when(joinedTuplesRddWithKey.map(any(JoinCells.class))).thenReturn(joinedRdd);
     }
 
     @Test
@@ -180,7 +205,8 @@ public class DeepQueryEngineTest {
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
         verify(leftRdd, times(3)).filter(any(DeepEquals.class));
-        verify(leftRdd, times(0)).mapToPair(any(PairFunction.class));
+        verify(leftRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(rightRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
         verify(leftRdd, times(1)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
@@ -213,9 +239,10 @@ public class DeepQueryEngineTest {
         // Assertions
         verify(deepContext, times(2)).createJavaRDD(any(ExtractorConfig.class));
         verify(leftRdd, times(0)).filter(any(DeepEquals.class));
-        verify(leftRdd, times(1)).mapToPair(new MapKeyForJoin<Cells>(any(List.class)));
-        verify(rightRdd, times(1)).mapToPair(new MapKeyForJoin<Cells>(any(List.class)));
-        verify(leftRdd, times(1)).map(any(Function.class));
+        verify(leftRdd, times(1)).mapToPair(any(MapKeyForJoin.class));
+        verify(rightRdd, times(1)).mapToPair(any(MapKeyForJoin.class));
+        verify(leftRddWithKey, times(1)).join(rightRddWithKey);
+        verify(joinedTuplesRddWithKey, times(1)).map(any(JoinCells.class));
 
         // TODO Add deep utils calls verifications
     }
