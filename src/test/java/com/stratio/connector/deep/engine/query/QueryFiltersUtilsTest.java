@@ -60,7 +60,7 @@ public class QueryFiltersUtilsTest implements Serializable  {
 
     private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable");
 
-    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable3");
+    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable2");
 
     private static final String COLUMN1_CONSTANT = "author";
 

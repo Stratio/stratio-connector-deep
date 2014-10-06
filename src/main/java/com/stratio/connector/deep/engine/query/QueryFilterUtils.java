@@ -201,7 +201,7 @@ public final class QueryFilterUtils {
         }
 
         JavaPairRDD<Cells, Cells> rddLeft  = leftRdd.mapToPair(new MapKeyForJoin<Cells>(leftTables));
-
+        logger.debug("------------------Left count is :"+rddLeft.count());
 
         logger.info("**************************************************************");
         logger.info("---------------------imprimo el left1 " + rddLeft.first()._1());
