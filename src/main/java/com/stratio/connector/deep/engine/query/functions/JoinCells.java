@@ -56,15 +56,12 @@ public class JoinCells<T> implements Function<Tuple2<T, Tuple2<Cells, Cells>>, C
         Cells right = result._2()._2();
         Cells joinedCells = new Cells();
 
-        // TODO What if two equals keys
         for (Cell cell : left.getCells()) {
             joinedCells.add(cell);
         }
 
         for (Cell cell : right.getCells()) {
-            if (!cell.getCellName().equals(key1)) {
-                joinedCells.add(cell);
-            }
+            joinedCells.add(cell);
         }
 
         return joinedCells;
