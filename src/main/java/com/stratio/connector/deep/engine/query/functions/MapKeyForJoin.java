@@ -27,6 +27,8 @@ import scala.Tuple2;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta2.common.data.ColumnName;
 
+
+
 public class MapKeyForJoin<T> implements PairFunction<Cells, Cells, Cells> {
 
     /**
@@ -54,9 +56,14 @@ public class MapKeyForJoin<T> implements PairFunction<Cells, Cells, Cells> {
         Cells cellsvalues = new Cells();
 
         for (ColumnName columnKey : keys) {
-            String tableName = columnKey.getTableName().getName();
-            cellsvalues.add(tableName,
-                    cells.getCellByName(tableName, columnKey.getName()));
+          String tableName = columnKey.getTableName().getName();
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            System.out.println("tableName --->" +tableName );
+            System.out.println("columnKey.getName() --->"+columnKey.getName());
+            System.out.println("Cell --->"+        cells.getCellByName(tableName, columnKey.getName()));
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+            cellsvalues.add(tableName, cells.getCellByName(tableName, columnKey.getName()));
         }
 
         return new Tuple2<>(cellsvalues, cells);

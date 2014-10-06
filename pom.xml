@@ -72,6 +72,12 @@
             <type>jar</type>
         </dependency>
 
+        <dependency>
+            <groupId>com.stratio.deep</groupId>
+            <artifactId>deep-mongodb</artifactId>
+            <version>0.5.0</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>com.stratio.connector</groupId>

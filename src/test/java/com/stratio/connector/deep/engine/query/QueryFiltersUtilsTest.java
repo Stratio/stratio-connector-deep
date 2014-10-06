@@ -58,7 +58,7 @@ public class QueryFiltersUtilsTest {
 
     private static final String CATALOG_CONSTANT = "test";
 
-    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable");
+    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "tweets");
 
     private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable2");
 
@@ -124,11 +124,11 @@ public class QueryFiltersUtilsTest {
 
         // Creating the RDD
         leftRdd = deepSparkContext.createJavaRDD(config_1);
-        logger.info("El resultado tweets es de "+leftRdd.count());
+        logger.info("El resultado tabla "+TABLENAME_1+" es de "+leftRdd.count());
 
         rightRdd = deepSparkContext.createJavaRDD(config_2);
 
-        logger.info("El resultado tweets es de "+rightRdd.count());
+        logger.info("El resultado tabla "+TABLENAME_2+" es de "+rightRdd.count());
 
     }
     @After
