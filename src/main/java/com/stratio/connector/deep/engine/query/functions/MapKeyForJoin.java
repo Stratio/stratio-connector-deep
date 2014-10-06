@@ -54,7 +54,7 @@ public class MapKeyForJoin<T> implements PairFunction<Cells, Cells, Cells> {
         Cells cellsvalues = new Cells();
 
         for (ColumnName columnKey : keys) {
-            String tableName = columnKey.getTableName().getQualifiedName();
+            String tableName = columnKey.getTableName().getName();
             cellsvalues.add(tableName,
                     cells.getCellByName(tableName, columnKey.getName()));
         }

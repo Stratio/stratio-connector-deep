@@ -171,6 +171,7 @@ public class QueryFiltersUtilsTest {
     @Test
     public void doJoinTest(){
 
+
         List<Relation> relations = new ArrayList<Relation>();
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
                 COLUMN1_CONSTANT));
@@ -185,6 +186,13 @@ public class QueryFiltersUtilsTest {
         JavaRDD<Cells> outputrdd = QueryFilterUtils.doJoin(leftRdd, rightRdd, relations);
 
         logger.info("El resultado es :"+outputrdd.count());
+        logger.info("resultado "+outputrdd.first().toString());
+        int i=0;
+        for (Cells cell: outputrdd.collect()){
+
+            logger.info("-----------------resultado "+(i++)+"  "+cell.getCellValues());
+        }
+
         assertEquals(true, true);
     }
 
