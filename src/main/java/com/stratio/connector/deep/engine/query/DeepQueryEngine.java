@@ -264,8 +264,8 @@ public class DeepQueryEngine implements IQueryEngine {
      * @param joinRelations
      */
     private void executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
-        // TODO Auto-generated method stub
-        // TODO Call to DeepUtils to apply rdd.join(leftRdd)
+
+        rdd = QueryFilterUtils.doJoin(leftRdd,rdd,joinRelations);
     }
 
     /**

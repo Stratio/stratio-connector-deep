@@ -25,6 +25,7 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
+import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
@@ -115,6 +116,8 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
+        verify(rdd, times(0)).filter(any(Function.class));
+        // verify(rdd, times(0)).
         verify(rdd, times(1)).map(any(Function.class));
     }
 
@@ -139,6 +142,7 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
+        verify(rdd, times(1)).filter(any(DeepEquals.class));
         verify(rdd, times(1)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
@@ -169,6 +173,7 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
+        verify(rdd, times(3)).filter(any(DeepEquals.class));
         verify(rdd, times(1)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
@@ -200,6 +205,7 @@ public class DeepQueryEngineTest {
 
         // Assertions
         verify(deepContext, times(2)).createJavaRDD(any(ExtractorConfig.class));
+        verify(rdd, times(0)).filter(any(DeepEquals.class));
         verify(rdd, times(1)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
