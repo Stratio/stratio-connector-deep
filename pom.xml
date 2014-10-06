@@ -73,13 +73,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.stratio.deep</groupId>
-            <artifactId>deep-parent</artifactId>
-            <version>0.5.0</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
             <groupId>com.stratio.connector</groupId>
             <artifactId>connector-commons-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
