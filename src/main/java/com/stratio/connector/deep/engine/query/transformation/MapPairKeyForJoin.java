@@ -1,4 +1,4 @@
-package com.stratio.connector.deep.engine.query.functions;
+package com.stratio.connector.deep.engine.query.transformation;
 
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package com.stratio.connector.deep.engine.query.functions;
+package com.stratio.connector.deep.engine.query.transformation;
 
 import java.util.List;
 
