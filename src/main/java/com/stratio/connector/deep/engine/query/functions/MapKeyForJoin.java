@@ -23,10 +23,11 @@ import java.util.List;
 import org.apache.spark.api.java.function.PairFunction;
 
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.meta2.common.data.ColumnName;
 
 import scala.Tuple2;
 
-public class MapKeyForJoin<T> implements PairFunction<Cells, T , Cells> {
+public class MapKeyForJoin<T> implements PairFunction<Cells, Cells , Cells> {
 
   /**
    * Serial version UID.
@@ -36,25 +37,27 @@ public class MapKeyForJoin<T> implements PairFunction<Cells, T , Cells> {
   /**
    * Map key.
    */
-  private List<String> keys;
+  private List<ColumnName> keys;
 
   /**
    * MapKeyForJoin maps a field in a Cell.
    * 
    * @param keys Field to map
    */
-  public MapKeyForJoin(List<String> keys) {
+  public MapKeyForJoin(List<ColumnName> keys) {
     this.keys = keys;
   }
 
   @Override
-  public Tuple2<T, Cells> call(Cells cells) {
-     Cells cellsvalues = new Cells();
+  public Tuple2<Cells, Cells> call(Cells cells) {
+      Cells cellsvalues = new Cells();
 
-     for (String key : keys){
-         cellsvalues.add(cells.getCellByName(key));
-     }
+      for (ColumnName columnKey : keys) {
+          String tableName = columnKey.getTableName().getName();
+          cellsvalues.add(tableName,
+                  cells.getCellByName(tableName, columnKey.getName()));
+      }
 
-    return new Tuple2<>((T) cellsvalues, cells);
+      return new Tuple2<>(cellsvalues, cells);
   }
 }

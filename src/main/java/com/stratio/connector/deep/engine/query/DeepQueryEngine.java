@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.deep.commons.config.ExtractorConfig;
@@ -29,6 +30,7 @@ import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
+import com.stratio.meta.common.connector.IResultHandler;
 import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.Filter;
@@ -44,7 +46,7 @@ import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 
-public class DeepQueryEngine implements IQueryEngine {
+public class DeepQueryEngine extends CommonsQueryEngine {
 
     private final DeepSparkContext deepContext;
 
@@ -53,11 +55,12 @@ public class DeepQueryEngine implements IQueryEngine {
     private final Map<String, JavaRDD<Cells>> partialResultsMap = new HashMap<>();
 
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
+        super(deepConnectionHandler);
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
     }
 
-    @Override
+
     @Deprecated
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
             ExecutionException {
@@ -71,7 +74,7 @@ public class DeepQueryEngine implements IQueryEngine {
      * @see com.stratio.meta.common.connector.IQueryEngine#execute(com.stratio.meta.common.logicalplan.LogicalWorkflow)
      */
     @Override
-    public QueryResult execute(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
+    public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
 
         List<LogicalStep> initialSteps = workflow.getInitialSteps();
         JavaRDD<Cells> partialResultRdd = null;
@@ -251,6 +254,15 @@ public class DeepQueryEngine implements IQueryEngine {
                     + "]");
 
         }
+
+    }
+
+    @Override public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
+            throws UnsupportedException, ExecutionException {
+
+    }
+
+    @Override public void stop(String queryId) throws UnsupportedException, ExecutionException {
 
     }
 }

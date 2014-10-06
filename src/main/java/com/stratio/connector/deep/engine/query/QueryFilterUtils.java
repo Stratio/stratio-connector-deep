@@ -183,8 +183,8 @@ public final class QueryFilterUtils {
     public static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd,JavaRDD<Cells> rightRdd, List<Relation> joinRelations){
 
 
-        List<String> leftTables = new ArrayList<String>();
-        List<String> rightTables = new ArrayList<String>();
+        List<ColumnName> leftTables = new ArrayList<ColumnName>();
+        List<ColumnName> rightTables = new ArrayList<ColumnName>();
 
 
         for(Relation relation : joinRelations){
@@ -193,8 +193,8 @@ public final class QueryFilterUtils {
             ColumnSelector selectorLeft  = (ColumnSelector)relation.getLeftTerm();
 
             if(relation.getOperator().equals(Operator.EQ)){
-                leftTables.add(selectorRight.getName().getName());
-                rightTables.add( selectorLeft.getName().getName());
+                leftTables.add(selectorLeft.getName());
+                rightTables.add(selectorRight.getName());
                 logger.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - " + selectorLeft.getName().getName());
             }
 
