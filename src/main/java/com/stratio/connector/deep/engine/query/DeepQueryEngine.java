@@ -272,7 +272,7 @@ public class DeepQueryEngine implements IQueryEngine {
      */
     private void executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
-        rdd = QueryFilterUtils.doJoin(leftRdd,rdd,joinRelations);
+        rdd = QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations);
     }
 
     /**
