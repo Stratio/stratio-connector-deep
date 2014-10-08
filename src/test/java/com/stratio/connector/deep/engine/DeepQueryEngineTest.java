@@ -119,12 +119,14 @@ public class DeepQueryEngineTest {
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(leftRdd, rightRdd);
         when(leftRdd.collect()).thenReturn(generateListOfCells(3));
+        when(rightRdd.collect()).thenReturn(generateListOfCells(3));
         when(leftRdd.mapToPair(any(PairFunction.class))).thenReturn(leftRddWithKey);
         when(rightRdd.mapToPair(any(PairFunction.class))).thenReturn(rightRddWithKey);
         when(leftRddWithKey.first()).thenReturn(tuple);
         when(rightRddWithKey.first()).thenReturn(tuple);
         when(leftRddWithKey.join(rightRddWithKey)).thenReturn(joinedTuplesRddWithKey);
         when(joinedTuplesRddWithKey.map(any(JoinCells.class))).thenReturn(joinedRdd);
+        when(joinedRdd.collect()).thenReturn(generateListOfCells(3));
     }
 
     @Test
@@ -147,8 +149,13 @@ public class DeepQueryEngineTest {
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
         verify(leftRdd, times(0)).filter(any(Function.class));
-        verify(leftRdd, times(0)).mapToPair(any(PairFunction.class));
+        verify(leftRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(rightRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(leftRddWithKey, times(0)).join(rightRddWithKey);
+        verify(joinedTuplesRddWithKey, times(0)).map(any(JoinCells.class));
         verify(leftRdd, times(1)).map(any(Function.class));
+        verify(joinedRdd, times(0)).map(any(Function.class));
+
     }
 
     @Test
@@ -173,8 +180,12 @@ public class DeepQueryEngineTest {
         // Assertions
         verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
         verify(leftRdd, times(1)).filter(any(DeepEquals.class));
-        verify(leftRdd, times(0)).mapToPair(any(PairFunction.class));
+        verify(leftRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(rightRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(leftRddWithKey, times(0)).join(rightRddWithKey);
+        verify(joinedTuplesRddWithKey, times(0)).map(any(JoinCells.class));
         verify(leftRdd, times(1)).map(any(Function.class));
+        verify(joinedRdd, times(0)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
     }
@@ -207,7 +218,10 @@ public class DeepQueryEngineTest {
         verify(leftRdd, times(3)).filter(any(DeepEquals.class));
         verify(leftRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
         verify(rightRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(leftRddWithKey, times(0)).join(rightRddWithKey);
+        verify(joinedTuplesRddWithKey, times(0)).map(any(JoinCells.class));
         verify(leftRdd, times(1)).map(any(Function.class));
+        verify(joinedRdd, times(0)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
     }
@@ -243,6 +257,8 @@ public class DeepQueryEngineTest {
         verify(rightRdd, times(1)).mapToPair(any(MapKeyForJoin.class));
         verify(leftRddWithKey, times(1)).join(rightRddWithKey);
         verify(joinedTuplesRddWithKey, times(1)).map(any(JoinCells.class));
+        verify(leftRdd, times(0)).map(any(Function.class));
+        verify(rightRdd, times(1)).map(any(Function.class));
 
         // TODO Add deep utils calls verifications
     }
