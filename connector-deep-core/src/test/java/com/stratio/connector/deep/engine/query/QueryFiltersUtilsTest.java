@@ -1,12 +1,7 @@
 package com.stratio.connector.deep.engine.query;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,25 +9,21 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.rdd.RDD;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ContextProperties;
-
-
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.server.ExtractorServer;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.commons.utils.Utils;
+import com.stratio.deep.commons.filter.Filter;
+import com.stratio.deep.commons.filter.FilterOperator;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.Operations;
 import com.stratio.meta.common.exceptions.UnsupportedException;
@@ -52,7 +43,7 @@ import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 @RunWith(PowerMockRunner.class)
 public class QueryFiltersUtilsTest {
 
-    private QueryFilterUtils queryFilterUtils = new QueryFilterUtils();
+    private final QueryFilterUtils queryFilterUtils = new QueryFilterUtils();
 
     private static final Logger logger = Logger.getLogger(QueryFiltersUtilsTest.class);
 
@@ -75,7 +66,6 @@ public class QueryFiltersUtilsTest {
     private JavaRDD<Cells> leftRdd;
 
     private JavaRDD<Cells> rightRdd;
-
 
     @Before
     public void before() throws Exception, HandlerConnectionException {
@@ -101,7 +91,7 @@ public class QueryFiltersUtilsTest {
                 .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
                 .set("spark.kryo.registrator", "com.stratio.deep.serializer.DeepKryoRegistrator");
 
-        //SparkContext sc = new SparkContext(p.getCluster(), job, sparkConf);
+        // SparkContext sc = new SparkContext(p.getCluster(), job, sparkConf);
 
         logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
@@ -124,53 +114,63 @@ public class QueryFiltersUtilsTest {
 
         // Creating the RDD
         leftRdd = deepSparkContext.createJavaRDD(config_1);
-        logger.info("El resultado tweets es de "+leftRdd.count());
+        logger.info("El resultado tabla " + TABLENAME_1 + " es de " + leftRdd.count());
 
         rightRdd = deepSparkContext.createJavaRDD(config_2);
 
-        logger.info("El resultado tweets es de "+rightRdd.count());
+        logger.info("El resultado tabla " + TABLENAME_2 + " es de " + rightRdd.count());
 
     }
+
     @After
     public void after() throws Exception, HandlerConnectionException {
 
         deepSparkContext.stop();
         ExtractorServer.close();
     }
+
     @Test
     public void doWhereTest() throws UnsupportedException {
 
 //        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
-//                COLUMN1_CONSTANT));
+//        COLUMN1_CONSTANT));
+//
 //
 //        StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
 //
 //        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 //
-//        JavaRDD<Cells> rdd  = QueryFilterUtils.doWhere(leftRdd, relation);
+//        JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, relation);
 //
 //        rdd.collect();
+//
+//        logger.info("El resultado del where es :" + rdd.count());
+//
+//
+//        Cells cells = rdd.first();
+
         assertEquals(true, true);
     }
 
     @Test
-    public void filterSelectedColumns(){
-//        Map<String, String> columnsAliases = new HashMap<>();
-//        columnsAliases.put("test.tweets.author", "nameAlias");
+    public void filterSelectedColumns() {
+//        Map<ColumnName, String> columnsAliases = new HashMap<>();
+//        columnsAliases.put(new ColumnName("test","tweets","author"), "nameAlias");
 //
 //        Map<String, ColumnType> columnsTypes = new HashMap<>();
 //        columnsTypes.put("test.tweets.author", ColumnType.TEXT);
 //
 //        Select select = new Select(Operations.SELECT_OPERATOR, columnsAliases, columnsTypes);
 //
-//        JavaRDD<Cells> rdd  = QueryFilterUtils.filterSelectedColumns(leftRdd, select);
+//        JavaRDD<Cells> rdd = QueryFilterUtils.filterSelectedColumns(leftRdd, columnsAliases.keySet());
 //
-//        rdd.collect();
+//        logger.info("El resultado del where es :" + rdd.count());
+//        Cells cells = rdd.first();
         assertEquals(true, true);
     }
-    @Test
-    public void doJoinTest(){
 
+    @Test
+    public void doJoinTest() {
 
         List<Relation> relations = new ArrayList<Relation>();
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
@@ -179,18 +179,17 @@ public class QueryFiltersUtilsTest {
         ColumnSelector rightSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE2_CONSTANT.getName(),
                 COLUMN2_CONSTANT));
 
-
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
         relations.add(relation);
 
         JavaRDD<Cells> outputrdd = QueryFilterUtils.doJoin(leftRdd, rightRdd, relations);
 
-        logger.info("El resultado es :"+outputrdd.count());
-        logger.info("resultado "+outputrdd.first().toString());
-        int i=0;
-        for (Cells cell: outputrdd.collect()){
+        logger.info("El resultado es :" + outputrdd.count());
+        logger.info("resultado " + outputrdd.first().toString());
+        int i = 0;
+        for (Cells cell : outputrdd.collect()) {
 
-            logger.info("-----------------resultado "+(i++)+"  "+cell.getCellValues());
+            logger.info("-----------------resultado " + (i++) + "  " + cell.getCellValues());
         }
 
         assertEquals(true, true);

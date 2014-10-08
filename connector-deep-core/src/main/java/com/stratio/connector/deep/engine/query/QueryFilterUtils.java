@@ -36,7 +36,7 @@ public final class QueryFilterUtils {
     /**
      * Class logger.
      */
-    private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
+    private static final Logger logger = Logger.getLogger(QueryFilterUtils.class);
 
     /**
      * Take a RDD and a Relation and apply suitable filter to the RDD. Execute where clause on Deep.
@@ -58,6 +58,7 @@ public final class QueryFilterUtils {
         ColumnSelector columnSelector = (ColumnSelector) leftTerm;
         String field = columnSelector.getName().getName();
 
+        logger.info("Rdd doWhere input size: " + rdd.count());
         switch (operator.toString().toLowerCase()) {
         case "=":
             result = rdd.filter(new DeepEquals(field, rightTerm));
@@ -84,62 +85,13 @@ public final class QueryFilterUtils {
             // result = rdd.filter(new Between(field, terms.get(0), terms.get(1)));
             throw new UnsupportedException("BETWEEN operator unsupported");
         default:
-            LOG.error("Operator not supported: " + operator);
+            logger.error("Operator not supported: " + operator);
             result = null;
         }
+
+        // logger.info("Rdd doWhere output size: " + result.count());
         return result;
     }
-
-    /**
-     * Take a RDD and the group by information, and apply the requested grouping. If there is any aggregation function,
-     * apply it to the desired column.
-     * 
-     * @param rdd
-     *            RDD which filter must be applied.
-     * @param groupByClause
-     *            {@link com.stratio.meta.core.structures.GroupBy} to retrieve the grouping columns.
-     * @param selectionClause
-     *            {@link com.stratio.meta.core.structures.SelectionClause} containing the aggregation functions.
-     * @return A new RDD with the result.
-     */
-    // public static JavaRDD<Cells> doGroupBy(JavaRDD<Cells> rdd, List<GroupBy> groupByClause, SelectionList
-    // selectionClause) {
-    //
-    // final List<ColumnInfo> aggregationCols;
-    // if (selectionClause != null) {
-    //
-    // aggregationCols = DeepUtils.retrieveSelectorAggegationFunctions(selectionClause.getSelection());
-    // } else {
-    // aggregationCols = null;
-    // }
-    //
-    // // Mapping the rdd to execute the group by clause
-    // JavaPairRDD<Cells, Cells> groupedRdd = rdd.mapToPair(new GroupByMapping(aggregationCols, groupByClause));
-    //
-    // if (selectionClause != null) {
-    // groupedRdd = applyGroupByAggregations(groupedRdd, aggregationCols);
-    // }
-    //
-    // JavaRDD<Cells> map = groupedRdd.map(new KeyRemover());
-    //
-    // return map;
-    // }
-    //
-    // private JavaPairRDD<Cells, Cells> applyGroupByAggregations(JavaPairRDD<Cells, Cells> groupedRdd,
-    // List<ColumnInfo> aggregationCols) {
-    //
-    // JavaPairRDD<Cells, Cells> aggregatedRdd =
-    // groupedRdd.reduceByKey(new GroupByAggregation(aggregationCols));
-    //
-    // // Looking for the average aggregator to complete it
-    // for (ColumnInfo aggregation : aggregationCols) {
-    //
-    // if (GroupByFunction.AVG == aggregation.getAggregationFunction()) {
-    // aggregatedRdd = aggregatedRdd.mapValues(new AverageAggregatorMapping(aggregation));
-    // }
-    // }
-    // return aggregatedRdd;
-    // }
 
     /**
      * Build JavaRDD<Cells> from list of Cells and select Columns.
@@ -172,6 +124,8 @@ public final class QueryFilterUtils {
 
     static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
 
+        JavaRDD<Cells> joinedResult = null;
+
         List<ColumnName> leftTables = new ArrayList<>();
         List<ColumnName> rightTables = new ArrayList<>();
 
@@ -183,39 +137,24 @@ public final class QueryFilterUtils {
             if (relation.getOperator().equals(Operator.EQ)) {
                 leftTables.add(selectorLeft.getName());
                 rightTables.add(selectorRight.getName());
-                LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
+                logger.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
                         + selectorLeft.getName().getName());
             }
 
         }
 
-        JavaPairRDD<Cells, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
+        JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("**************************************************************");
-            LOG.debug("imprimo el left1 " + rddLeft.first()._1());
-            LOG.debug("imprimo el left2 " + rddLeft.first()._2());
-            LOG.debug("**************************************************************");
+        JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
+
+        if (rddLeft != null && rddRight != null) {
+            JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
+
+            joinedResult = joinRDD.map(new JoinCells());
+
         }
-
-        JavaPairRDD<Cells, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("------------------Right count is :" + rddRight.count());
-            LOG.debug("**************************************************************");
-            LOG.debug("imprimo el right1 " + rddRight.first()._1());
-            LOG.debug("imprimo el right2 " + rddRight.first()._2());
-            LOG.debug("**************************************************************");
-        }
-
-        JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Result count is :" + joinRDD.count());
-        }
-
-        JavaRDD<Cells> joinedResult = joinRDD.map(new JoinCells());
 
         return joinedResult;
+
     }
 }

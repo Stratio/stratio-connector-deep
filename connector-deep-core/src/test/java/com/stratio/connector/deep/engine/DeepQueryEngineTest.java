@@ -96,16 +96,16 @@ public class DeepQueryEngineTest {
     private JavaRDD<Cells> joinedRdd;
 
     @Mock
-    private JavaPairRDD<Cells, Cells> leftRddWithKey;
+    private JavaPairRDD<List<Object>, Cells> leftRddWithKey;
 
     @Mock
-    private JavaPairRDD<Cells, Cells> rightRddWithKey;
+    private JavaPairRDD<List<Object>, Cells> rightRddWithKey;
 
     @Mock
-    private JavaPairRDD<Cells, Tuple2<Cells, Cells>> joinedTuplesRddWithKey;
+    private JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinedTuplesRddWithKey;
 
     @Mock
-    private Tuple2<Cells, Cells> tuple;
+    private Tuple2<List<Object>, Cells> tuple;
 
     private DeepQueryEngine deepQueryEngine;
 

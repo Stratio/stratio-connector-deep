@@ -111,7 +111,7 @@ public class DeepQueryEngine implements IQueryEngine {
     }
 
     /**
-     * @param partialResultRdd
+     * @param resultRdd
      * @return
      */
     private QueryResult buildQueryResult(JavaRDD<Cells> resultRdd, Select selectStep) {

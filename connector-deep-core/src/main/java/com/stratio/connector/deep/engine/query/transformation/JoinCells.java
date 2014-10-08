@@ -18,7 +18,7 @@
 
 package com.stratio.connector.deep.engine.query.transformation;
 
-import java.util.HashMap;
+import java.util.List;
 
 import org.apache.spark.api.java.function.Function;
 
@@ -26,7 +26,7 @@ import scala.Tuple2;
 
 import com.stratio.deep.commons.entity.Cells;
 
-public class JoinCells implements Function<Tuple2<Cells, Tuple2<Cells, Cells>>, Cells> {
+public class JoinCells implements Function<Tuple2<List<Object>, Tuple2<Cells, Cells>>, Cells> {
 
     /**
      * Serial version UID.
@@ -37,11 +37,11 @@ public class JoinCells implements Function<Tuple2<Cells, Tuple2<Cells, Cells>>, 
      * JoinCells join the fields of two Cells as a result of InnerJoin.
      */
     public JoinCells() {
-        new HashMap<String, Object>();
+
     }
 
     @Override
-    public Cells call(Tuple2<Cells, Tuple2<Cells, Cells>> result) {
+    public Cells call(Tuple2<List<Object>, Tuple2<Cells, Cells>> result) {
 
         Cells left = result._2()._1();
         Cells right = result._2()._2();
@@ -49,13 +49,6 @@ public class JoinCells implements Function<Tuple2<Cells, Tuple2<Cells, Cells>>, 
         Cells joinedCells = new Cells();
         joinedCells.addAll(left.getInternalCells());
         joinedCells.addAll(right.getInternalCells());
-        // for (Cell cell : left.getCells()) {
-        // joinedCells.add(cell);
-        // }
-        //
-        // for (Cell cell : right.getCells()) {
-        // joinedCells.add(cell);
-        // }
 
         return joinedCells;
     }
