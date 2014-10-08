@@ -96,7 +96,7 @@ public final class QueryFilterUtils {
     /**
      * Take a RDD and the group by information, and apply the requested grouping. If there is any aggregation function,
      * apply it to the desired column.
-     * 
+     *
      * @param rdd
      *            RDD which filter must be applied.
      * @param groupByClause

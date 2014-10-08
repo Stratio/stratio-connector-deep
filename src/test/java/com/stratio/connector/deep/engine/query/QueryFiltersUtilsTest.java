@@ -3,7 +3,9 @@ package com.stratio.connector.deep.engine.query;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
@@ -20,14 +22,20 @@ import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.server.ExtractorServer;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
+import com.stratio.deep.commons.filter.Filter;
+import com.stratio.deep.commons.filter.FilterOperator;
 import com.stratio.deep.core.context.DeepSparkContext;
+import com.stratio.meta.common.connector.Operations;
 import com.stratio.meta.common.exceptions.UnsupportedException;
+import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.data.TableName;
+import com.stratio.meta2.common.metadata.ColumnType;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 /**
  * Created by dgomez on 30/09/14.
@@ -41,7 +49,7 @@ public class QueryFiltersUtilsTest {
 
     private static final String CATALOG_CONSTANT = "test";
 
-    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "tweets");
+    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable");
 
     private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable2");
 
@@ -124,32 +132,40 @@ public class QueryFiltersUtilsTest {
     @Test
     public void doWhereTest() throws UnsupportedException {
 
-        // ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
-        // COLUMN1_CONSTANT));
-        //
-        // StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
-        //
-        // Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
-        //
-        // JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, relation);
-        //
-        // rdd.collect();
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
+        COLUMN1_CONSTANT));
+
+
+        StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
+
+        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
+
+        JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, relation);
+
+        rdd.collect();
+
+        logger.info("El resultado del where es :" + rdd.count());
+
+
+        Cells cells = rdd.first();
+
         assertEquals(true, true);
     }
 
     @Test
     public void filterSelectedColumns() {
-        // Map<String, String> columnsAliases = new HashMap<>();
-        // columnsAliases.put("test.tweets.author", "nameAlias");
-        //
-        // Map<String, ColumnType> columnsTypes = new HashMap<>();
-        // columnsTypes.put("test.tweets.author", ColumnType.TEXT);
-        //
-        // Select select = new Select(Operations.SELECT_OPERATOR, columnsAliases, columnsTypes);
-        //
-        // JavaRDD<Cells> rdd = QueryFilterUtils.filterSelectedColumns(leftRdd, select);
-        //
-        // rdd.collect();
+        Map<ColumnName, String> columnsAliases = new HashMap<>();
+        columnsAliases.put(new ColumnName("test","tweets","author"), "nameAlias");
+
+        Map<String, ColumnType> columnsTypes = new HashMap<>();
+        columnsTypes.put("test.tweets.author", ColumnType.TEXT);
+
+        Select select = new Select(Operations.SELECT_OPERATOR, columnsAliases, columnsTypes);
+
+        JavaRDD<Cells> rdd = QueryFilterUtils.filterSelectedColumns(leftRdd, columnsAliases.keySet());
+
+        logger.info("El resultado del where es :" + rdd.count());
+        Cells cells = rdd.first();
         assertEquals(true, true);
     }
 
