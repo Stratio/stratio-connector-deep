@@ -13,6 +13,7 @@ import org.apache.spark.api.java.function.Function;
 import scala.Tuple2;
 
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
+import com.stratio.connector.deep.engine.query.functions.FilterColumns;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
@@ -109,23 +110,9 @@ public final class QueryFilterUtils {
 
     static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<ColumnName> selectedCols) {
 
-
-        return rdd.map(new Function<Cells, Cells>() {
-
-            private static final long serialVersionUID = -5704730871386839898L;
-
-            @Override
-            public Cells call(Cells cells) throws Exception {
-                Cells cellsOut = new Cells();
-
-                for (ColumnName columnName : selectedCols) {
-                    Cell cell = cells.getCellByName(columnName.getTableName().getQualifiedName(), columnName.getName());
-                    cellsOut.add(cell);
-                }
-
-                return cellsOut;
-            }
-        });
+        List<ColumnName> list = new ArrayList<>(selectedCols);
+        JavaRDD<Cells> rddResult = rdd.map(new FilterColumns(list)) ;
+        return rddResult;
     }
 
     static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
@@ -154,9 +141,9 @@ public final class QueryFilterUtils {
         }
 
         JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
-
+        List<Tuple2<List<Object>, Cells>> t = rddLeft.collect();
         JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
-
+        List<Tuple2<List<Object>, Cells>> t2 = rddRight.collect();
         if(rddLeft!=null && rddRight!=null){
             JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
 
