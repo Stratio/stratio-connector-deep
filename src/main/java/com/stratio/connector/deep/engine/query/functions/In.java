@@ -18,6 +18,7 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.spark.api.java.function.Function;
@@ -40,7 +41,7 @@ public class In implements Function<Cells, Boolean> {
   /**
    * IDs in the IN clause.
    */
-  private List<Selector> terms;
+  private List<Serializable> terms;
 
   /**
    * In apply in filter to a field in a Deep Cell.
@@ -48,7 +49,7 @@ public class In implements Function<Cells, Boolean> {
    * @param field Name of the field to check.
    * @param terms List of terms of the IN clause.
    */
-  public In(String field, List<Selector> terms) {
+  public In(String field, List<Serializable> terms) {
     this.field = field;
     this.terms = terms;
   }
@@ -68,8 +69,8 @@ public class In implements Function<Cells, Boolean> {
     return isValid;
   }
 
-  private Boolean isIncludedInList(List<Selector> list, Object value) {
-    for (Selector term : list) {
+  private Boolean isIncludedInList(List<Serializable> list, Object value) {
+    for (Serializable term : list) {
       /*if (term.getTermValue().equals(value))
         return true;*/
     }

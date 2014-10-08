@@ -18,6 +18,8 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
@@ -38,12 +40,12 @@ public class Between implements Function<Cells, Boolean> {
   /**
    * Lower bound
    */
-  private Selector lowerBound;
+  private Serializable lowerBound;
 
   /**
    * Upper bound
    */
-  private Selector upperBound;
+  private Serializable upperBound;
 
   /**
    * In apply in filter to a field in a Deep Cell.
@@ -52,7 +54,7 @@ public class Between implements Function<Cells, Boolean> {
    * @param lowerBound List of values of the IN clause.
    * @param upperBound List of values of the IN clause.
    */
-  public Between(String field, Selector lowerBound, Selector upperBound) {
+  public Between(String field, Serializable lowerBound, Serializable upperBound) {
     this.field = field;
     this.lowerBound = lowerBound;
     this.upperBound = upperBound;

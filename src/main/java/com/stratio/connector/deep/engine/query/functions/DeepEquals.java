@@ -18,6 +18,8 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
@@ -27,43 +29,39 @@ import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 public class DeepEquals implements Function<Cells, Boolean> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = -614353453245235444L;
 
-  /**
-   * Term to compare.
-   */
-  private Selector term;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -6143471452730703044L;
 
-  /**
-   * Name of the field of the cell to compare.
-   */
-  private String field;
+    /**
+     * Term to compare.
+     */
+    private final Serializable term;
 
-  /**
-   * DeepEquals apply = filter to a field in a Deep Cell.
-   * 
-   * @param field Name of the field to check.
-   * @param term Term to compare to.
-   */
-  public DeepEquals(String field, Selector term) {
-    this.term = term;
-    this.field = field;
-  }
+    /**
+     * Name of the field of the cell to compare.
+     */
+    private final String field;
 
-  @Override
-  public Boolean call(Cells cells) {
-    Object currentValue = cells.getCellByName(field).getCellValue();
-    Object value = null;
-    if(term instanceof StringSelector){
-        value = ((StringSelector) term).getValue();
-    }else if(term instanceof IntegerSelector){
-         value = ((IntegerSelector) term).getValue();
+    /**
+     * DeepEquals apply = filter to a field in a Deep Cell.
+     * 
+     * @param field
+     *            Name of the field to check.
+     * @param term
+     *            Term to compare to.
+     */
+    public DeepEquals(String field, Serializable term) {
+        this.term = term;
+        this.field = field;
     }
 
+    @Override
+    public Boolean call(Cells cells) {
+        Object currentValue = cells.getCellByName(field).getCellValue();
+        return term.equals(currentValue);
+    }
 
-    return value.equals(currentValue);
-  }
 }

@@ -18,6 +18,8 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
@@ -33,7 +35,7 @@ public class GreaterEqualThan implements Function<Cells, Boolean> {
   /**
    * Value to compare.
    */
-  private Selector term;
+  private Serializable term;
 
   /**
    * Name of the field of the cell to compare.
@@ -46,7 +48,7 @@ public class GreaterEqualThan implements Function<Cells, Boolean> {
    * @param field Name of the field to check.
    * @param term Term to compare to.
    */
-  public GreaterEqualThan(String field, Selector term) {
+  public GreaterEqualThan(String field, Serializable term) {
     this.term = term;
     this.field = field;
   }

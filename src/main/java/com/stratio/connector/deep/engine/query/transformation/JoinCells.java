@@ -16,63 +16,52 @@
  * under the License.
  */
 
-package com.stratio.connector.deep.engine.query.functions;
+package com.stratio.connector.deep.engine.query.transformation;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.spark.api.java.function.Function;
+
+import scala.Tuple2;
 
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 
-import scala.Tuple2;
 
-public class JoinCells<T> implements Function<Tuple2<T, Tuple2<Cells, Cells>>, Cells> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = 4534397129761833793L;
+public class JoinCells implements Function<Tuple2<List<Object>, Tuple2<Cells, Cells>>, Cells> {
 
-  /**
-   * Name of field of the table involved in the inner join.
-   */
-  private String key1;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 4534397129761833793L;
 
-  /**
-   * JoinCells join the fields of two Cells as a result of InnerJoin.
-   * 
-   * @param key1 Indicates field which inner join has been applied
-   */
-  public JoinCells(String key1) {
-    this.key1 = key1;
-    new HashMap<String, Object>();
-  }
 
     /**
      * JoinCells join the fields of two Cells as a result of InnerJoin.
      *
-
      */
     public JoinCells() {
 
     }
 
-  @Override
-  public Cells call(Tuple2<T, Tuple2<Cells, Cells>> result) {
-    Cells left = result._2()._1();
-    Cells right = result._2()._2();
-    Cells joinedCells = new Cells();
+    @Override
 
+    public Cells call(Tuple2<List<Object>, Tuple2<Cells, Cells>> result) {
 
-    for (Cell cell : left.getCells()) {
-      joinedCells.add(cell);
+        Cells left = result._2()._1();
+        Cells right = result._2()._2();
+        Cells joinedCells = new Cells();
+
+        for (Cell cell : left.getCells()) {
+            joinedCells.add(cell);
+        }
+
+        for (Cell cell : right.getCells()) {
+            joinedCells.add(cell);
+        }
+
+        return joinedCells;
     }
-
-    for (Cell cell : right.getCells()) {
-        joinedCells.add(cell);
-    }
-
-    return joinedCells;
-  }
 }
