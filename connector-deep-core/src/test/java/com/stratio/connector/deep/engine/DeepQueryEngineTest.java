@@ -213,9 +213,10 @@ public class DeepQueryEngineTest {
         // Assertions
         verify(deepContext, times(2)).createJavaRDD(any(ExtractorConfig.class));
         verify(leftRdd, times(0)).filter(any(DeepEquals.class));
-        verify(leftRdd, times(1)).mapToPair(new MapKeyForJoin<Cells>(any(List.class)));
-        verify(rightRdd, times(1)).mapToPair(new MapKeyForJoin<Cells>(any(List.class)));
-        verify(leftRdd, times(1)).map(any(Function.class));
+        verify(leftRdd, times(1)).mapToPair(new MapKeyForJoin(any(List.class)));
+
+        verify(rightRdd, times(1)).mapToPair(new MapKeyForJoin(any(List.class)));
+
 
         // TODO Add deep utils calls verifications
     }
