@@ -91,7 +91,7 @@ public final class QueryFilterUtils {
         }
 
 
-        logger.info("Rdd doWhere output size: " + result.count());
+        //logger.info("Rdd doWhere output size: " + result.count());
 
         return result;
     }
@@ -141,9 +141,9 @@ public final class QueryFilterUtils {
         }
 
         JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
-        List<Tuple2<List<Object>, Cells>> t = rddLeft.collect();
+
         JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
-        List<Tuple2<List<Object>, Cells>> t2 = rddRight.collect();
+
         if(rddLeft!=null && rddRight!=null){
             JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
 

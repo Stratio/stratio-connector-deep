@@ -56,6 +56,7 @@ import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.metadata.ColumnType;
 import com.stratio.meta2.common.statements.structures.selectors.BooleanSelector;
+import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.FloatingPointSelector;
 import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.SelectorType;
@@ -327,7 +328,9 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         case STRING:
             leftField = ((StringSelector)relation.getLeftTerm()).getValue();
             break;
-
+        case COLUMN:
+            leftField = ((ColumnSelector)relation.getLeftTerm()).getName();
+            break;
         default:
             throw new ExecutionException("Unknown Relation Left Selector Where found [" + relation.getLeftTerm()
                     .getType()  + "]");
