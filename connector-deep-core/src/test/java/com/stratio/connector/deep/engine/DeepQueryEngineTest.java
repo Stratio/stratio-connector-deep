@@ -66,6 +66,8 @@ public class DeepQueryEngineTest {
 
     private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "tableName2");
 
+    private static final TableName TABLE3_CONSTANT = new TableName(CATALOG_CONSTANT, "tableName3");
+
     private static final String COLUMN1_CONSTANT = "column1Name";
 
     private static final String COLUMN2_CONSTANT = "column2Name";
@@ -86,25 +88,34 @@ public class DeepQueryEngineTest {
     @Mock
     private ExtractorConfig<Cells> extractorConfig;
 
-    @Mock
+    @Mock(name = "leftRdd")
     private JavaRDD<Cells> leftRdd;
 
-    @Mock
+    @Mock(name = "rightRdd")
     private JavaRDD<Cells> rightRdd;
 
-    @Mock
+    @Mock(name = "thirdRdd")
+    private JavaRDD<Cells> thirdRdd;
+
+    @Mock(name = "joinedRdd")
     private JavaRDD<Cells> joinedRdd;
 
-    @Mock
+    @Mock(name = "leftRddWithKey")
     private JavaPairRDD<List<Object>, Cells> leftRddWithKey;
 
-    @Mock
+    @Mock(name = "rightRddWithKey")
     private JavaPairRDD<List<Object>, Cells> rightRddWithKey;
 
-    @Mock
+    @Mock(name = "thirdRddWithKey")
+    private JavaPairRDD<List<Object>, Cells> thirdRddWithKey;
+
+    @Mock(name = "joinedRddWithKey")
+    private JavaPairRDD<List<Object>, Cells> joinedRddWithKey;
+
+    @Mock(name = "joinedTuplesRddWithKey")
     private JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinedTuplesRddWithKey;
 
-    @Mock
+    @Mock(name = "tuple")
     private Tuple2<List<Object>, Cells> tuple;
 
     private DeepQueryEngine deepQueryEngine;
@@ -117,14 +128,32 @@ public class DeepQueryEngineTest {
         // Stubs
         when(deepConnectionHandler.getConnection(CLUSTERNAME_CONSTANT.getName())).thenReturn(deepConnection);
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
-        when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(leftRdd, rightRdd);
+        when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(leftRdd, rightRdd, thirdRdd);
         when(leftRdd.collect()).thenReturn(generateListOfCells(3));
         when(rightRdd.collect()).thenReturn(generateListOfCells(3));
         when(leftRdd.mapToPair(any(PairFunction.class))).thenReturn(leftRddWithKey);
         when(rightRdd.mapToPair(any(PairFunction.class))).thenReturn(rightRddWithKey);
+        when(thirdRdd.mapToPair(any(PairFunction.class))).thenReturn(thirdRddWithKey);
+        when(joinedRdd.mapToPair(any(PairFunction.class))).thenReturn(joinedRddWithKey);
         when(leftRddWithKey.first()).thenReturn(tuple);
         when(rightRddWithKey.first()).thenReturn(tuple);
+        when(thirdRddWithKey.first()).thenReturn(tuple);
+        // when(leftRddWithKey.join(leftRddWithKey)).thenReturn(joinedTuplesRddWithKey);
         when(leftRddWithKey.join(rightRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(leftRddWithKey.join(thirdRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(leftRddWithKey.join(joinedRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(rightRddWithKey.join(leftRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        when(rightRddWithKey.join(rightRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(rightRddWithKey.join(thirdRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(rightRddWithKey.join(joinedRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(thirdRddWithKey.join(leftRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(thirdRddWithKey.join(rightRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(thirdRddWithKey.join(thirdRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(thirdRddWithKey.join(joinedRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(joinedRddWithKey.join(leftRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(joinedRddWithKey.join(rightRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(joinedRddWithKey.join(thirdRddWithKey)).thenReturn(joinedTuplesRddWithKey);
+        // when(joinedRddWithKey.join(joinedRddWithKey)).thenReturn(joinedTuplesRddWithKey);
         when(joinedTuplesRddWithKey.map(any(JoinCells.class))).thenReturn(joinedRdd);
         when(joinedRdd.collect()).thenReturn(generateListOfCells(3));
     }
@@ -227,7 +256,7 @@ public class DeepQueryEngineTest {
     }
 
     @Test
-    public void TwoProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException,
+    public void twoProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException,
             HandlerConnectionException {
 
         // Input data
@@ -235,13 +264,13 @@ public class DeepQueryEngineTest {
         Project projectLeft = createProject(CLUSTERNAME_CONSTANT, TABLE1_CONSTANT);
         Project projectRight = createProject(CLUSTERNAME_CONSTANT, TABLE2_CONSTANT);
 
-        Join join = createJoin("joinId", TABLE1_CONSTANT.toString(), TABLE2_CONSTANT.toString());
+        Join join = createJoin("joinId", TABLE1_CONSTANT, TABLE2_CONSTANT);
 
         join.setNextStep(createSelect());
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
-        // One single initial step
+        // Two initial steps
         stepList.add(projectLeft);
         stepList.add(projectRight);
 
@@ -263,11 +292,40 @@ public class DeepQueryEngineTest {
         // TODO Add deep utils calls verifications
     }
 
+    @Test
+    public void threeProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException {
+
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project1 = createProject(CLUSTERNAME_CONSTANT, TABLE1_CONSTANT);
+        Project project2 = createProject(CLUSTERNAME_CONSTANT, TABLE2_CONSTANT);
+        Project project3 = createProject(CLUSTERNAME_CONSTANT, TABLE3_CONSTANT);
+
+        Join join1 = createJoin("joinId1", TABLE1_CONSTANT, TABLE2_CONSTANT);
+        Join join2 = createJoin("joinId2", "joinId1", TABLE3_CONSTANT);
+
+        join2.setNextStep(createSelect());
+        join1.setNextStep(join2);
+        project1.setNextStep(join1);
+        project2.setNextStep(join1);
+        project3.setNextStep(join2);
+
+        // Three initial steps
+        stepList.add(project1);
+        stepList.add(project2);
+        stepList.add(project3);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        deepQueryEngine.execute(logicalWorkflow);
+    }
+
     private Project createProject(ClusterName clusterName, TableName tableName) {
 
         List<ColumnName> columns = new ArrayList<>();
-        columns.add(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(), COLUMN1_CONSTANT));
-        columns.add(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(), COLUMN2_CONSTANT));
+        columns.add(new ColumnName(CATALOG_CONSTANT, tableName.getName(), COLUMN1_CONSTANT));
+        columns.add(new ColumnName(CATALOG_CONSTANT, tableName.getName(), COLUMN2_CONSTANT));
 
         Project project = new Project(Operations.PROJECT, tableName, clusterName, columns);
 
@@ -287,11 +345,12 @@ public class DeepQueryEngineTest {
         return filter;
     }
 
-    private Join createJoin(String joinId, String leftSourceId, String rightSourceId) {
+    private Join createJoin(String joinId, String leftSourceId, TableName rightSourceId) {
 
-        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, leftSourceId,
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(null, leftSourceId,
                 COLUMN1_CONSTANT));
-        ColumnSelector rightSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, rightSourceId,
+        ColumnSelector rightSelector = new ColumnSelector(new ColumnName(rightSourceId.getCatalogName().getName(),
+                rightSourceId.getName(),
                 COLUMN1_CONSTANT));
 
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
@@ -299,7 +358,24 @@ public class DeepQueryEngineTest {
         Join join = new Join(Operations.SELECT_INNER_JOIN, joinId);
         join.addJoinRelation(relation);
         join.addSourceIdentifier(leftSourceId);
-        join.addSourceIdentifier(rightSourceId);
+        join.addSourceIdentifier(rightSourceId.getName());
+
+        return join;
+    }
+
+    private Join createJoin(String joinId, TableName leftSourceId, TableName rightSourceId) {
+
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(leftSourceId.getCatalogName().getName(),
+                leftSourceId.getName(), COLUMN1_CONSTANT));
+        ColumnSelector rightSelector = new ColumnSelector(new ColumnName(rightSourceId.getCatalogName().getName(),
+                rightSourceId.getName(), COLUMN1_CONSTANT));
+
+        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
+
+        Join join = new Join(Operations.SELECT_INNER_JOIN, joinId);
+        join.addJoinRelation(relation);
+        join.addSourceIdentifier(leftSourceId.getQualifiedName());
+        join.addSourceIdentifier(rightSourceId.getQualifiedName());
 
         return join;
     }
