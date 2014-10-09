@@ -37,7 +37,7 @@ public class DeepResultSetIterator implements Iterator<com.stratio.meta.common.d
      * Build a {@link com.stratio.meta.common.data.CResultSetIterator} from a
      * {@link com.stratio.meta.common.data.CassandraResultSet}.
      * 
-     * @param cResultSet
+     * @param deepResultSet
      *            Cassandra Result Set.
      */
     public DeepResultSetIterator(DeepResultSet deepResultSet) {

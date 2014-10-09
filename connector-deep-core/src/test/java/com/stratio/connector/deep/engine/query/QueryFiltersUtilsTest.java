@@ -52,7 +52,7 @@ public class QueryFiltersUtilsTest implements Serializable {
 
     private static final String CASSANDRA_CELL_CLASS =  "com.stratio.deep.cassandra.extractor.CassandraCellExtractor";
     private static final String MONGO_CELL_CLASS     =  "com.stratio.deep.mongodb.extractor.MongoCellExtractor";
-    private static final String ES_CELL_CLASS     =  "com.stratio.deep.extractor.ESCellExtractor";
+    private static final String ES_CELL_CLASS        =  "com.stratio.deep.extractor.ESCellExtractor";
 
     private static final String CATALOG_CONSTANT = "test";
 
@@ -66,7 +66,7 @@ public class QueryFiltersUtilsTest implements Serializable {
 
     private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("clusterName");
 
-    private static final String DATA_CONSTANT = "003";
+    private static final String DATA_CONSTANT = "user1";
 
     DeepSparkContext deepSparkContext;
 
@@ -129,10 +129,9 @@ public class QueryFiltersUtilsTest implements Serializable {
 //                TABLENAME_1).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
 //                RPCPORT).putValue(ExtractorConstants.HOST, HOST);
 
-        //config_1.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE, KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_1);
+//        config_1.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE, KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_1);
 
-        config_1.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE,
-                TABLENAME_1).putValue(ExtractorConstants.HOST,HOST);
+        config_1.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_1).putValue(ExtractorConstants.HOST,HOST);
 
         config_1.setExtractorImplClassName(ES_CELL_CLASS);
 
@@ -143,10 +142,9 @@ public class QueryFiltersUtilsTest implements Serializable {
 //                TABLENAME_2).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
 //                RPCPORT).putValue(ExtractorConstants.HOST, HOST);
 
-        //config_2.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,   KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_2);
+//        config_2.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,   KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_2);
 
-        config_2.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE,
-                TABLENAME_2).putValue(ExtractorConstants.HOST,HOST);
+        config_2.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE,  TABLENAME_2).putValue(ExtractorConstants.HOST,HOST);
 
         config_2.setExtractorImplClassName(ES_CELL_CLASS);
 

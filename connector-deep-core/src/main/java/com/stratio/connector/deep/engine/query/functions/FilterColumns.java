@@ -34,7 +34,7 @@ public class FilterColumns implements Function<Cells, Cells> {
 
     @Override
     public Cells call(Cells cells) throws Exception {
-        Cells cellsOut = new Cells();
+        Cells cellsOut = new Cells(cells.getDefaultTableName());
 
         for (ColumnName columnName : columns) {
             Cell cell = cells.getCellByName(columnName.getTableName().getName(), columnName.getName());
