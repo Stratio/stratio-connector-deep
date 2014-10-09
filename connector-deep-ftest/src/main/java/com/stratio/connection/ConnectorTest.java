@@ -5,8 +5,6 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.mockito.Mock;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
@@ -45,11 +43,11 @@ public class ConnectorTest {
 
     private static final String CLUSTER_NAME = "CLUSTER_NAME";
     private DeepConnectionHandler connectionHandler = null;
-    @Mock
+
     private IConfiguration iConfiguration;
     DeepSparkContext deepSparkContext;
 
-    
+
 
     public DeepContextConnector getConnection() throws HandlerConnectionException {
 

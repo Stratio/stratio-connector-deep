@@ -14,5 +14,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
+      <dependency>
+          <groupId>com.stratio.connector</groupId>
+          <artifactId>stratio-connector-deep</artifactId>
+          <version>0.1.0-SNAPSHOT</version>
+      </dependency>
   </dependencies>
 </project>
