@@ -21,7 +21,8 @@ public class DeepMetadataEngine extends CommonsMetadataEngine {
     }
 
     @Override
-    protected void createCatalog(CatalogMetadata catalogMetadata, Connection connection) throws UnsupportedException, ExecutionException {
+    protected void createCatalog(CatalogMetadata catalogMetadata, Connection connection) throws UnsupportedException,
+            ExecutionException {
         throw new UnsupportedException("Not supported");
     }
 
@@ -32,7 +33,8 @@ public class DeepMetadataEngine extends CommonsMetadataEngine {
     }
 
     @Override
-    protected void dropCatalog(CatalogName catalogName, Connection connection) throws UnsupportedException, ExecutionException {
+    protected void dropCatalog(CatalogName catalogName, Connection connection) throws UnsupportedException,
+            ExecutionException {
         throw new UnsupportedException("Not supported");
     }
 

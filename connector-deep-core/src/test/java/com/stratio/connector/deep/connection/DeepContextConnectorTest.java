@@ -46,7 +46,7 @@ public class DeepContextConnectorTest {
     /**
      *
      */
-    protected static DeepContextConnector deepConnector;
+    protected static DeepConnector deepConnector;
 
     @Before
     public void setUp() {
@@ -56,7 +56,7 @@ public class DeepContextConnectorTest {
         String job = "java:deepSparkContext";
         String[] args = null;
 
-        deepConnector = new DeepContextConnector();
+        deepConnector = new DeepConnector();
 
     }
 

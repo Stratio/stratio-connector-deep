@@ -13,6 +13,7 @@
  */
 package com.stratio.connector.deep.engine.query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,17 +24,21 @@ import java.util.Map.Entry;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
+import com.stratio.connector.deep.engine.query.structures.SelectTerms;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IQueryEngine;
 import com.stratio.meta.common.connector.IResultHandler;
+
 import com.stratio.meta.common.data.Cell;
 import com.stratio.meta.common.data.ResultSet;
 import com.stratio.meta.common.data.Row;
+
 import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.Filter;
@@ -50,8 +55,14 @@ import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.metadata.ColumnType;
+import com.stratio.meta2.common.statements.structures.selectors.BooleanSelector;
+import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.meta2.common.statements.structures.selectors.FloatingPointSelector;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
+import com.stratio.meta2.common.statements.structures.selectors.SelectorType;
+import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
-public class DeepQueryEngine implements IQueryEngine {
+public class DeepQueryEngine extends CommonsQueryEngine {
 
     private final DeepSparkContext deepContext;
 
@@ -60,8 +71,16 @@ public class DeepQueryEngine implements IQueryEngine {
     private final Map<String, JavaRDD<Cells>> partialResultsMap = new HashMap<>();
 
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
+        super(deepConnectionHandler);
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
+    }
+
+    @Deprecated
+    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
+            ExecutionException {
+
+        return execute(workflow);
     }
 
     /*
@@ -70,7 +89,7 @@ public class DeepQueryEngine implements IQueryEngine {
      * @see com.stratio.meta.common.connector.IQueryEngine#execute(com.stratio.meta.common.logicalplan.LogicalWorkflow)
      */
     @Override
-    public QueryResult execute(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
+    public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
 
         List<LogicalStep> initialSteps = workflow.getInitialSteps();
         JavaRDD<Cells> partialResultRdd = null;
@@ -286,7 +305,8 @@ public class DeepQueryEngine implements IQueryEngine {
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
-            QueryFilterUtils.doWhere(rdd, relation);
+            SelectTerms selectTerms = filterFromWhereRelation(relation);
+            QueryFilterUtils.doWhere(rdd, selectTerms);
 
         } else {
 
@@ -295,6 +315,47 @@ public class DeepQueryEngine implements IQueryEngine {
 
         }
 
+    }
+
+    private SelectTerms filterFromWhereRelation(Relation relation) throws ExecutionException {
+
+        Serializable leftField = null;
+        SelectorType type = relation.getLeftTerm().getType();
+        switch (type) {
+        case STRING:
+            leftField = ((StringSelector) relation.getLeftTerm()).getValue();
+            break;
+        case COLUMN:
+            leftField = ((ColumnSelector) relation.getLeftTerm()).getName();
+            break;
+        default:
+            throw new ExecutionException("Unknown Relation Left Selector Where found [" + relation.getLeftTerm()
+                    .getType() + "]");
+
+        }
+
+        Serializable rightField = null;
+        type = relation.getRightTerm().getType();
+        switch (type) {
+        case STRING:
+            rightField = ((StringSelector) relation.getRightTerm()).getValue();
+            break;
+        case BOOLEAN:
+            rightField = ((BooleanSelector) relation.getRightTerm()).getValue();
+            break;
+        case INTEGER:
+            rightField = ((IntegerSelector) relation.getRightTerm()).getValue();
+            break;
+        case FLOATING_POINT:
+            rightField = ((FloatingPointSelector) relation.getRightTerm()).getValue();
+            break;
+
+        default:
+            throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
+                    + "]");
+
+        }
+        return new SelectTerms(leftField.toString(), relation.getOperator().toString(), rightField);
     }
 
     /*

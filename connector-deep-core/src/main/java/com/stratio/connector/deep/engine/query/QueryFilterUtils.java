@@ -1,5 +1,6 @@
 package com.stratio.connector.deep.engine.query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -7,26 +8,25 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function;
 
 import scala.Tuple2;
 
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
+import com.stratio.connector.deep.engine.query.functions.FilterColumns;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
 import com.stratio.connector.deep.engine.query.functions.LessThan;
 import com.stratio.connector.deep.engine.query.functions.NotEquals;
+import com.stratio.connector.deep.engine.query.structures.SelectTerms;
 import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
-import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
-import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
 /**
  * Created by dgomez on 26/09/14.
@@ -48,15 +48,12 @@ public final class QueryFilterUtils {
      * @return A new RDD with the result.
      * @throws UnsupportedException
      */
-    static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, Relation relation) throws UnsupportedException {
+    static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, SelectTerms relation) throws UnsupportedException {
 
-        Operator operator = relation.getOperator();
+        String operator = relation.getOperation();
         JavaRDD<Cells> result = null;
-        Selector leftTerm = relation.getLeftTerm();
-        Selector rightTerm = relation.getRightTerm();
-
-        ColumnSelector columnSelector = (ColumnSelector) leftTerm;
-        String field = columnSelector.getName().getName();
+        String field = relation.getField();
+        Serializable rightTerm = relation.getValue();
 
         logger.info("Rdd doWhere input size: " + rdd.count());
         switch (operator.toString().toLowerCase()) {
@@ -89,7 +86,6 @@ public final class QueryFilterUtils {
             result = null;
         }
 
-        // logger.info("Rdd doWhere output size: " + result.count());
         return result;
     }
 
@@ -102,24 +98,12 @@ public final class QueryFilterUtils {
      *            Set of fields selected in the SelectStatement.
      * @return JavaRDD<Cells>
      */
+
     static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<ColumnName> selectedCols) {
 
-        return rdd.map(new Function<Cells, Cells>() {
-
-            private static final long serialVersionUID = -5704730871386839898L;
-
-            @Override
-            public Cells call(Cells cells) throws Exception {
-                Cells cellsOut = new Cells();
-
-                for (ColumnName columnName : selectedCols) {
-                    Cell cell = cells.getCellByName(columnName.getTableName().getQualifiedName(), columnName.getName());
-                    cellsOut.add(cell);
-                }
-
-                return cellsOut;
-            }
-        });
+        List<ColumnName> list = new ArrayList<>(selectedCols);
+        JavaRDD<Cells> rddResult = rdd.map(new FilterColumns(list));
+        return rddResult;
     }
 
     static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
@@ -139,6 +123,7 @@ public final class QueryFilterUtils {
                 rightTables.add(selectorRight.getName());
                 logger.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
                         + selectorLeft.getName().getName());
+
             }
 
         }

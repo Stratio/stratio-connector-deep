@@ -18,6 +18,8 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
@@ -25,52 +27,55 @@ import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
 public class Between implements Function<Cells, Boolean> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = -4498262312538738011L;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -4498262312538738011L;
 
-  /**
-   * Name of the field of the cell to compare.
-   */
-  private String field;
+    /**
+     * Name of the field of the cell to compare.
+     */
+    private String field;
 
-  /**
-   * Lower bound
-   */
-  private Selector lowerBound;
+    /**
+     * Lower bound
+     */
+    private Serializable lowerBound;
 
-  /**
-   * Upper bound
-   */
-  private Selector upperBound;
+    /**
+     * Upper bound
+     */
+    private Serializable upperBound;
 
-  /**
-   * In apply in filter to a field in a Deep Cell.
-   * 
-   * @param field Name of the field to check.
-   * @param lowerBound List of values of the IN clause.
-   * @param upperBound List of values of the IN clause.
-   */
-  public Between(String field, Selector lowerBound, Selector upperBound) {
-    this.field = field;
-    this.lowerBound = lowerBound;
-    this.upperBound = upperBound;
-  }
-
-  @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public Boolean call(Cells cells) {
-
-    Boolean isValid = false;
-    Object cellValue = cells.getCellByName(field).getCellValue();
-
-    if (cellValue != null) {
-      isValid =
-          (((Comparable) lowerBound).compareTo(cellValue) <= 0)
-              && (((Comparable) upperBound).compareTo(cellValue) >= 0);
+    /**
+     * In apply in filter to a field in a Deep Cell.
+     * 
+     * @param field
+     *            Name of the field to check.
+     * @param lowerBound
+     *            List of values of the IN clause.
+     * @param upperBound
+     *            List of values of the IN clause.
+     */
+    public Between(String field, Serializable lowerBound, Serializable upperBound) {
+        this.field = field;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
     }
 
-    return isValid;
-  }
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Boolean call(Cells cells) {
+
+        Boolean isValid = false;
+        Object cellValue = cells.getCellByName(field).getCellValue();
+
+        if (cellValue != null) {
+            isValid =
+                    (((Comparable) lowerBound).compareTo(cellValue) <= 0)
+                            && (((Comparable) upperBound).compareTo(cellValue) >= 0);
+        }
+
+        return isValid;
+    }
 }

@@ -36,7 +36,6 @@ public class DeepStorageEngine extends CommonsStorageEngine {
 
     }
 
-
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow, Connection connection)
             throws UnsupportedException, ExecutionException {
 
@@ -44,12 +43,14 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     }
 
     @Override
-    protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException, ExecutionException {
-         throw new UnsupportedException("Not supported");
+    protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException,
+            ExecutionException {
+        throw new UnsupportedException("Not supported");
     }
 
     @Override
-    protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection) throws UnsupportedException, ExecutionException {
+    protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection)
+            throws UnsupportedException, ExecutionException {
         throw new UnsupportedException("Not supported");
     }
 }

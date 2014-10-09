@@ -18,6 +18,8 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
@@ -25,35 +27,37 @@ import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
 public class NotEquals implements Function<Cells, Boolean> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = 927384912608139416L;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 927384912608139416L;
 
-  /**
-   * Term to compare.
-   */
-  private Selector term;
+    /**
+     * Term to compare.
+     */
+    private Serializable term;
 
-  /**
-   * Name of the field of the cell to compare.
-   */
-  private String field;
+    /**
+     * Name of the field of the cell to compare.
+     */
+    private String field;
 
-  /**
-   * DeepEquals apply <> filter to a field in a Deep Cell.
-   * 
-   * @param field Name of the field to check.
-   * @param term Term to compare to.
-   */
-  public NotEquals(String field, Selector term) {
-    this.term = term;
-    this.field = field;
-  }
+    /**
+     * DeepEquals apply <> filter to a field in a Deep Cell.
+     * 
+     * @param field
+     *            Name of the field to check.
+     * @param term
+     *            Term to compare to.
+     */
+    public NotEquals(String field, Serializable term) {
+        this.term = term;
+        this.field = field;
+    }
 
-  @Override
-  public Boolean call(Cells cells) {
-    Object currentValue = cells.getCellByName(field).getCellValue();
-    return !term.equals(currentValue);
-  }
+    @Override
+    public Boolean call(Cells cells) {
+        Object currentValue = cells.getCellByName(field).getCellValue();
+        return !term.equals(currentValue);
+    }
 }

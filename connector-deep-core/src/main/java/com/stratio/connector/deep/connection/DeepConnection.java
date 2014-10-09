@@ -15,9 +15,6 @@ import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.security.ICredentials;
 import com.stratio.meta2.common.data.ClusterName;
 
-/**
- * Created by dgomez on 18/09/14.
- */
 public class DeepConnection extends Connection {
 
     private final DeepSparkContext deepSparkContext;
@@ -41,19 +38,32 @@ public class DeepConnection extends Connection {
         // Creating a configuration for the Extractor and initialize it
         ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
 
-        Map<String, Serializable> values = new HashMap<String, Serializable>();
+        Map<String, Serializable> values = new HashMap<>();
 
-        values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
-        String[] hosts = clusterOptions.get(ExtractorConnectConstants.HOSTS)
-                .substring(1, clusterOptions.get(ExtractorConnectConstants.HOSTS).length() - 1).split(",");
+        if (clusterOptions.get(ExtractorConnectConstants.HOSTS) != null) {
+            values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get(ExtractorConnectConstants.HOSTS));
+            String[] hosts = clusterOptions.get(ExtractorConnectConstants.HOSTS)
+                    .substring(1, clusterOptions.get(ExtractorConnectConstants.HOSTS).length() - 1).split(",");
 
-        values.put(ExtractorConnectConstants.HOST, hosts[0]);
-        values.put(
-                ExtractorConnectConstants.HOSTS,
-                clusterOptions.get(ExtractorConnectConstants.HOSTS).substring(1,
-                        clusterOptions.get(ExtractorConnectConstants.HOSTS).length() - 1));
+            values.put(ExtractorConnectConstants.HOST, hosts[0]);
+        } else {
+            values.put(ExtractorConnectConstants.HOST, clusterOptions.get(ExtractorConnectConstants.HOST));
+        }
+
+        if (clusterOptions.get(ExtractorConnectConstants.PORTS) != null) {
+            values.put(ExtractorConnectConstants.PORTS, clusterOptions.get(ExtractorConnectConstants.PORTS));
+            String[] ports = clusterOptions.get(ExtractorConnectConstants.PORTS)
+                    .substring(1, clusterOptions.get(ExtractorConnectConstants.PORTS).length() - 1).split(",");
+
+            values.put(ExtractorConnectConstants.PORT, ports[0]);
+        } else {
+            values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
+        }
+        values.put(ExtractorConnectConstants.CQLPORT, clusterOptions.get(ExtractorConnectConstants.CQLPORT));
+        values.put(ExtractorConnectConstants.RCPPORT, clusterOptions.get(ExtractorConnectConstants.RCPPORT));
 
         extractorconfig.setValues(values);
+        extractorconfig.setExtractorImplClassName(clusterOptions.get(ExtractorConnectConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
 

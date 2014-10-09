@@ -18,6 +18,8 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
@@ -25,35 +27,37 @@ import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
 public class GreaterThan implements Function<Cells, Boolean> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = 2675616112608139116L;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 2675616112608139116L;
 
-  /**
-   * Term to compare.
-   */
-  private Selector term;
+    /**
+     * Term to compare.
+     */
+    private Serializable term;
 
-  /**
-   * Name of the field of the cell to compare.
-   */
-  private String field;
+    /**
+     * Name of the field of the cell to compare.
+     */
+    private String field;
 
-  /**
-   * GreaterThan apply > filter to a field in a Deep Cell.
-   * 
-   * @param field Name of the field to check.
-   * @param term Term to compare to.
-   */
-  public GreaterThan(String field, Selector term) {
-    this.term = term;
-    this.field = field;
-  }
+    /**
+     * GreaterThan apply > filter to a field in a Deep Cell.
+     * 
+     * @param field
+     *            Name of the field to check.
+     * @param term
+     *            Term to compare to.
+     */
+    public GreaterThan(String field, Serializable term) {
+        this.term = term;
+        this.field = field;
+    }
 
-  @Override
-  public Boolean call(Cells cells) {
-    Object obj = cells.getCellByName(field).getCellValue();
-    return ((Comparable) term).compareTo(obj) < 0;
-  }
+    @Override
+    public Boolean call(Cells cells) {
+        Object obj = cells.getCellByName(field).getCellValue();
+        return ((Comparable) term).compareTo(obj) < 0;
+    }
 }

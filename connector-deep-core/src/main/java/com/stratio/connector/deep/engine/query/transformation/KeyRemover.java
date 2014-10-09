@@ -26,14 +26,14 @@ import scala.Tuple2;
 
 public class KeyRemover implements Function<Tuple2<Cells, Cells>, Cells> {
 
-  /**
-   * Serial version UID.
-   */
-  private static final long serialVersionUID = 5540221408306143803L;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 5540221408306143803L;
 
-  @Override
-  public Cells call(Tuple2<Cells, Cells> tuple) throws Exception {
+    @Override
+    public Cells call(Tuple2<Cells, Cells> tuple) throws Exception {
 
-    return tuple._2();
-  }
+        return tuple._2();
+    }
 }
