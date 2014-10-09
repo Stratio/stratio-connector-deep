@@ -19,24 +19,18 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ContextProperties;
-import com.stratio.connector.deep.engine.query.structures.SelectTerms;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.server.ExtractorServer;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.commons.filter.Filter;
-import com.stratio.deep.commons.filter.FilterOperator;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.Operations;
+import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
-
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.data.TableName;
-import com.stratio.meta2.common.metadata.ColumnType;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
@@ -167,17 +161,18 @@ public class QueryFiltersUtilsTest implements Serializable {
     }
 
     @Test
-    public void doWhereTest() throws UnsupportedException {
+    public void doWhereTest() throws UnsupportedException, ExecutionException {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
                 COLUMN1_CONSTANT));
 
-        String rightSelector = new String(DATA_CONSTANT);
+        StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
 
-        SelectTerms selectTerms = new SelectTerms(leftSelector.getName().getName(), Operator.EQ.toString(),
-                rightSelector);
+        // SelectTerms selectTerms = new SelectTerms( leftSelector.getName().getName(), Operator.EQ.toString(),
+        // rightSelector);
+        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 
-        JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, selectTerms);
+        JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, relation);
 
         logger.info("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
         rdd.collect();

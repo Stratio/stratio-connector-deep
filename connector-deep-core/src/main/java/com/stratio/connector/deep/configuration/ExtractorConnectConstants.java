@@ -9,10 +9,9 @@ public class ExtractorConnectConstants extends ExtractorConstants {
 
     public final static String HOSTS = "hosts";
     public final static String PORTS = "ports";
-
     public final static String INNERCLASS = "implClass";
 
-    public final static String CQLPORT = "";
-    public final static String RCPPORT = "";
+    public final static String CQLPORT = "cqlPort";
+    public final static String RCPPORT = "rcpPort";
 
 }

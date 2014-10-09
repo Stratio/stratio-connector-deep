@@ -101,8 +101,7 @@ public class DeepConnector implements IConnector {
     @Override
     public IStorageEngine getStorageEngine() throws UnsupportedException {
 
-        // TODO throw new UnsupportedException("");
-        return null;
+        throw new UnsupportedException("Not yet supported");
 
     }
 
@@ -116,7 +115,7 @@ public class DeepConnector implements IConnector {
     @Override
     public IMetadataEngine getMetadataEngine() throws UnsupportedException {
 
-        // TODO throw new UnsupportedException("");
-        return null;
+        throw new UnsupportedException("Not yet supported");
+
     }
 }
