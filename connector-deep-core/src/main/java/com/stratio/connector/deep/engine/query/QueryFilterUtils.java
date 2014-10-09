@@ -19,17 +19,23 @@ import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
 import com.stratio.connector.deep.engine.query.functions.LessThan;
 import com.stratio.connector.deep.engine.query.functions.NotEquals;
-import com.stratio.connector.deep.engine.query.structures.SelectTerms;
+
 import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ColumnName;
+import com.stratio.meta2.common.statements.structures.selectors.BooleanSelector;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.meta2.common.statements.structures.selectors.FloatingPointSelector;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
+import com.stratio.meta2.common.statements.structures.selectors.SelectorType;
+import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 /**
  * Created by dgomez on 26/09/14.
@@ -52,37 +58,37 @@ public final class QueryFilterUtils {
      * @return A new RDD with the result.
      * @throws UnsupportedException
      */
-    static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, SelectTerms relation) throws UnsupportedException {
+    static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, Relation relation) throws UnsupportedException,ExecutionException {
 
-        String operator = relation.getOperation();
+        Operator operator = relation.getOperator();
         JavaRDD<Cells> result = null;
-        String field = relation.getField();
-        Serializable rightTerm = relation.getValue();
+        Serializable field     = filterFromLeftTermWhereRelation(relation);
+        Serializable rightTerm = filterFromRightTermWhereRelation(relation);
 
         logger.info("Rdd doWhere input size: " + rdd.count());
-        switch (operator.toString().toLowerCase()) {
-        case "=":
-            result = rdd.filter(new DeepEquals(field, rightTerm));
+        switch (operator) {
+        case EQ:
+            result = rdd.filter(new DeepEquals(field.toString(), rightTerm));
             break;
-        case "<>":
-            result = rdd.filter(new NotEquals(field, rightTerm));
+        case DISTINCT:
+            result = rdd.filter(new NotEquals(field.toString(), rightTerm));
             break;
-        case ">":
-            result = rdd.filter(new GreaterThan(field, rightTerm));
+        case GT:
+            result = rdd.filter(new GreaterThan(field.toString(), rightTerm));
             break;
-        case ">=":
-            result = rdd.filter(new GreaterEqualThan(field, rightTerm));
+        case GET:
+            result = rdd.filter(new GreaterEqualThan(field.toString(), rightTerm));
             break;
-        case "<":
-            result = rdd.filter(new LessThan(field, rightTerm));
+        case LT:
+            result = rdd.filter(new LessThan(field.toString(), rightTerm));
             break;
-        case "<=":
-            result = rdd.filter(new LessEqualThan(field, rightTerm));
+        case LET:
+            result = rdd.filter(new LessEqualThan(field.toString(), rightTerm));
             break;
-        case "in":
+        case IN:
             // result = rdd.filter(new In(field, terms));
             throw new UnsupportedException("IN operator unsupported");
-        case "between":
+        case BETWEEN:
             // result = rdd.filter(new Between(field, terms.get(0), terms.get(1)));
             throw new UnsupportedException("BETWEEN operator unsupported");
         default:
@@ -154,5 +160,55 @@ public final class QueryFilterUtils {
 
         return joinedResult;
 
+    }
+
+
+
+    private static Serializable filterFromLeftTermWhereRelation(Relation relation) throws ExecutionException {
+
+        String leftField = null;
+        SelectorType type = relation.getLeftTerm().getType();
+        switch (type) {
+        case STRING:
+            leftField = ((StringSelector)relation.getLeftTerm()).getValue();
+            break;
+        case COLUMN:
+            leftField = ((ColumnSelector)relation.getLeftTerm()).getName().getName();
+            break;
+        default:
+            throw new ExecutionException("Unknown Relation Left Selector Where found [" + relation.getLeftTerm()
+                    .getType()  + "]");
+
+        }
+        return leftField;
+
+    }
+
+    private static Serializable filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
+
+        SelectorType type = relation.getRightTerm().getType();
+        Serializable rightField = null;
+
+        switch (type) {
+                case STRING:
+                    rightField = ((StringSelector)relation.getRightTerm()).getValue();
+                    break;
+                case BOOLEAN:
+                    rightField = ((BooleanSelector)relation.getRightTerm()).getValue();
+                    break;
+                case INTEGER:
+                    rightField = ((IntegerSelector)relation.getRightTerm()).getValue();
+                    break;
+                case FLOATING_POINT:
+                    rightField = ((FloatingPointSelector)relation.getRightTerm()).getValue();
+                    break;
+
+                default:
+                    throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
+                            + "]");
+
+
+        }
+        return rightField;
     }
 }

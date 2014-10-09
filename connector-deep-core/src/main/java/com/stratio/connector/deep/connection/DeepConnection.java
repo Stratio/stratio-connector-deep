@@ -69,6 +69,8 @@ public class DeepConnection extends Connection {
         extractorConfig = extractorconfig;
 
         deepSparkContext = ConnectionConfiguration.getDeepContext();
+
+        isConnect=true;
     }
 
     @Override

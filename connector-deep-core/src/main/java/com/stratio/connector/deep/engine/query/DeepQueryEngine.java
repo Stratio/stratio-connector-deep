@@ -27,7 +27,7 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.connector.deep.engine.query.structures.SelectTerms;
+
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
@@ -308,8 +308,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
-            SelectTerms selectTerms = filterFromWhereRelation(relation);
-            QueryFilterUtils.doWhere(rdd, selectTerms);
+            QueryFilterUtils.doWhere(rdd, relation);
 
         } else {
 
@@ -320,47 +319,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
     }
 
-    private SelectTerms filterFromWhereRelation(Relation relation) throws ExecutionException{
 
-        Serializable leftField = null;
-        SelectorType type = relation.getLeftTerm().getType();
-        switch (type) {
-        case STRING:
-            leftField = ((StringSelector)relation.getLeftTerm()).getValue();
-            break;
-        case COLUMN:
-            leftField = ((ColumnSelector)relation.getLeftTerm()).getName();
-            break;
-        default:
-            throw new ExecutionException("Unknown Relation Left Selector Where found [" + relation.getLeftTerm()
-                    .getType()  + "]");
-
-        }
-
-        Serializable rightField = null;
-        type = relation.getRightTerm().getType();
-        switch (type) {
-        case STRING:
-            rightField = ((StringSelector)relation.getRightTerm()).getValue();
-            break;
-        case BOOLEAN:
-            rightField = ((BooleanSelector)relation.getRightTerm()).getValue();
-            break;
-        case INTEGER:
-            rightField = ((IntegerSelector)relation.getRightTerm()).getValue();
-            break;
-        case FLOATING_POINT:
-            rightField = ((FloatingPointSelector)relation.getRightTerm()).getValue();
-            break;
-
-        default:
-            throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
-                    + "]");
-
-
-        }
-        return new SelectTerms(leftField.toString(),relation.getOperator().toString(),rightField);
-    }
 
     /*
      * (non-Javadoc)
