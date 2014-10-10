@@ -34,11 +34,10 @@ public class DeepResultSetIterator implements Iterator<com.stratio.meta.common.d
     private int current;
 
     /**
-     * Build a {@link com.stratio.meta.common.data.CResultSetIterator} from a
-     * {@link com.stratio.meta.common.data.CassandraResultSet}.
+     * Build a {@link com.stratio.connector.deep.data.DeepResultSet}
      * 
      * @param deepResultSet
-     *            Cassandra Result Set.
+     *            Result Set.
      */
     public DeepResultSetIterator(DeepResultSet deepResultSet) {
         this.deepResultSet = deepResultSet;

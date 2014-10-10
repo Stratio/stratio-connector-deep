@@ -11,10 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
-
-import com.stratio.connector.deep.connection.DeepContextConnector;
+import com.stratio.connector.deep.connection.DeepConnector;
 import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.connector.IConfiguration;
@@ -45,14 +43,14 @@ public class DeepConnectorTest {
 
 
 
-    DeepContextConnector deepContextConnector = new DeepContextConnector();
+    DeepConnector deepConnector = new DeepConnector();
 
 
     @Before
     public void setUp()
             throws InitializationException, ConnectionException, UnsupportedException, HandlerConnectionException {
 
-        deepContextConnector.init(getConfiguration());
+        deepConnector.init(getConfiguration());
 
     }
 
@@ -60,17 +58,17 @@ public class DeepConnectorTest {
     public void isConnectedTest() throws HandlerConnectionException, InitializationException,
             ConnectionException, UnsupportedException {
 
-        deepContextConnector.connect(getICredentials(), prepareConnectionConfig());
-        assertEquals(true, deepContextConnector.isConnected(CLUSTERNAME_CONSTANT));
+        deepConnector.connect(getICredentials(), prepareConnectionConfig());
+        assertEquals(true, deepConnector.isConnected(CLUSTERNAME_CONSTANT));
     }
 
     @Test
     public void closeConnectionTest() throws HandlerConnectionException, InitializationException,
             ConnectionException, UnsupportedException {
 
-        deepContextConnector.connect(getICredentials(), prepareConnectionConfig());
-        deepContextConnector.close(CLUSTERNAME_CONSTANT);
-        assertEquals(false, deepContextConnector.isConnected(CLUSTERNAME_CONSTANT));
+        deepConnector.connect(getICredentials(), prepareConnectionConfig());
+        deepConnector.close(CLUSTERNAME_CONSTANT);
+        assertEquals(false, deepConnector.isConnected(CLUSTERNAME_CONSTANT));
 
     }
 
@@ -78,8 +76,8 @@ public class DeepConnectorTest {
     public void getQueryEngineTest() throws HandlerConnectionException, InitializationException,
             ConnectionException, UnsupportedException {
 
-        deepContextConnector.connect(getICredentials(), prepareConnectionConfig());
-        deepContextConnector.getQueryEngine();
+        deepConnector.connect(getICredentials(), prepareConnectionConfig());
+        deepConnector.getQueryEngine();
 
     }
 
@@ -87,8 +85,8 @@ public class DeepConnectorTest {
     public void getMetadataEngineTest() throws HandlerConnectionException, InitializationException,
             ConnectionException, UnsupportedException {
 
-        deepContextConnector.connect(getICredentials(), prepareConnectionConfig());
-        DeepMetadataEngine deepMetadataEngine = (DeepMetadataEngine) deepContextConnector.getMetadataEngine();
+        deepConnector.connect(getICredentials(), prepareConnectionConfig());
+        DeepMetadataEngine deepMetadataEngine = (DeepMetadataEngine) deepConnector.getMetadataEngine();
 
     }
 
