@@ -20,7 +20,7 @@ public class ConnectionConfiguration implements IConfiguration {
 
         String job = "java:deepJob";
 
-        ContextProperties p = new ContextProperties(new String[0]);
+        ContextProperties p = new ContextProperties();
 
         logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));

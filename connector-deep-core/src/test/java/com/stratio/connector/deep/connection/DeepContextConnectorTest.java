@@ -73,7 +73,7 @@ public class DeepContextConnectorTest {
         Object recoveredConfiguration = Whitebox.getInternalState(connectionHandler, "configuration");
 
         assertNotNull("The configuration is not null", recoveredConfiguration);
-        assertEquals("The configuration is correct", iconfiguration, recoveredConfiguration);
+        assertEquals ("The configuration is correct" , iconfiguration, recoveredConfiguration);
         assertNotNull("The connection handle is not null", connectionHandler);
     }
 
@@ -101,7 +101,6 @@ public class DeepContextConnectorTest {
     }
 
     @Test
-    // (expected = HandlerConnectionException.class)
     public void testClose() throws ConnectionException, HandlerConnectionException {
 
         ICredentials iCredentials = mock(ICredentials.class);

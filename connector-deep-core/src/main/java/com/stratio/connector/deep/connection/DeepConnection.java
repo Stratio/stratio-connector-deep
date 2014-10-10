@@ -32,6 +32,7 @@ public class DeepConnection extends Connection {
      *            The cluster configuration.
      */
     public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) {
+
         ClusterName clusterName = config.getName();
         Map<String, String> clusterOptions = config.getOptions();
 
