@@ -141,7 +141,11 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             ColumnMetadata columnMetadata = new ColumnMetadata(columnName.getTableName().getQualifiedName(),
                     columnName.getName());
             columnMetadata.setColumnAlias(columnAlias);
-            columnMetadata.setType(columnType.get(columnAlias));
+            // TODO Check if we have to get the alias or the column qualified name
+            // columnMetadata.setType(columnType.get(columnAlias));
+            columnMetadata.setType(columnType.get(columnName.getQualifiedName()));
+
+            resultMetadata.add(columnMetadata);
         }
 
         List<Row> resultRows = new LinkedList<>();
@@ -151,6 +155,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
         ResultSet resultSet = new ResultSet();
         resultSet.setRows(resultRows);
+        resultSet.setColumnMetadata(resultMetadata);
         QueryResult queryResult = QueryResult.createQueryResult(resultSet);
 
         return queryResult;
@@ -167,8 +172,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             ColumnName columnName = columnItem.getKey();
 
             // Retrieving the cell to create a new meta cell with its value
-            com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
-                    .getQualifiedName(),
+            com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName().getName(),
                     columnName.getName());
             Cell rowCell = new Cell(cellsCell.getCellValue());
 

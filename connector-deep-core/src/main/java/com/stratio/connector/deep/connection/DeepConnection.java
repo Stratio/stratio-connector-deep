@@ -69,7 +69,7 @@ public class DeepConnection extends Connection {
 
         deepSparkContext = ConnectionConfiguration.getDeepContext();
 
-        isConnect=true;
+        isConnect = true;
     }
 
     @Override
