@@ -33,17 +33,17 @@ import com.stratio.meta.common.result.QueryResult;
  */
 public class DeepConnectorCassandraFT {
 
-    private static final String TWITTER_CONSTANT = "twitter";
+    private static final String TWITTER_CONSTANT = "test";
 
-    private static final String MYTABLE1_CONSTANT = "mytable1";
+    private static final String MYTABLE1_CONSTANT = "tweets";
 
-    private static final String MYTABLE2_CONSTANT = "mytable2";
+    private static final String MYTABLE2_CONSTANT = "mytable";
 
     private static final String AUTHOR_CONSTANT = "author";
 
     private static final String AUTHOR_ALIAS_CONSTANT = "authorAlias";
 
-    private static final String DESCRIPTION_CONSTANT = "description";
+    private static final String DESCRIPTION_CONSTANT = "content";
 
     private static final String AUTHOR_NAME_CONSTANT = "author_name";
 
