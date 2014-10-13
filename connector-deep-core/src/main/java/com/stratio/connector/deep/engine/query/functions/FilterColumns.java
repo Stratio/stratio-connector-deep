@@ -32,10 +32,10 @@ public class FilterColumns implements Function<Cells, Cells> {
 
     @Override
     public Cells call(Cells cells) throws Exception {
-        Cells cellsOut = new Cells(cells.getnameSpace());
 
+        Cells cellsOut = new Cells(cells.getnameSpace());
         for (ColumnName columnName : columns) {
-            Cell cell = cells.getCellByName(columnName.getTableName().getName(), columnName.getName());
+            Cell cell = cells.getCellByName(columnName.getTableName().getQualifiedName(), columnName.getName());
             cellsOut.add(cell);
         }
 
