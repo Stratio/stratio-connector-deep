@@ -87,6 +87,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             Project project = (Project) initialStep;
             ExtractorConfig<Cells> extractorConfig = retrieveConfiguration(project.getClusterName());
             JavaRDD<Cells> initialRdd = createRDD(project, extractorConfig);
+            initialRdd.count();
             partialResultRdd = executeInitialStep(initialStep.getNextStep(), initialRdd, project.getTableName()
                     .toString());
 
@@ -220,7 +221,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         LogicalStep currentStep = logicalStep;
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
-                executeFilter((Filter) currentStep, rdd);
+                rdd = executeFilter((Filter) currentStep, rdd);
             } else if (currentStep instanceof Select) {
                 prepareResult((Select) currentStep, rdd);
             } else if (currentStep instanceof UnionStep) {
@@ -289,6 +290,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
         rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
+        rdd.count();
     }
 
     /**
@@ -296,7 +298,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param rdd
      * @throws UnsupportedException
      */
-    private void executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException, UnsupportedException {
+    private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException, UnsupportedException {
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
@@ -308,7 +310,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
                     + "]");
 
         }
-
+        return rdd;
 
     }
 
