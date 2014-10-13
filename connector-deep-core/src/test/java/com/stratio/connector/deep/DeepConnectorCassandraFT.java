@@ -186,7 +186,26 @@ public class DeepConnectorCassandraFT {
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
         // Execution
-        deepQueryEngine.execute(logicalWorkflow);
+        QueryResult result = deepQueryEngine.execute(logicalWorkflow);
+
+        // Assertions
+        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+        List<Row> rowsList = result.getResultSet().getRows();
+
+        // Checking results number
+        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
+        assertEquals("Wrong number of rows", 1, rowsList.size());
+
+        // Checking metadata
+        assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                .getTableName());
+
+        // Checking rows
+        for (Row row : rowsList) {
+            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
+        }
     }
 
     @AfterClass
