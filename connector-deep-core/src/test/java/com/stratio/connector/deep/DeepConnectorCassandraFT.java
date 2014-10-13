@@ -123,9 +123,14 @@ public class DeepConnectorCassandraFT {
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, TITLE_CONSTANT, Operator.EQ, TITLE_EX));
+        //for (Operator op : Operator.values()){
 
-        LogicalStep filter = project.getNextStep();
+            project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.GET, YEAR_EX ));
+
+        //}
+
+        LogicalStep filter =  project.getNextStep();
+
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                 AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 

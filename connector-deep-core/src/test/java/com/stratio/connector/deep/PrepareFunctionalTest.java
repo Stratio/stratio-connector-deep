@@ -88,12 +88,12 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             }
         }
 
-        try {
-            //Wait 6 secons...change to 60
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //Wait 6 secons...change to 60
+//           // Thread.sleep(6000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return true;
     }
 
