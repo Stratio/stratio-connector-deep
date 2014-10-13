@@ -89,6 +89,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             JavaRDD<Cells> initialRdd = createRDD(project, extractorConfig);
             partialResultRdd = executeInitialStep(initialStep.getNextStep(), initialRdd, project.getTableName()
                     .toString());
+
         }
 
         return buildQueryResult(partialResultRdd, (Select) workflow.getLastStep());
@@ -299,7 +300,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
-            QueryFilterUtils.doWhere(rdd, relation);
+            rdd = QueryFilterUtils.doWhere(rdd, relation);
 
         } else {
 
@@ -307,6 +308,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
                     + "]");
 
         }
+
 
     }
 

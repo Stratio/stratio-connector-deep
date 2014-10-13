@@ -91,7 +91,7 @@ public final class QueryFilterUtils {
             logger.error("Operator not supported: " + operator);
             result = null;
         }
-
+        logger.info("Rdd doWhere output size: " + rdd.count());
         return result;
     }
 
