@@ -5,6 +5,7 @@ package com.stratio.connector.deep;
 
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
+import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -24,6 +26,7 @@ import com.stratio.meta.common.exceptions.ConnectionException;
 import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.InitializationException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
+import com.stratio.meta.common.logicalplan.Join;
 import com.stratio.meta.common.logicalplan.LogicalStep;
 import com.stratio.meta.common.logicalplan.LogicalWorkflow;
 import com.stratio.meta.common.logicalplan.Project;
@@ -44,7 +47,13 @@ public class DeepConnectorCassandraFT {
 
     private static final String AUTHOR_CONSTANT = "artist";
 
+    private static final String AGE_CONSTANT = "age";
+
     private static final String AUTHOR_ALIAS_CONSTANT = "artistAlias";
+
+    private static final String DESCRIPTION_ALIAS_CONSTANT = "descriptionAlias";
+
+    private static final String AGE_ALIAS_CONSTANT = "ageAlias";
 
     private static final String DESCRIPTION_CONSTANT = "description";
 
@@ -146,6 +155,38 @@ public class DeepConnectorCassandraFT {
             assertEquals("Wrong number of columns in the row", 1, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
+    }
+
+    @Test
+    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException {
+
+        // Input data
+        List<LogicalStep> stepList = new LinkedList<>();
+        Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+        Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
+                Arrays.asList(AUTHOR_CONSTANT, AGE_CONSTANT));
+
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                AUTHOR_CONSTANT));
+
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                DESCRIPTION_CONSTANT)),
+                Arrays.asList(AUTHOR_ALIAS_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
+        projectLeft.setNextStep(join);
+        projectRight.setNextStep(join);
+
+        // Two initial steps
+        stepList.add(projectLeft);
+        stepList.add(projectRight);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        deepQueryEngine.execute(logicalWorkflow);
     }
 
     @AfterClass

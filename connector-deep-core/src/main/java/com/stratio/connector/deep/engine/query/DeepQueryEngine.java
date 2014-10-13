@@ -112,7 +112,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
         ExtractorConfig<Cells> extractorConfig = null;
         if (deepConnection != null) {
-            extractorConfig = deepConnection.getExtractorConfig();
+            extractorConfig = deepConnection.getExtractorConfig().clone();
         } else {
             throw new ExecutionException("Unknown cluster [" + clusterName.toString() + "]");
         }
