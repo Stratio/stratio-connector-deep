@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.connector.deep.connection.DeepConnector;
 import com.stratio.connector.deep.engine.DeepMetadataEngine;

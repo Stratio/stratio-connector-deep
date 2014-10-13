@@ -89,6 +89,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             JavaRDD<Cells> initialRdd = createRDD(project, extractorConfig);
             partialResultRdd = executeInitialStep(initialStep.getNextStep(), initialRdd, project.getTableName()
                     .toString());
+
         }
 
         return buildQueryResult(partialResultRdd, (Select) workflow.getLastStep());
