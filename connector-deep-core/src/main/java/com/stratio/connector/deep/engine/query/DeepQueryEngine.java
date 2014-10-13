@@ -222,13 +222,16 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
                 rdd = executeFilter((Filter) currentStep, rdd);
+
             } else if (currentStep instanceof Select) {
-                prepareResult((Select) currentStep, rdd);
+                rdd = prepareResult((Select) currentStep, rdd);
             } else if (currentStep instanceof UnionStep) {
                 UnionStep unionStep = (UnionStep) currentStep;
-                if (!executeUnion(unionStep, rdd)) {
+                JavaRDD<Cells> joinedRdd = executeUnion(unionStep, rdd);
+                if (joinedRdd == null) {
                     break;
                 } else {
+                    rdd = joinedRdd;
                     if (unionStep instanceof Join) {
                         stepId = ((Join) unionStep).getId();
                     } else {
@@ -253,24 +256,23 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param rdd
      * @throws ExecutionException
      */
-    private boolean executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException {
+    private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
-        boolean unionSucceed = false;
+        JavaRDD<Cells> joinedRdd = null;
         if (unionStep instanceof Join) {
             Join joinStep = (Join) unionStep;
             String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
             JavaRDD<Cells> leftRdd = partialResultsMap.get(joinLeftTableName);
             if (leftRdd != null) {
-                executeJoin(leftRdd, rdd, joinStep.getJoinRelations());
+                joinedRdd = executeJoin(leftRdd, rdd, joinStep.getJoinRelations());
                 partialResultsMap.remove(joinLeftTableName);
                 partialResultsMap.put(joinStep.getId(), rdd);
-                unionSucceed = true;
             }
         } else {
             throw new ExecutionException("Unknown union step found [" + unionStep.getOperation().toString() + "]");
         }
 
-        return unionSucceed;
+        return joinedRdd;
     }
 
     /**
@@ -278,19 +280,20 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param rdd
      * @param joinRelations
      */
-    private void executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
+    private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
-        rdd = QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations);
+        return QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations);
     }
 
     /**
      * @param selectStep
      * @param rdd
      */
-    private void prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
+    private JavaRDD<Cells> prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
-        rdd = QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
-        rdd.count();
+
+        return QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
+
     }
 
     /**
@@ -298,11 +301,16 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param rdd
      * @throws UnsupportedException
      */
-    private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException, UnsupportedException {
+
+    private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
+            UnsupportedException {
+
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
             rdd = QueryFilterUtils.doWhere(rdd, relation);
+            List<Cells> resultList = rdd.collect();
+            resultList.size();
 
         } else {
 
@@ -310,6 +318,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
                     + "]");
 
         }
+
         return rdd;
 
     }
