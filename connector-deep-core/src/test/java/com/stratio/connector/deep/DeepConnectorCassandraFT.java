@@ -7,8 +7,6 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
-import static com.stratio.connector.deep.PrepareFunctionalTest.clearData;
-import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -67,7 +65,7 @@ public class DeepConnectorCassandraFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        prepareDataForTest();
+        // prepareDataForTest();
     }
 
     @Test
@@ -151,13 +149,13 @@ public class DeepConnectorCassandraFT {
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
-            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_CONSTANT));
+            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
 
     @AfterClass
     public static void setDown() {
-        clearData();
+        // clearData();
     }
 
 }
