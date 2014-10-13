@@ -1,0 +1,485 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] stratio-connector-deep
+[INFO] connector-deep-core
+[INFO] connector-deep-ftest
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building stratio-connector-deep 0.1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ stratio-connector-deep ---
+[INFO] 
+[INFO] >>> maven-source-plugin:2.2.1:jar (attach-sources) @ stratio-connector-deep >>>
+[INFO] 
+[INFO] <<< maven-source-plugin:2.2.1:jar (attach-sources) @ stratio-connector-deep <<<
+[INFO] 
+[INFO] --- maven-source-plugin:2.2.1:jar (attach-sources) @ stratio-connector-deep ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:2.9.1:jar (attach-javadocs) @ stratio-connector-deep ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ stratio-connector-deep ---
+[INFO] Installing /home/oscar/workspace/stratio-connector-deep/pom.xml to /home/oscar/.m2/repository/com/stratio/connector/stratio-connector-deep/0.1.0-SNAPSHOT/stratio-connector-deep-0.1.0-SNAPSHOT.pom
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building connector-deep-core 0.1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ connector-deep-core ---
+[INFO] Deleting /home/oscar/workspace/stratio-connector-deep/connector-deep-core/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ connector-deep-core ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/oscar/workspace/stratio-connector-deep/connector-deep-core/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ connector-deep-core ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 27 source files to /home/oscar/workspace/stratio-connector-deep/connector-deep-core/target/classes
+[WARNING] /home/oscar/workspace/stratio-connector-deep/connector-deep-core/src/main/java/com/stratio/connector/deep/engine/query/functions/LessEqualThan.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/oscar/workspace/stratio-connector-deep/connector-deep-core/src/main/java/com/stratio/connector/deep/engine/query/functions/LessEqualThan.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ connector-deep-core ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/oscar/workspace/stratio-connector-deep/connector-deep-core/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ connector-deep-core ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ connector-deep-core ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ connector-deep-core ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 8 source files to /home/oscar/workspace/stratio-connector-deep/connector-deep-core/target/test-classes
+[WARNING] /home/oscar/workspace/stratio-connector-deep/connector-deep-core/src/test/java/com/stratio/connector/deep/connection/ConnectionHandlerTest.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/oscar/workspace/stratio-connector-deep/connector-deep-core/src/test/java/com/stratio/connector/deep/connection/ConnectionHandlerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ connector-deep-core ---
+[INFO] Surefire report directory: /home/oscar/workspace/stratio-connector-deep/connector-deep-core/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.stratio.connector.deep.engine.DeepQueryEngineTest
+Tests run: 5, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.609 sec <<< FAILURE!
+simpleProjectAndSelectQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)  Time elapsed: 0.386 sec  <<< ERROR!
+java.lang.NullPointerException
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildRowFromCells(DeepQueryEngine.java:177)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildQueryResult(DeepQueryEngine.java:153)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.executeWorkFlow(DeepQueryEngine.java:94)
+	at com.stratio.connector.commons.engine.CommonsQueryEngine.execute(CommonsQueryEngine.java:59)
+	at com.stratio.connector.deep.engine.DeepQueryEngineTest.simpleProjectAndSelectQueryTest(DeepQueryEngineTest.java:176)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:68)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:310)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:88)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:96)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+simpleProjectAndSelectWithOneFilterQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)  Time elapsed: 0.016 sec  <<< ERROR!
+java.lang.NullPointerException
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildRowFromCells(DeepQueryEngine.java:177)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildQueryResult(DeepQueryEngine.java:153)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.executeWorkFlow(DeepQueryEngine.java:94)
+	at com.stratio.connector.commons.engine.CommonsQueryEngine.execute(CommonsQueryEngine.java:59)
+	at com.stratio.connector.deep.engine.DeepQueryEngineTest.simpleProjectAndSelectWithOneFilterQueryTest(DeepQueryEngineTest.java:207)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:68)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:310)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:88)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:96)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+simpleProjectAndSelectWithThreeFiltersQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)  Time elapsed: 0.009 sec  <<< ERROR!
+java.lang.NullPointerException
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildRowFromCells(DeepQueryEngine.java:177)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildQueryResult(DeepQueryEngine.java:153)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.executeWorkFlow(DeepQueryEngine.java:94)
+	at com.stratio.connector.commons.engine.CommonsQueryEngine.execute(CommonsQueryEngine.java:59)
+	at com.stratio.connector.deep.engine.DeepQueryEngineTest.simpleProjectAndSelectWithThreeFiltersQueryTest(DeepQueryEngineTest.java:243)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:68)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:310)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:88)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:96)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+twoProjectsJoinedAndSelectQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)  Time elapsed: 0.01 sec  <<< ERROR!
+java.lang.NullPointerException
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildRowFromCells(DeepQueryEngine.java:177)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.buildQueryResult(DeepQueryEngine.java:153)
+	at com.stratio.connector.deep.engine.query.DeepQueryEngine.executeWorkFlow(DeepQueryEngine.java:94)
+	at com.stratio.connector.commons.engine.CommonsQueryEngine.execute(CommonsQueryEngine.java:59)
+	at com.stratio.connector.deep.engine.DeepQueryEngineTest.twoProjectsJoinedAndSelectQueryTest(DeepQueryEngineTest.java:280)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:68)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:310)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:88)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:96)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+Running com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest
+10:57:27,524  INFO [nioEventLoopGroup-2-1] LoggingHandler:101 - [id: 0x7be9a10f] REGISTERED
+10:57:27,527  INFO [nioEventLoopGroup-2-1] LoggingHandler:101 - [id: 0x7be9a10f] BIND(0.0.0.0/0.0.0.0:8463)
+10:57:27,529  INFO [nioEventLoopGroup-2-1] LoggingHandler:101 - [id: 0x7be9a10f, /0:0:0:0:0:0:0:0:8463] ACTIVE
+10:57:27,547  INFO [main] QueryFiltersUtilsTest:111 - spark.serializer: null
+10:57:27,547  INFO [main] QueryFiltersUtilsTest:112 - spark.kryo.registrator: null
+10:57:27,939  INFO [sparkDriver-akka.actor.default-dispatcher-4] Slf4jLogger:80 - Slf4jLogger started
+10:57:27,974  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Starting remoting
+10:57:28,071  INFO [sparkDriver-akka.actor.default-dispatcher-3] Remoting:74 - Remoting started; listening on addresses :[akka.tcp://sparkDriver@latitude.paradigmatecnologico.com:59797]
+10:57:28,072  INFO [sparkDriver-akka.actor.default-dispatcher-3] Remoting:74 - Remoting now listens on addresses: [akka.tcp://sparkDriver@latitude.paradigmatecnologico.com:59797]
+10:57:34,301 ERROR [main] NetworkClient:99 - Node [Connection refused] failed (localhost:9200); no other nodes left - aborting...
+10:57:34,302 ERROR [main] GenericHadoopExtractor:99 - Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+10:57:35,443  INFO [nioEventLoopGroup-2-1] LoggingHandler:101 - [id: 0x7be9a10f, /0:0:0:0:0:0:0:0:8463] UNREGISTERED
+10:57:35,445  INFO [sparkDriver-akka.actor.default-dispatcher-4] RemoteActorRefProvider$RemotingTerminator:74 - Shutting down remote daemon.
+10:57:35,445  INFO [main] QueryFiltersUtilsTest:111 - spark.serializer: null
+10:57:35,446  INFO [main] QueryFiltersUtilsTest:112 - spark.kryo.registrator: null
+10:57:35,447  INFO [sparkDriver-akka.actor.default-dispatcher-4] RemoteActorRefProvider$RemotingTerminator:74 - Remote daemon shut down; proceeding with flushing remote transports.
+10:57:35,448  INFO [nioEventLoopGroup-4-1] LoggingHandler:101 - [id: 0x00275136] REGISTERED
+10:57:35,453  INFO [nioEventLoopGroup-4-1] LoggingHandler:101 - [id: 0x00275136] BIND(0.0.0.0/0.0.0.0:8463)
+10:57:35,454  INFO [nioEventLoopGroup-4-1] LoggingHandler:101 - [id: 0x00275136, /0:0:0:0:0:0:0:0:8463] ACTIVE
+10:57:35,470  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Remoting shut down
+10:57:35,470  INFO [sparkDriver-akka.actor.default-dispatcher-4] RemoteActorRefProvider$RemotingTerminator:74 - Remoting shut down.
+10:57:35,471  INFO [sparkDriver-akka.actor.default-dispatcher-2] Slf4jLogger:80 - Slf4jLogger started
+10:57:35,475  INFO [sparkDriver-akka.actor.default-dispatcher-3] Remoting:74 - Starting remoting
+10:57:35,484  INFO [sparkDriver-akka.actor.default-dispatcher-6] Remoting:74 - Remoting started; listening on addresses :[akka.tcp://sparkDriver@localhost:54600]
+10:57:35,485  INFO [sparkDriver-akka.actor.default-dispatcher-6] Remoting:74 - Remoting now listens on addresses: [akka.tcp://sparkDriver@localhost:54600]
+10:57:40,570 ERROR [main] NetworkClient:99 - Node [Connection refused] failed (localhost:9200); no other nodes left - aborting...
+10:57:40,570 ERROR [main] GenericHadoopExtractor:99 - Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+10:57:41,732  INFO [nioEventLoopGroup-4-1] LoggingHandler:101 - [id: 0x00275136, /0:0:0:0:0:0:0:0:8463] UNREGISTERED
+10:57:41,733  INFO [sparkDriver-akka.actor.default-dispatcher-16] RemoteActorRefProvider$RemotingTerminator:74 - Shutting down remote daemon.
+10:57:41,734  INFO [sparkDriver-akka.actor.default-dispatcher-16] RemoteActorRefProvider$RemotingTerminator:74 - Remote daemon shut down; proceeding with flushing remote transports.
+10:57:41,735  INFO [main] QueryFiltersUtilsTest:111 - spark.serializer: null
+10:57:41,736  INFO [sparkDriver-akka.actor.default-dispatcher-15] Remoting:74 - Remoting shut down
+10:57:41,736  INFO [main] QueryFiltersUtilsTest:112 - spark.kryo.registrator: null
+10:57:41,736  INFO [sparkDriver-akka.actor.default-dispatcher-15] RemoteActorRefProvider$RemotingTerminator:74 - Remoting shut down.
+10:57:41,736  INFO [nioEventLoopGroup-6-1] LoggingHandler:101 - [id: 0x8874fb42] REGISTERED
+10:57:41,737  INFO [nioEventLoopGroup-6-1] LoggingHandler:101 - [id: 0x8874fb42] BIND(0.0.0.0/0.0.0.0:8463)
+10:57:41,737  INFO [nioEventLoopGroup-6-1] LoggingHandler:101 - [id: 0x8874fb42, /0:0:0:0:0:0:0:0:8463] ACTIVE
+10:57:41,753  INFO [sparkDriver-akka.actor.default-dispatcher-4] Slf4jLogger:80 - Slf4jLogger started
+10:57:41,757  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Starting remoting
+10:57:41,768  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Remoting started; listening on addresses :[akka.tcp://sparkDriver@localhost:58560]
+10:57:41,769  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Remoting now listens on addresses: [akka.tcp://sparkDriver@localhost:58560]
+10:57:46,842 ERROR [main] NetworkClient:99 - Node [Connection refused] failed (localhost:9200); no other nodes left - aborting...
+10:57:46,843 ERROR [main] GenericHadoopExtractor:99 - Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+10:57:47,973  INFO [nioEventLoopGroup-6-1] LoggingHandler:101 - [id: 0x8874fb42, /0:0:0:0:0:0:0:0:8463] UNREGISTERED
+10:57:47,974  INFO [sparkDriver-akka.actor.default-dispatcher-2] RemoteActorRefProvider$RemotingTerminator:74 - Shutting down remote daemon.
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 20.609 sec <<< FAILURE!
+filterSelectedColumns(com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest)  Time elapsed: 6.936 sec  <<< ERROR!
+com.stratio.deep.commons.exception.DeepGenericException: Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+	at com.stratio.deep.commons.extractor.impl.GenericHadoopExtractor.getPartitions(GenericHadoopExtractor.java:100)
+	at com.stratio.deep.core.rdd.DeepRDD.getPartitions(DeepRDD.java:106)
+	at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:204)
+	at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:202)
+	at scala.Option.getOrElse(Option.scala:120)
+	at org.apache.spark.rdd.RDD.partitions(RDD.scala:202)
+	at org.apache.spark.SparkContext.runJob(SparkContext.scala:1135)
+	at org.apache.spark.rdd.RDD.count(RDD.scala:904)
+	at org.apache.spark.api.java.JavaRDDLike$class.count(JavaRDDLike.scala:368)
+	at org.apache.spark.api.java.JavaRDD.count(JavaRDD.scala:32)
+	at com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest.before(QueryFiltersUtilsTest.java:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.MethodRoadie.runBefores(MethodRoadie.java:132)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:95)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+doJoinTest(com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest)  Time elapsed: 5.127 sec  <<< ERROR!
+com.stratio.deep.commons.exception.DeepGenericException: Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+	at com.stratio.deep.commons.extractor.impl.GenericHadoopExtractor.getPartitions(GenericHadoopExtractor.java:100)
+	at com.stratio.deep.core.rdd.DeepRDD.getPartitions(DeepRDD.java:106)
+	at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:204)
+	at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:202)
+	at scala.Option.getOrElse(Option.scala:120)
+	at org.apache.spark.rdd.RDD.partitions(RDD.scala:202)
+	at org.apache.spark.SparkContext.runJob(SparkContext.scala:1135)
+	at org.apache.spark.rdd.RDD.count(RDD.scala:904)
+	at org.apache.spark.api.java.JavaRDDLike$class.count(JavaRDDLike.scala:368)
+	at org.apache.spark.api.java.JavaRDD.count(JavaRDD.scala:32)
+	at com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest.before(QueryFiltersUtilsTest.java:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.MethodRoadie.runBefores(MethodRoadie.java:132)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:95)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+doWhereTest(com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest)  Time elapsed: 5.109 sec  <<< ERROR!
+com.stratio.deep.commons.exception.DeepGenericException: Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+	at com.stratio.deep.commons.extractor.impl.GenericHadoopExtractor.getPartitions(GenericHadoopExtractor.java:100)
+	at com.stratio.deep.core.rdd.DeepRDD.getPartitions(DeepRDD.java:106)
+	at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:204)
+	at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:202)
+	at scala.Option.getOrElse(Option.scala:120)
+	at org.apache.spark.rdd.RDD.partitions(RDD.scala:202)
+	at org.apache.spark.SparkContext.runJob(SparkContext.scala:1135)
+	at org.apache.spark.rdd.RDD.count(RDD.scala:904)
+	at org.apache.spark.api.java.JavaRDDLike$class.count(JavaRDDLike.scala:368)
+	at org.apache.spark.api.java.JavaRDD.count(JavaRDD.scala:32)
+	at com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest.before(QueryFiltersUtilsTest.java:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.internal.runners.MethodRoadie.runBefores(MethodRoadie.java:132)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:95)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.executeTest(PowerMockJUnit44RunnerDelegateImpl.java:294)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTestInSuper(PowerMockJUnit47RunnerDelegateImpl.java:127)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit47RunnerDelegateImpl$PowerMockJUnit47MethodRunner.executeTest(PowerMockJUnit47RunnerDelegateImpl.java:82)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$PowerMockJUnit44MethodRunner.runBeforesThenTestThenAfters(PowerMockJUnit44RunnerDelegateImpl.java:282)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:86)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:49)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.invokeTestMethod(PowerMockJUnit44RunnerDelegateImpl.java:207)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.runMethods(PowerMockJUnit44RunnerDelegateImpl.java:146)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl$1.run(PowerMockJUnit44RunnerDelegateImpl.java:120)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:33)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:45)
+	at org.powermock.modules.junit4.internal.impl.PowerMockJUnit44RunnerDelegateImpl.run(PowerMockJUnit44RunnerDelegateImpl.java:118)
+	at org.powermock.modules.junit4.common.internal.impl.JUnit4TestSuiteChunkerImpl.run(JUnit4TestSuiteChunkerImpl.java:104)
+	at org.powermock.modules.junit4.common.internal.impl.AbstractCommonPowerMockRunner.run(AbstractCommonPowerMockRunner.java:53)
+	at org.powermock.modules.junit4.PowerMockRunner.run(PowerMockRunner.java:53)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+
+Running com.stratio.connector.deep.connection.ConnectionHandlerTest
+10:57:47,975  INFO [sparkDriver-akka.actor.default-dispatcher-2] RemoteActorRefProvider$RemotingTerminator:74 - Remote daemon shut down; proceeding with flushing remote transports.
+10:57:47,981  INFO [sparkDriver-akka.actor.default-dispatcher-2] Remoting:74 - Remoting shut down
+10:57:47,982  INFO [sparkDriver-akka.actor.default-dispatcher-2] RemoteActorRefProvider$RemotingTerminator:74 - Remoting shut down.
+10:57:47,986  INFO [main] ConnectionConfiguration:19 - -------------StartUp the SparkContext------------ 
+10:57:47,986  INFO [main] ConnectionConfiguration:25 - spark.serializer: null
+10:57:47,986  INFO [main] ConnectionConfiguration:26 - spark.kryo.registrator: null
+10:57:48,002  INFO [sparkDriver-akka.actor.default-dispatcher-4] Slf4jLogger:80 - Slf4jLogger started
+10:57:48,005  INFO [sparkDriver-akka.actor.default-dispatcher-3] Remoting:74 - Starting remoting
+10:57:48,011  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Remoting started; listening on addresses :[akka.tcp://sparkDriver@localhost:39509]
+10:57:48,012  INFO [sparkDriver-akka.actor.default-dispatcher-4] Remoting:74 - Remoting now listens on addresses: [akka.tcp://sparkDriver@localhost:39509]
+10:57:53,055  INFO [main] ConnectionConfiguration:30 - -------------End StartUp the SparkContext------------ 
+10:57:53,062  INFO [main] DeepConnectionHandler:80 - Create a connection [CLUSTER_NAME]
+10:57:53,065  INFO [main] DeepConnectionHandler:97 - Disconnected from [CLUSTER_NAME]
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.093 sec
+Running com.stratio.connector.deep.connection.DeepContextConnectorTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+
+Results :
+
+Tests in error: 
+  simpleProjectAndSelectQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)
+  simpleProjectAndSelectWithOneFilterQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)
+  simpleProjectAndSelectWithThreeFiltersQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)
+  twoProjectsJoinedAndSelectQueryTest(com.stratio.connector.deep.engine.DeepQueryEngineTest)
+  filterSelectedColumns(com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest): Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+  doJoinTest(com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest): Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+  doWhereTest(com.stratio.connector.deep.engine.query.QueryFiltersUtilsTest): Impossible to calculate partitions Connection error (check network and/or proxy settings)- all nodes failed; tried [[localhost:9200]] 
+
+Tests run: 14, Failures: 0, Errors: 7, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] stratio-connector-deep ............................ SUCCESS [2.142s]
+[INFO] connector-deep-core ............................... FAILURE [29.029s]
+[INFO] connector-deep-ftest .............................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 31.255s
+[INFO] Finished at: Mon Oct 13 10:57:53 CEST 2014
+[INFO] Final Memory: 53M/347M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.12.4:test (default-test) on project connector-deep-core: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /home/oscar/workspace/stratio-connector-deep/connector-deep-core/target/surefire-reports for the individual test results.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <goals> -rf :connector-deep-core

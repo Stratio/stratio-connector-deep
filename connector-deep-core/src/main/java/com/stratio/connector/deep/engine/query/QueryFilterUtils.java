@@ -61,7 +61,7 @@ public final class QueryFilterUtils {
         Serializable field = filterFromLeftTermWhereRelation(relation);
         Serializable rightTerm = filterFromRightTermWhereRelation(relation);
 
-        logger.info("Rdd doWhere input size: " + rdd.count());
+        logger.debug("Rdd doWhere input size: " + rdd.count());
         switch (operator) {
         case EQ:
             result = rdd.filter(new DeepEquals(field.toString(), rightTerm));
@@ -92,6 +92,7 @@ public final class QueryFilterUtils {
             result = null;
         }
 
+        List<Cells> resultList = result.collect();
         return result;
     }
 

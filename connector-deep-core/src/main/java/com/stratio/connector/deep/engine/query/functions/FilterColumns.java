@@ -1,7 +1,6 @@
 package com.stratio.connector.deep.engine.query.functions;
 
 import java.util.List;
-import java.util.Set;
 
 import org.apache.spark.api.java.function.Function;
 
@@ -33,7 +32,7 @@ public class FilterColumns implements Function<Cells, Cells> {
 
     @Override
     public Cells call(Cells cells) throws Exception {
-        Cells cellsOut = new Cells(cells.getDefaultTableName());
+        Cells cellsOut = new Cells(cells.getnameSpace());
 
         for (ColumnName columnName : columns) {
             Cell cell = cells.getCellByName(columnName.getTableName().getName(), columnName.getName());

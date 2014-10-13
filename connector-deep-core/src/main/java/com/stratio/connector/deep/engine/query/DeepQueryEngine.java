@@ -219,7 +219,9 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         LogicalStep currentStep = logicalStep;
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
-                executeFilter((Filter) currentStep, rdd);
+                rdd = executeFilter((Filter) currentStep, rdd);
+                List<Cells> resultList = rdd.collect();
+                resultList.size();
             } else if (currentStep instanceof Select) {
                 prepareResult((Select) currentStep, rdd);
             } else if (currentStep instanceof UnionStep) {
@@ -295,11 +297,14 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param rdd
      * @throws UnsupportedException
      */
-    private void executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException, UnsupportedException {
+    private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
+            UnsupportedException {
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
-            QueryFilterUtils.doWhere(rdd, relation);
+            rdd = QueryFilterUtils.doWhere(rdd, relation);
+            List<Cells> resultList = rdd.collect();
+            resultList.size();
 
         } else {
 
@@ -308,6 +313,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
         }
 
+        return rdd;
     }
 
     /*
