@@ -173,7 +173,8 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             ColumnName columnName = columnItem.getKey();
 
             // Retrieving the cell to create a new meta cell with its value
-            com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName().getName(),
+            com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
+                    .getQualifiedName(),
                     columnName.getName());
             Cell rowCell = new Cell(cellsCell.getCellValue());
 
