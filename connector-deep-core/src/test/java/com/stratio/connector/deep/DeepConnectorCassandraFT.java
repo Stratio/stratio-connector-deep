@@ -123,13 +123,13 @@ public class DeepConnectorCassandraFT {
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        //for (Operator op : Operator.values()){
+        // for (Operator op : Operator.values()){
 
-            project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.GET, YEAR_EX ));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.GET, YEAR_EX));
 
-        //}
+        // }
 
-        LogicalStep filter =  project.getNextStep();
+        LogicalStep filter = project.getNextStep();
 
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                 AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
@@ -180,7 +180,7 @@ public class DeepConnectorCassandraFT {
                 AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
                 AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                 DESCRIPTION_CONSTANT)),
-                Arrays.asList(AUTHOR_ALIAS_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
+                Arrays.asList(AUTHOR_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT, DESCRIPTION_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
@@ -198,11 +198,11 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
 
         // Checking results number
-        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 1, rowsList.size());
+        assertEquals("Wrong number of rows metadata", 3, columnsMetadata.size());
+        assertEquals("Wrong number of rows", 76, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("Author expected", AUTHOR_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
 
