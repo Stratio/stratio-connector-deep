@@ -8,6 +8,8 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
+import static com.stratio.connector.deep.PrepareFunctionalTest.clearData;
+import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

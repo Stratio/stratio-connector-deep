@@ -87,7 +87,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             Project project = (Project) initialStep;
             ExtractorConfig<Cells> extractorConfig = retrieveConfiguration(project.getClusterName());
             JavaRDD<Cells> initialRdd = createRDD(project, extractorConfig);
-            initialRdd.count();
+            initialRdd.collect();
             partialResultRdd = executeInitialStep(initialStep.getNextStep(), initialRdd, project.getTableName()
                     .toString());
 
@@ -175,7 +175,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
             // Retrieving the cell to create a new meta cell with its value
             com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
-                    .getQualifiedName(),
+                    .getName(),
                     columnName.getName());
             Cell rowCell = new Cell(cellsCell.getCellValue());
 
@@ -202,7 +202,8 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
         extractorConfig.putValue(ExtractorConstants.TABLE, projection.getTableName().getName());
         extractorConfig.putValue(ExtractorConstants.CATALOG, projection.getCatalogName());
-
+        extractorConfig.putValue(ExtractorConstants.PORT,
+                Integer.valueOf((String) extractorConfig.getValues().get(ExtractorConstants.PORT)));
         JavaRDD<Cells> rdd = deepContext.createJavaRDD(extractorConfig);
 
         return rdd;
@@ -291,7 +292,6 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param rdd
      */
     private JavaRDD<Cells> prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
-
 
         return QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
 

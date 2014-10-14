@@ -7,12 +7,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.common.io.Resources;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
 
 public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
@@ -25,9 +30,56 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
     public static Cluster cluster1 = Cluster.builder().addContactPoints(HOST).build();
 
     public static Session session = cluster1.connect();
+    public static MongoClient mongoClient = null;
 
+    public static void prepareDataForMongo(){
+
+
+        // To directly connect to a single MongoDB server (note that this will not auto-discover the primary even
+        // if it's a member of a replica set:
+        try {
+
+            mongoClient = new MongoClient( HOST, 27017 );
+
+            mongoClient.dropDatabase(KEYSPACE);
+
+            DB db = mongoClient.getDB( KEYSPACE );
+
+            buildTestMongoDataInsertBatch(db, TABLE_1,TABLE_2);
+
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+    }
     public static void prepareDataForTest(){
-    //public static void main(String args[]){
+
+        prepareDataForCassandra();
+        prepareDataForMongo();
+
+    }
+
+    public static void clearData(){
+
+        clearDataFromCassandra();
+        clearDataFromMongo();
+
+    }
+
+    private static void clearDataFromMongo() {
+
+        mongoClient.dropDatabase(KEYSPACE);
+    }
+
+    private static void clearDataFromCassandra() {
+
+        session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
+
+        session.close();
+    }
+
+    public static void prepareDataForCassandra (){
 
 
         session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
@@ -56,14 +108,41 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
         buildTestDataInsertBatch(session,TABLE_1,TABLE_2);
 
-
     }
 
-    public static void clearData(){
+    protected static Boolean buildTestMongoDataInsertBatch(DB db, String ... csvOrigin) {
 
-        session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
+        for(String origin : csvOrigin) {
 
-        session.close();
+            URL testData = Resources.getResource(origin+".csv");
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    new File(testData.toURI()))))) {
+                String line;
+
+                DBCollection collection = db.getCollection(origin);
+
+                while ((line = br.readLine()) != null) {
+                    String[] fields = (line).split(",");
+                    BasicDBObject doc =  origin.equals(TABLE_1)? new BasicDBObject("artist",
+                            fields[1]).append("title", fields[2]).append("year", fields[3]).append("length",fields[4]).append("description",fields[5]):
+                            new BasicDBObject("artist",
+                                    fields[1]).append("age", fields[2]);
+
+                    collection.insert(doc);
+                }
+            } catch (Exception e) {
+                logger.error("Error", e);
+            }
+        }
+
+//        try {
+//            //Wait 6 secons...change to 60
+//           // Thread.sleep(6000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        return true;
     }
 
     protected static Boolean buildTestDataInsertBatch(Session session, String ... csvOrigin) {
@@ -88,12 +167,12 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             }
         }
 
-//        try {
-//            //Wait 6 secons...change to 60
-//           // Thread.sleep(6000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        //        try {
+        //            //Wait 6 secons...change to 60
+        //           // Thread.sleep(6000);
+        //        } catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
         return true;
     }
 
