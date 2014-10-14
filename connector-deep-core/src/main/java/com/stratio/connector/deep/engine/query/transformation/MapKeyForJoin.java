@@ -56,7 +56,7 @@ public class MapKeyForJoin implements PairFunction<Cells, List<Object>, Cells> {
 
         List<Object> cellsValues = new LinkedList<>();
         for (ColumnName columnKey : keys) {
-            String tableName = columnKey.getTableName().getName();
+            String tableName = columnKey.getTableName().getQualifiedName();
             Cell cell = cells.getCellByName(tableName, columnKey.getName());
             cellsValues.add(cell.getCellValue());
         }

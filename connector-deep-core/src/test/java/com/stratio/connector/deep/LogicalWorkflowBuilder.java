@@ -4,8 +4,8 @@
 package com.stratio.connector.deep;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,8 +113,8 @@ public class LogicalWorkflowBuilder {
 
     public static Select createSelect(List<ColumnName> columnsList, List<String> aliasNamesList) {
 
-        Map<ColumnName, String> columnsAliases = new HashMap<>();
-        Map<String, ColumnType> columnsTypes = new HashMap<>();
+        Map<ColumnName, String> columnsAliases = new LinkedHashMap<>();
+        Map<String, ColumnType> columnsTypes = new LinkedHashMap<>();
 
         Iterator<String> aliasesIt = aliasNamesList.iterator();
         for (ColumnName column : columnsList) {
