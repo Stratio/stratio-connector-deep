@@ -21,6 +21,7 @@ import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.data.TableName;
 import com.stratio.meta2.common.metadata.ColumnType;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 /**
@@ -45,7 +46,7 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             String data) {
 
-        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         StringSelector rightSelector = new StringSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
@@ -54,6 +55,20 @@ public class LogicalWorkflowBuilder {
 
         return filter;
     }
+
+    public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
+            Integer data) {
+
+        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        IntegerSelector rightSelector = new IntegerSelector(data);
+
+        Relation relation = new Relation(leftSelector, operator, rightSelector);
+
+        Filter filter = new Filter(retrieveFilterOperation(operator), relation);
+
+        return filter;
+    }
+
 
     /**
      * Get the related {@link Operations} to the given {@link Operator}

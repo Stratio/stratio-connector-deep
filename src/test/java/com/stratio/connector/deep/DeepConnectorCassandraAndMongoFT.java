@@ -77,6 +77,7 @@ public class DeepConnectorCassandraAndMongoFT {
         connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
         // prepareDataForTest();
+
     }
 
     @Test

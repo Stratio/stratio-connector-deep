@@ -50,6 +50,8 @@ public class DeepConnectorMongoFT {
 
     private static final String AUTHOR_ALIAS_CONSTANT = "artistAlias";
 
+    private static final String AUTHOR_ALIAS2_CONSTANT = "artistAlias";
+
     private static final String TITLE_CONSTANT = "title";
 
     private static final String YEAR_CONSTANT = "year";
@@ -176,59 +178,7 @@ public class DeepConnectorMongoFT {
 
     }
 
-    @Test
-    public void testSingleProjectWithVariusFiltersAndSelectTest() throws UnsupportedException, ExecutionException {
 
-        // Input data
-        List<LogicalStep> stepList = new ArrayList<>();
-        Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
-
-
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.LT , YEAR_EX ));
-
-
-
-        LogicalStep filter =  project.getNextStep();
-
-
-        filter.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.EQ , TITLE_EX ));
-
-
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
-                filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
-
-
-                // One single initial step
-                stepList.add(project);
-
-                LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
-
-                // Execution
-                QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
-
-                // Assertions
-                List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
-                List<Row> rowsList = result.getResultSet().getRows();
-
-
-        // Checking results number
-
-        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 183, rowsList.size());
-                // Checking metadata
-                assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
-                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                        .getTableName());
-
-                // Checking rows
-                for (Row row : rowsList) {
-                    assertEquals("Wrong number of columns in the row", 1, row.size());
-                    assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
-                }
-    }
 
 
     @Test
@@ -247,9 +197,11 @@ public class DeepConnectorMongoFT {
 
         join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                         AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
                         AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                         DESCRIPTION_CONSTANT)),
-                Arrays.asList(AUTHOR_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT, DESCRIPTION_ALIAS_CONSTANT)));
+                Arrays.asList(AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
+                        AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
@@ -267,7 +219,7 @@ public class DeepConnectorMongoFT {
         List<Row> rowsList = result.getResultSet().getRows();
 
         // Checking results number
-        assertEquals("Wrong number of rows metadata", 3, columnsMetadata.size());
+        assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
         assertEquals("Wrong number of rows", 76, rowsList.size());
 
         // Checking metadata

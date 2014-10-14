@@ -6,6 +6,7 @@ import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.exceptions.ConnectionException;
 import com.stratio.meta.common.exceptions.InitializationException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
+import com.stratio.meta2.common.data.ClusterName;
 
 public class ConnectionsHandler {
 
@@ -30,5 +31,9 @@ public class ConnectionsHandler {
     public DeepQueryEngine getQueryEngine() throws UnsupportedException {
 
         return (DeepQueryEngine) this.deepConnector.getQueryEngine();
+    }
+
+    public void close(ClusterName clusterName) throws ConnectionException {
+        this.deepConnector.close(clusterName);
     }
 }

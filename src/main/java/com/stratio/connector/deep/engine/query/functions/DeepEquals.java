@@ -59,6 +59,7 @@ public class DeepEquals implements Function<Cells, Boolean> {
 
     @Override
     public Boolean call(Cells cells) {
+
         Object currentValue = cells.getCellByName(field).getCellValue();
         return term.equals(currentValue);
     }

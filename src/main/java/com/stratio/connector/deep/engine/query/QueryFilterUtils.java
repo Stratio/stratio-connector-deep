@@ -110,6 +110,7 @@ public final class QueryFilterUtils {
 
         List<ColumnName> list = new ArrayList<>(selectedCols);
         JavaRDD<Cells> rddResult = rdd.map(new FilterColumns(list));
+        rddResult.collect();
         return rddResult;
     }
 
@@ -134,18 +135,19 @@ public final class QueryFilterUtils {
             }
 
         }
-
+        leftRdd.collect();
+        rightRdd.collect();
         JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
-
+        rddLeft.collect();
         JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
-
+        rddRight.collect();
         if (rddLeft != null && rddRight != null) {
             JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
 
             joinedResult = joinRDD.map(new JoinCells());
 
         }
-
+        joinedResult.collect();
         return joinedResult;
 
     }
@@ -184,6 +186,7 @@ public final class QueryFilterUtils {
             break;
         case INTEGER:
             rightField = ((IntegerSelector) relation.getRightTerm()).getValue();
+            rightField = ((Long)rightField).intValue();
             break;
         case FLOATING_POINT:
             rightField = ((FloatingPointSelector) relation.getRightTerm()).getValue();
