@@ -127,6 +127,7 @@ public class DeepConnectorMongoFT {
 
         for (Operator op : Operator.values()){
 
+
             if(op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
                     && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)){
 
@@ -187,41 +188,46 @@ public class DeepConnectorMongoFT {
         project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.LT , YEAR_EX ));
 
 
+
         LogicalStep filter =  project.getNextStep();
+
 
         filter.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.EQ , TITLE_EX ));
 
 
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                 AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+                filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                        AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
-        // One single initial step
-        stepList.add(project);
 
-        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+                // One single initial step
+                stepList.add(project);
 
-        // Execution
-        QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+                LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
-        // Assertions
-        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
-        List<Row> rowsList = result.getResultSet().getRows();
+                // Execution
+                QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+
+                // Assertions
+                List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+                List<Row> rowsList = result.getResultSet().getRows();
+
 
         // Checking results number
 
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 1, rowsList.size());
+        assertEquals("Wrong number of rows", 183, rowsList.size());
+                // Checking metadata
+                assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
+                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                        .getTableName());
 
-        // Checking metadata
-        assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
-
-        // Checking rows
-        for (Row row : rowsList) {
-            assertEquals("Wrong number of columns in the row", 1, row.size());
-            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
-        }
+                // Checking rows
+                for (Row row : rowsList) {
+                    assertEquals("Wrong number of columns in the row", 1, row.size());
+                    assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
+                }
     }
 
 

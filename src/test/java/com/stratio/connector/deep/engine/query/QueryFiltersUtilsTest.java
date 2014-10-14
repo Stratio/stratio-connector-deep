@@ -50,17 +50,17 @@ public class QueryFiltersUtilsTest implements Serializable {
 
     private static final String CATALOG_CONSTANT = "test";
 
-    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable2");
+    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable");
 
-    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable");
+    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "mytable1");
 
-    private static final String COLUMN1_CONSTANT = "author";
+    private static final String COLUMN1_CONSTANT = "thekey";
 
-    private static final String COLUMN2_CONSTANT = "author";
+    private static final String COLUMN2_CONSTANT = "thekey";
 
     private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("clusterName");
 
-    private static final String DATA_CONSTANT = "id457";
+    private static final String DATA_CONSTANT = "001";
 
     DeepSparkContext deepSparkContext;
 
@@ -72,18 +72,18 @@ public class QueryFiltersUtilsTest implements Serializable {
     public void before() throws Exception, HandlerConnectionException {
         String job = "java:creatingCellRDD";
         // Cassandra
+//        String KEYSPACENAME = CATALOG_CONSTANT;
+//        String TABLENAME_1 = TABLE1_CONSTANT.getName();
+//        String TABLENAME_2 = TABLE2_CONSTANT.getName();
+//        String CQLPORT = "9042";
+//        String RPCPORT = "9160";
+//        String HOST = "127.0.0.1";
+
+        // Mongo
         String KEYSPACENAME = CATALOG_CONSTANT;
         String TABLENAME_1 = TABLE1_CONSTANT.getName();
         String TABLENAME_2 = TABLE2_CONSTANT.getName();
-        String CQLPORT = "9042";
-        String RPCPORT = "9160";
-        String HOST = "127.0.0.1";
-
-        // Mongo
-        // String KEYSPACENAME = CATALOG_CONSTANT;
-        // String TABLENAME_1 = TABLE1_CONSTANT.getName();
-        // String TABLENAME_2 = TABLE2_CONSTANT.getName();
-        // String HOST = "localhost:27017";
+        String HOST = "localhost:27017";
 
         // ES
 //        String KEYSPACENAME = CATALOG_CONSTANT;
@@ -116,32 +116,32 @@ public class QueryFiltersUtilsTest implements Serializable {
         // Creating a configuration for the Extractor and initialize it
         ExtractorConfig<Cells> config_1 = new ExtractorConfig(Cells.class);
 
-        config_1.putValue(ExtractorConstants.KEYSPACE, KEYSPACENAME).putValue(ExtractorConstants.TABLE,
-        TABLENAME_1).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
-        RPCPORT).putValue(ExtractorConstants.HOST, HOST);
+//        config_1.putValue(ExtractorConstants.KEYSPACE, KEYSPACENAME).putValue(ExtractorConstants.TABLE,
+//        TABLENAME_1).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
+//        RPCPORT).putValue(ExtractorConstants.HOST, HOST);
 
-        // config_1.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
-        // KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_1);
+        config_1.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
+        KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_1);
 
 //        config_1.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_1)
 //                .putValue(ExtractorConstants.HOST, HOST);
 
-        config_1.setExtractorImplClassName(CASSANDRA_CELL_CLASS);
+        config_1.setExtractorImplClassName(MONGO_CELL_CLASS);
 
         // Creating a configuration for the Extractor and initialize it
         ExtractorConfig<Cells> config_2 = new ExtractorConfig(Cells.class);
 
-        config_2.putValue(ExtractorConstants.KEYSPACE, KEYSPACENAME).putValue(ExtractorConstants.TABLE,
-        TABLENAME_2).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
-        RPCPORT).putValue(ExtractorConstants.HOST, HOST);
+//        config_2.putValue(ExtractorConstants.KEYSPACE, KEYSPACENAME).putValue(ExtractorConstants.TABLE,
+//        TABLENAME_2).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
+//        RPCPORT).putValue(ExtractorConstants.HOST, HOST);
 
-        // config_2.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
-        // KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_2);
+        config_2.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
+        KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_2);
 
 //        config_2.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_2)
 //                .putValue(ExtractorConstants.HOST, HOST);
 
-        config_2.setExtractorImplClassName(CASSANDRA_CELL_CLASS);
+        config_2.setExtractorImplClassName(MONGO_CELL_CLASS);
 
         // Creating the RDD
         leftRdd = deepSparkContext.createJavaRDD(config_1);

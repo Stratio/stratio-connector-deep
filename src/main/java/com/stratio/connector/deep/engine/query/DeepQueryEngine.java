@@ -292,7 +292,6 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      */
     private JavaRDD<Cells> prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
-
         return QueryFilterUtils.filterSelectedColumns(rdd, selectStep.getColumnMap().keySet());
 
     }
@@ -310,7 +309,6 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
             rdd = QueryFilterUtils.doWhere(rdd, relation);
-
 
         } else {
 

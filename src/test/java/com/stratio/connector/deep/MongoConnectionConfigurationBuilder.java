@@ -13,13 +13,13 @@ public class MongoConnectionConfigurationBuilder {
 
     private static final String MONGO_CELL_CLASS = "com.stratio.deep.mongodb.extractor.MongoCellExtractor";
 
-    private static final String HOST             = "127.0.0.1";
+    private static final String HOST = "localhost";
 
-    private static final String PORT             = "27017";
+    private static final String PORT = "27017";
 
     /**
      * Create the configuration object to config the connector cluster information
-     *
+     * 
      * @return Cluster configuration object
      */
     public static ConnectorClusterConfig prepareConfiguration() {

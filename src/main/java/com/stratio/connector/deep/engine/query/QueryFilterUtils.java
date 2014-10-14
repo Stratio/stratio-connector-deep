@@ -12,7 +12,8 @@ import org.apache.spark.api.java.JavaRDD;
 import scala.Tuple2;
 
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
-import com.stratio.connector.deep.engine.query.transformation.FilterColumns;
+
+import com.stratio.connector.deep.engine.query.functions.FilterColumns;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
@@ -92,7 +93,6 @@ public final class QueryFilterUtils {
             result = null;
         }
 
-        List<Cells> resultList = result.collect();
         return result;
     }
 

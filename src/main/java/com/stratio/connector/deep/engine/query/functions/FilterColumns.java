@@ -1,4 +1,4 @@
-package com.stratio.connector.deep.engine.query.transformation;
+package com.stratio.connector.deep.engine.query.functions;
 
 import java.util.List;
 
