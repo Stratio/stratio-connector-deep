@@ -8,8 +8,8 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
-import static com.stratio.connector.deep.PrepareFunctionalTest.clearData;
-import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForTest;
+import static com.stratio.connector.deep.PrepareFunctionalTest.clearDataFromCassandra;
+import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForCassandra;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -76,7 +76,7 @@ public class DeepConnectorCassandraFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        //prepareDataForTest();
+        prepareDataForCassandra();
     }
 
     @Test
@@ -113,7 +113,7 @@ public class DeepConnectorCassandraFT {
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
-            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_CONSTANT));
+            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
 
@@ -125,13 +125,8 @@ public class DeepConnectorCassandraFT {
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        // for (Operator op : Operator.values()){
 
-
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , Operator.DISTINCT, YEAR_EX ));
-
-
-        // }
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, TITLE_CONSTANT , Operator.DISTINCT, TITLE_EX ));
 
         LogicalStep filter = project.getNextStep();
 
@@ -152,7 +147,7 @@ public class DeepConnectorCassandraFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 1, rowsList.size());
+        assertEquals("Wrong number of rows", 209, rowsList.size());
 
         // Checking metadata
         assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
@@ -185,6 +180,7 @@ public class DeepConnectorCassandraFT {
                 AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                 DESCRIPTION_CONSTANT)),
                 Arrays.asList(AUTHOR_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT, DESCRIPTION_ALIAS_CONSTANT)));
+
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
@@ -206,20 +202,20 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 76, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", AUTHOR_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("Author expected", AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
 
         // Checking rows
         for (Row row : rowsList) {
-            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertEquals("Wrong number of columns in the row", 3, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
 
     @AfterClass
     public static void setDown() {
-        // clearData();
+         clearDataFromCassandra();
     }
 
 }

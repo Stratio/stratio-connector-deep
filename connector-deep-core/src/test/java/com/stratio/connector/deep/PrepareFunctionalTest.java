@@ -29,8 +29,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
     public static final String TABLE_2 = "artists";
     public static Cluster cluster1 = Cluster.builder().addContactPoints(HOST).build();
 
-    public static Session session = cluster1.connect();
-    public static MongoClient mongoClient = null;
+    public static Session session;
+    public static MongoClient mongoClient;
 
     public static void prepareDataForMongo(){
 
@@ -53,26 +53,26 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
         }
 
     }
-    public static void prepareDataForTest(){
+//    public static void prepareDataForTest(){
+//
+//        prepareDataForCassandra();
+//        prepareDataForMongo();
+//
+//    }
+//
+//    public static void clearData(){
+//
+//        clearDataFromCassandra();
+//        clearDataFromMongo();
+//
+//    }
 
-        prepareDataForCassandra();
-        prepareDataForMongo();
-
-    }
-
-    public static void clearData(){
-
-        clearDataFromCassandra();
-        clearDataFromMongo();
-
-    }
-
-    private static void clearDataFromMongo() {
+    public static void clearDataFromMongo() {
 
         mongoClient.dropDatabase(KEYSPACE);
     }
 
-    private static void clearDataFromCassandra() {
+    public static void clearDataFromCassandra() {
 
         session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
 
@@ -81,6 +81,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     public static void prepareDataForCassandra (){
 
+        session = cluster1.connect();
 
         session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
 
@@ -136,12 +137,6 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             }
         }
 
-//        try {
-//            //Wait 6 secons...change to 60
-//           // Thread.sleep(6000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         return true;
     }
 
