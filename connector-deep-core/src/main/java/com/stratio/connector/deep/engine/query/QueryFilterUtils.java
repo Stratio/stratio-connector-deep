@@ -92,7 +92,6 @@ public final class QueryFilterUtils {
             result = null;
         }
 
-        List<Cells> resultList = result.collect();
         return result;
     }
 

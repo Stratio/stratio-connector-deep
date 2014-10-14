@@ -116,7 +116,7 @@ public class DeepConnectorCassandraFT {
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
-            assertNotNull("Expecting author column in row", row.getCell(ARTIST_CONSTANT));
+            assertNotNull("Expecting artist column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
         }
     }
 
@@ -270,7 +270,7 @@ public class DeepConnectorCassandraFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 76, rowsList.size());
+        assertEquals("Wrong number of rows", 1, rowsList.size());
 
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());

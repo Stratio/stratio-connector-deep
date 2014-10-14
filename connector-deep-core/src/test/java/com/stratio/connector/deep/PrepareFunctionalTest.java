@@ -32,35 +32,34 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
     public static Session session = cluster1.connect();
     public static MongoClient mongoClient = null;
 
-    public static void prepareDataForMongo(){
-
+    public static void prepareDataForMongo() {
 
         // To directly connect to a single MongoDB server (note that this will not auto-discover the primary even
         // if it's a member of a replica set:
         try {
 
-            mongoClient = new MongoClient( HOST, 27017 );
+            mongoClient = new MongoClient(HOST, 27017);
 
             mongoClient.dropDatabase(KEYSPACE);
 
-            DB db = mongoClient.getDB( KEYSPACE );
+            DB db = mongoClient.getDB(KEYSPACE);
 
-            buildTestMongoDataInsertBatch(db, TABLE_1,TABLE_2);
-
+            buildTestMongoDataInsertBatch(db, TABLE_1, TABLE_2);
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
     }
-    public static void prepareDataForTest(){
+
+    public static void prepareDataForTest() {
 
         prepareDataForCassandra();
         prepareDataForMongo();
 
     }
 
-    public static void clearData(){
+    public static void clearData() {
 
         clearDataFromCassandra();
         clearDataFromMongo();
@@ -74,22 +73,22 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     private static void clearDataFromCassandra() {
 
-        session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
+        session.execute(String.format(DROP_KEYSPACE, KEYSPACE));
 
         session.close();
     }
 
-    public static void prepareDataForCassandra (){
+    public static void prepareDataForCassandra() {
 
 
-        session.execute(String.format(DROP_KEYSPACE,KEYSPACE));
+        session.execute(String.format(DROP_KEYSPACE, KEYSPACE));
 
-        session.execute(String.format(CREATE_KEYSPACE,KEYSPACE));
+        session.execute(String.format(CREATE_KEYSPACE, KEYSPACE));
 
         session = cluster1.connect(KEYSPACE);
 
         session.execute(
-                "CREATE TABLE "+KEYSPACE+"."+TABLE_1+" (" +
+                "CREATE TABLE " + KEYSPACE + "." + TABLE_1 + " (" +
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "title text," +
@@ -99,22 +98,21 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         ");");
 
         session.execute(
-                "CREATE TABLE "+KEYSPACE+"."+TABLE_2+" (" +
+                "CREATE TABLE " + KEYSPACE + "." + TABLE_2 + " (" +
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "age text" +
                         ");");
 
-
-        buildTestDataInsertBatch(session,TABLE_1,TABLE_2);
+        buildTestDataInsertBatch(session, TABLE_1, TABLE_2);
 
     }
 
-    protected static Boolean buildTestMongoDataInsertBatch(DB db, String ... csvOrigin) {
+    protected static Boolean buildTestMongoDataInsertBatch(DB db, String... csvOrigin) {
 
-        for(String origin : csvOrigin) {
+        for (String origin : csvOrigin) {
 
-            URL testData = Resources.getResource(origin+".csv");
+            URL testData = Resources.getResource(origin + ".csv");
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
                     new File(testData.toURI()))))) {
@@ -124,7 +122,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
                 while ((line = br.readLine()) != null) {
                     String[] fields = (line).split(",");
-                    BasicDBObject doc =  origin.equals(TABLE_1)? new BasicDBObject("artist",
+                    BasicDBObject doc = origin.equals(TABLE_1) ? new BasicDBObject("artist",
                             fields[1]).append("title", fields[2]).append("year", fields[3]).append("length",fields[4]).append("description",fields[5]):
                             new BasicDBObject("artist",
                                     fields[1]).append("age", fields[2]);
@@ -136,20 +134,20 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             }
         }
 
-//        try {
-//            //Wait 6 secons...change to 60
-//           // Thread.sleep(6000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        // try {
+        // //Wait 6 secons...change to 60
+        // // Thread.sleep(6000);
+        // } catch (InterruptedException e) {
+        // e.printStackTrace();
+        // }
         return true;
     }
 
-    protected static Boolean buildTestDataInsertBatch(Session session, String ... csvOrigin) {
+    protected static Boolean buildTestDataInsertBatch(Session session, String... csvOrigin) {
 
-        for(String origin : csvOrigin) {
+        for (String origin : csvOrigin) {
 
-            URL testData = Resources.getResource(origin+".csv");
+            URL testData = Resources.getResource(origin + ".csv");
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
                     new File(testData.toURI()))))) {
@@ -157,8 +155,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
                 while ((line = br.readLine()) != null) {
                     String[] fields = (quote(origin) + "," + line).split(",");
-                    String insert = origin.equals(TABLE_1)? String.format(rawSongsInsert,
-                            (Object[]) fields):String.format(rawArtistsInsert, (Object[]) fields);
+                    String insert = origin.equals(TABLE_1) ? String.format(rawSongsInsert,
+                            (Object[]) fields) : String.format(rawArtistsInsert, (Object[]) fields);
                     logger.debug("INSERT---->" + insert);
                     session.execute(insert);
                 }
@@ -167,14 +165,13 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             }
         }
 
-        //        try {
-        //            //Wait 6 secons...change to 60
-        //           // Thread.sleep(6000);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
+        // try {
+        // //Wait 6 secons...change to 60
+        // // Thread.sleep(6000);
+        // } catch (InterruptedException e) {
+        // e.printStackTrace();
+        // }
         return true;
     }
-
 
 }
