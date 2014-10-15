@@ -78,7 +78,7 @@ public class JoinResultSetAndCassandraFT {
     }
 
     @Test
-    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException {
+    public void testPartialResultJoinTest() throws UnsupportedException, ExecutionException {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();

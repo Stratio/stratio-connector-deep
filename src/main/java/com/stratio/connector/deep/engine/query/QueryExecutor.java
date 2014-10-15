@@ -15,7 +15,6 @@ package com.stratio.connector.deep.engine.query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.apache.spark.api.java.JavaRDD;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.connector.deep.engine.query.utils.PartialResultsUtils;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
@@ -339,24 +337,16 @@ public class QueryExecutor {
             Join joinStep = (Join) unionStep;
 
             if (joinStep.getOperation().equals(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS)) {
-                Iterator<LogicalStep> iterator = joinStep.getPreviousSteps().iterator();
-                PartialResults partialResults = null;
-                while (iterator.hasNext() && partialResults == null) {
-                    LogicalStep lStep = iterator.next();
-                    if (lStep instanceof PartialResults) {
-                        partialResults = (PartialResults) lStep;
-                    }
-                }
-                if (partialResults == null)
-                    throw new UnsupportedException(
-                                    "Missing logical step \"partialResults\" in a join with partial results");
 
-                JavaRDD<Cells> leftRdd = PartialResultsUtils.createRDDFromResultSet(deepContext,
+                PartialResults partialResults = QueryPartialResultsUtils.getPartialResult(joinStep);
+                JavaRDD<Cells> partialResultsRdd = QueryPartialResultsUtils.createRDDFromResultSet(deepContext,
                                 partialResults.getResults());
+                List<Relation> relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
+                                joinStep.getJoinRelations());
+                List<Cells> collect = partialResultsRdd.collect();
+                List<Cells> collect1 = rdd.collect();
+                joinedRdd = executeJoin(partialResultsRdd, rdd, relations);
 
-                // TODO do an executeJoin where left and right selectar order is checked
-                joinedRdd = executeUnorderedJoin(leftRdd, rdd, joinStep.getJoinRelations(), partialResults.getResults()
-                                .getColumnMetadata().get(0).getTableName());
             } else {
 
                 String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
@@ -382,29 +372,6 @@ public class QueryExecutor {
     private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
         return QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations);
-    }
-
-    /**
-     * @param leftRdd
-     * @param rdd
-     * @param joinRelations
-     */
-    private JavaRDD<Cells> executeUnorderedJoin(JavaRDD<Cells> partialResultRDD, JavaRDD<Cells> rdd,
-                    List<Relation> joinRelations, String partialResultsQuilifiedName) {
-
-        List<Relation> orderedRelations = new ArrayList<Relation>();
-        for (Relation relation : joinRelations) {
-            ColumnSelector colSelector = (ColumnSelector) relation.getLeftTerm();
-            if (colSelector.getName().getTableName().getQualifiedName().equals(partialResultsQuilifiedName)) {
-                orderedRelations.add(relation);
-            } else {
-                orderedRelations.add(new Relation(relation.getRightTerm(), relation.getOperator(), relation
-                                .getLeftTerm()));
-            }
-        }
-
-        return executeJoin(partialResultRDD, rdd, orderedRelations);
-
     }
 
     /**

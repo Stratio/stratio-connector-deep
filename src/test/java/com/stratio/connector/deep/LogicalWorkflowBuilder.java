@@ -124,7 +124,7 @@ public class LogicalWorkflowBuilder {
         ColumnSelector leftSelector = new ColumnSelector(leftSource);
         ColumnSelector rightSelector = new ColumnSelector(rightSource);
 
-        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
+        Relation relation = new Relation(rightSelector, Operator.EQ, leftSelector);
 
         Join join = new Join(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS, joinId);
         join.addJoinRelation(relation);
