@@ -87,10 +87,6 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                 } else if (obj instanceof Double) {
                     Double value = Double.valueOf(this.getStringValue());
                     return value.equals(obj);
-                } else if (obj instanceof Boolean && (this.clazz.isInstance(Boolean.class)||
-                        this.getStringValue()=="true" ||  this.getStringValue()=="false")) {
-                    Boolean value = Boolean.valueOf(this.getStringValue());
-                    return value.equals(obj);
                 }
             }catch (NumberFormatException e){
 
