@@ -10,10 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.stratio.meta.common.connector.Operations;
+import com.stratio.meta.common.data.ResultSet;
+import com.stratio.meta.common.data.Row;
 import com.stratio.meta.common.logicalplan.Filter;
 import com.stratio.meta.common.logicalplan.Join;
+import com.stratio.meta.common.logicalplan.PartialResults;
 import com.stratio.meta.common.logicalplan.Project;
 import com.stratio.meta.common.logicalplan.Select;
+import com.stratio.meta.common.metadata.structures.ColumnMetadata;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
@@ -29,7 +33,7 @@ import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 public class LogicalWorkflowBuilder {
 
     public static Project createProject(String clusterName, String catalogName, String tableName,
-            List<String> columnList) {
+                    List<String> columnList) {
 
         List<ColumnName> columns = new ArrayList<>();
         for (String column : columnList) {
@@ -43,7 +47,7 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            String data) {
+                    String data) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         StringSelector rightSelector = new StringSelector(data);
@@ -102,6 +106,29 @@ public class LogicalWorkflowBuilder {
         join.addJoinRelation(relation);
         join.addSourceIdentifier(leftSource.getTableName().getQualifiedName());
         join.addSourceIdentifier(rightSource.getTableName().getQualifiedName());
+
+        return join;
+    }
+
+    public static Join createJoinPartialResults(String joinId, ColumnName leftSource, ColumnName rightSource,
+                    List<ColumnMetadata> columnMetadata, List<Row> rows) {
+
+        ColumnSelector leftSelector = new ColumnSelector(leftSource);
+        ColumnSelector rightSelector = new ColumnSelector(rightSource);
+
+        Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
+
+        Join join = new Join(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS, joinId);
+        join.addJoinRelation(relation);
+        join.addSourceIdentifier(leftSource.getTableName().getQualifiedName());
+        join.addSourceIdentifier(rightSource.getTableName().getQualifiedName());
+
+        PartialResults partialResults = new PartialResults(Operations.PARTIAL_RESULTS);
+        ResultSet resultSet = new ResultSet();
+        resultSet.setColumnMetadata(columnMetadata);
+        resultSet.setRows(rows);
+        partialResults.setResults(resultSet);
+        join.addPreviousSteps(partialResults);
 
         return join;
     }

@@ -15,6 +15,7 @@ package com.stratio.connector.deep.engine.query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,13 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
+import com.stratio.connector.deep.engine.query.utils.PartialResultsUtils;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.IResultHandler;
+import com.stratio.meta.common.connector.Operations;
 import com.stratio.meta.common.data.Cell;
 import com.stratio.meta.common.data.ResultSet;
 import com.stratio.meta.common.data.Row;
@@ -40,6 +43,7 @@ import com.stratio.meta.common.logicalplan.Filter;
 import com.stratio.meta.common.logicalplan.Join;
 import com.stratio.meta.common.logicalplan.LogicalStep;
 import com.stratio.meta.common.logicalplan.LogicalWorkflow;
+import com.stratio.meta.common.logicalplan.PartialResults;
 import com.stratio.meta.common.logicalplan.Project;
 import com.stratio.meta.common.logicalplan.Select;
 import com.stratio.meta.common.logicalplan.UnionStep;
@@ -50,6 +54,7 @@ import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.metadata.ColumnType;
+import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 
 public class DeepQueryEngine extends CommonsQueryEngine {
 
@@ -68,7 +73,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     @Override
     @Deprecated
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
-            ExecutionException {
+                    ExecutionException {
 
         return execute(workflow);
     }
@@ -89,7 +94,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             JavaRDD<Cells> initialRdd = createRDD(project, extractorConfig);
 
             partialResultRdd = executeInitialStep(initialStep.getNextStep(), initialRdd, project.getTableName()
-                    .toString());
+                            .toString());
 
         }
 
@@ -108,7 +113,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             deepConnection = (DeepConnection) deepConnectionHandler.getConnection(clusterName.getName());
         } catch (HandlerConnectionException ex) {
             throw new ExecutionException("Error retrieving the cluster connection information ["
-                    + clusterName.toString() + "]", ex);
+                            + clusterName.toString() + "]", ex);
         }
 
         ExtractorConfig<Cells> extractorConfig = null;
@@ -141,7 +146,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
             String columnAlias = columnItem.getValue();
 
             ColumnMetadata columnMetadata = new ColumnMetadata(columnName.getTableName().getQualifiedName(),
-                    columnName.getName());
+                            columnName.getName());
             columnMetadata.setColumnAlias(columnAlias);
             // TODO Check if we have to get the alias or the column qualified name
             // columnMetadata.setType(columnType.get(columnAlias));
@@ -175,8 +180,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
             // Retrieving the cell to create a new meta cell with its value
             com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
-                    .getQualifiedName(),
-                    columnName.getName());
+                            .getQualifiedName(), columnName.getName());
             Cell rowCell = new Cell(cellsCell.getCellValue());
 
             // Adding the cell by column alias
@@ -216,7 +220,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @throws UnsupportedException
      */
     private JavaRDD<Cells> executeInitialStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
-            throws ExecutionException, UnsupportedException {
+                    throws ExecutionException, UnsupportedException {
 
         String stepId = tableName;
         LogicalStep currentStep = logicalStep;
@@ -236,8 +240,8 @@ public class DeepQueryEngine extends CommonsQueryEngine {
                     if (unionStep instanceof Join) {
                         stepId = ((Join) unionStep).getId();
                     } else {
-                        throw new ExecutionException("Unknown union step found ["
-                                + unionStep.getOperation().toString() + "]");
+                        throw new ExecutionException("Unknown union step found [" + unionStep.getOperation().toString()
+                                        + "]");
                     }
                 }
             } else {
@@ -256,18 +260,42 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      * @param unionStep
      * @param rdd
      * @throws ExecutionException
+     * @throws UnsupportedException
      */
-    private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException {
+    private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException,
+                    UnsupportedException {
 
         JavaRDD<Cells> joinedRdd = null;
         if (unionStep instanceof Join) {
             Join joinStep = (Join) unionStep;
-            String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
-            JavaRDD<Cells> leftRdd = partialResultsMap.get(joinLeftTableName);
-            if (leftRdd != null) {
-                joinedRdd = executeJoin(leftRdd, rdd, joinStep.getJoinRelations());
-                partialResultsMap.remove(joinLeftTableName);
-                partialResultsMap.put(joinStep.getId(), rdd);
+
+            if (joinStep.getOperation().equals(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS)) {
+                Iterator<LogicalStep> iterator = joinStep.getPreviousSteps().iterator();
+                PartialResults partialResults = null;
+                while (iterator.hasNext() && partialResults == null) {
+                    LogicalStep lStep = iterator.next();
+                    if (lStep instanceof PartialResults) {
+                        partialResults = (PartialResults) lStep;
+                    }
+                }
+                if (partialResults == null)
+                    throw new UnsupportedException(
+                                    "Missing logical step \"partialResults\" in a join with partial results");
+
+                JavaRDD<Cells> leftRdd = PartialResultsUtils.createRDDFromResultSet(deepContext,
+                                partialResults.getResults());
+
+                // TODO do an executeJoin where left and right selectar order is checked
+                joinedRdd = executeUnorderedJoin(leftRdd, rdd, joinStep.getJoinRelations(), partialResults.getResults()
+                                .getColumnMetadata().get(0).getTableName());
+            } else {
+                String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
+                JavaRDD<Cells> leftRdd = partialResultsMap.get(joinLeftTableName);
+                if (leftRdd != null) {
+                    joinedRdd = executeJoin(leftRdd, rdd, joinStep.getJoinRelations());
+                    partialResultsMap.remove(joinLeftTableName);
+                    partialResultsMap.put(joinStep.getId(), rdd);
+                }
             }
         } else {
             throw new ExecutionException("Unknown union step found [" + unionStep.getOperation().toString() + "]");
@@ -287,6 +315,29 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     }
 
     /**
+     * @param leftRdd
+     * @param rdd
+     * @param joinRelations
+     */
+    private JavaRDD<Cells> executeUnorderedJoin(JavaRDD<Cells> partialResultRDD, JavaRDD<Cells> rdd,
+                    List<Relation> joinRelations, String partialResultsQuilifiedName) {
+
+        List<Relation> orderedRelations = new ArrayList<Relation>();
+        for (Relation relation : joinRelations) {
+            ColumnSelector colSelector = (ColumnSelector) relation.getLeftTerm();
+            if (colSelector.getName().getTableName().getQualifiedName().equals(partialResultsQuilifiedName)) {
+                orderedRelations.add(relation);
+            } else {
+                orderedRelations.add(new Relation(relation.getRightTerm(), relation.getOperator(), relation
+                                .getLeftTerm()));
+            }
+        }
+
+        return executeJoin(partialResultRDD, rdd, orderedRelations);
+
+    }
+
+    /**
      * @param selectStep
      * @param rdd
      */
@@ -303,7 +354,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      */
 
     private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
-            UnsupportedException {
+                    UnsupportedException {
 
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
@@ -313,7 +364,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         } else {
 
             throw new ExecutionException("Unknown Filter found [" + filterStep.getRelation().getOperator().toString()
-                    + "]");
+                            + "]");
 
         }
 
@@ -329,7 +380,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      */
     @Override
     public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
-            throws UnsupportedException, ExecutionException {
+                    throws UnsupportedException, ExecutionException {
         // TODO Auto-generated method stub
 
     }
