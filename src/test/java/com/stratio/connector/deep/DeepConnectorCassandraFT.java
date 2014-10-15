@@ -39,8 +39,10 @@ public class DeepConnectorCassandraFT {
     private static final String MYTABLE1_CONSTANT = "songs";
     private static final String MYTABLE2_CONSTANT = "artists";
     private static final String ARTIST_CONSTANT = "artist";
-    private static final String AGE_CONSTANT  = "age";
-    private static final String RATE_CONSTANT = "rate";
+    private static final String AGE_CONSTANT    = "age";
+    private static final String RATE_CONSTANT   = "rate";
+    private static final String ACTIVE_CONSTANT = "active";
+
     private static final String ARTIST_ALIAS_CONSTANT = "artistAlias";
     private static final String ARTIST_ALIAS2_CONSTANT = "artistAlias2";
     private static final String DESCRIPTION_ALIAS_CONSTANT = "descriptionAlias";
@@ -49,8 +51,8 @@ public class DeepConnectorCassandraFT {
     private static final String TITLE_CONSTANT = "title";
     private static final String TITLE_EX = "Hey Jude";
     private static final Integer YEAR_EX = 2004;
-    private static final Float RATE_EX = 8.3F;
-
+    private static final Boolean RATE_EX = true;
+    private static final Integer ACTIVE_EX = 11;
     private static final String YEAR_CONSTANT = "year";
     private static final String CASSANDRA_CLUSTERNAME_CONSTANT = "cassandra";
     private static DeepQueryEngine deepQueryEngine;
@@ -96,7 +98,7 @@ public class DeepConnectorCassandraFT {
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, RATE_EX));
         LogicalStep filter = project.getNextStep();
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                 ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
@@ -127,8 +129,8 @@ public class DeepConnectorCassandraFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT));
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, RATE_CONSTANT, Operator.EQ, RATE_EX));
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT,ACTIVE_CONSTANT));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, ACTIVE_CONSTANT, Operator.DISTINCT, ACTIVE_EX));
         LogicalStep filter = project.getNextStep();
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
                 ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));

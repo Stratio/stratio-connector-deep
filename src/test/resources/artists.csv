@@ -1,41 +1,41 @@
-1,Bon Jovi,25,8.3
-2,Bing Crosby,33,5.0
-3,Mariah Carey,45,5.0
-4,Whitney Houston,56,5.0
-5,Tony Bennett,63,5.0
-6,Cher,68,5.0
-7,Enrique Iglesias,38,5.0
-8,Celine Dion,44,5.0
-9,Avril Lavigne,32,5.0
-10,Kris Kross,19,5.0
-12,David Bowie,56,5.0
-13,Chris Brown,67,5.0
-14,U2,24,5.0
-15,Mariah Carey,44,5.0
-16,Billie Holiday,67,5.0
-17,Crazy World of Arthur Brown,77,5.0
-18,Janet Jackson,65,5.0
-19,F R David,45,5.0
-20,Barbra Streisand,55,5.0
-21,Tony Bennett,54,5.0
-22,The Fugees,36,5.0
-23,The Prodigy,45,5.0
-24,Frankie Avalon,55,5.0
-25,Madonna,62,5.0
-26,Bee Gees,66,5.0
-27,Johnnie Ray,67,5.0
-28,Bryan Adams,49,5.0
-29,Elvis Presley,48,5.0
-30,Sinead O Connor,58,5.0
-31,Celine Dion,59,5.0
-33,Prince,61,5.0
-34,Blondie,62,5.0
-35,Jamelia,63,5.0
-36,The Black Eyed Peas,64,5.0
-37,The Beatles,65,5.0
-38,New Kids On The Block,66,5.0
-39,Los Lobos,67,5.0
-40,Jerry Murad Harmonicats,68,5.0
-42,George Michael,55,5.0
-43,The Kingston Trio,43,5.0
-44,The Rolling Stones,56,5.0
+1,Bon Jovi,25,8.3,true
+2,Bing Crosby,33,5.0,false
+3,Mariah Carey,45,5.0,false
+4,Whitney Houston,56,5.0,false
+5,Tony Bennett,63,5.0,false
+6,Cher,68,5.0,false
+7,Enrique Iglesias,38,5.0,false
+8,Celine Dion,44,5.0,false
+9,Avril Lavigne,32,5.0,false
+10,Kris Kross,19,5.0,false
+12,David Bowie,56,5.0,false
+13,Chris Brown,67,5.0,false
+14,U2,24,5.0,false
+15,Mariah Carey,44,5.0,false
+16,Billie Holiday,67,5.0,false
+17,Crazy World of Arthur Brown,77,5.0,false
+18,Janet Jackson,65,5.0,false
+19,F R David,45,5.0,false
+20,Barbra Streisand,55,5.0,false
+21,Tony Bennett,54,5.0,false
+22,The Fugees,36,5.0,false
+23,The Prodigy,45,5.0,false
+24,Frankie Avalon,55,5.0,false
+25,Madonna,62,5.0,false
+26,Bee Gees,66,5.0,false
+27,Johnnie Ray,67,5.0,false
+28,Bryan Adams,49,5.0,false
+29,Elvis Presley,48,5.0,false
+30,Sinead O Connor,58,5.0,false
+31,Celine Dion,59,5.0,false
+33,Prince,61,5.0,false
+34,Blondie,62,5.0,false
+35,Jamelia,63,5.0,false
+36,The Black Eyed Peas,64,5.0,true
+37,The Beatles,65,5.0,false
+38,New Kids On The Block,66,5.0,false
+39,Los Lobos,67,5.0,false
+40,Jerry Murad Harmonicats,68,5.0,false
+42,George Michael,55,5.0,false
+43,The Kingston Trio,43,5.0,false
+44,The Rolling Stones,56,5.0,true

@@ -20,6 +20,7 @@ import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.data.TableName;
 import com.stratio.meta2.common.metadata.ColumnType;
+import com.stratio.meta2.common.statements.structures.selectors.BooleanSelector;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.FloatingPointSelector;
 import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
@@ -58,10 +59,10 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Float data) {
+            Double data) {
 
         ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
-        FloatingPointSelector rightSelector = new FloatingPointSelector(Double.valueOf(data.toString()));
+        FloatingPointSelector rightSelector = new FloatingPointSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
@@ -83,7 +84,31 @@ public class LogicalWorkflowBuilder {
         return filter;
     }
 
+    public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
+            Boolean data) {
 
+        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        BooleanSelector rightSelector = new BooleanSelector(data);
+
+        Relation relation = new Relation(leftSelector, operator, rightSelector);
+
+        Filter filter = new Filter(retrieveFilterOperation(operator), relation);
+
+        return filter;
+    }
+
+    public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
+            Long data) {
+
+        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        IntegerSelector rightSelector = new IntegerSelector(data.toString());
+
+        Relation relation = new Relation(leftSelector, operator, rightSelector);
+
+        Filter filter = new Filter(retrieveFilterOperation(operator), relation);
+
+        return filter;
+    }
     /**
      * Get the related {@link Operations} to the given {@link Operator}
      * 

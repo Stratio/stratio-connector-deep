@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.apache.spark.api.java.function.Function;
 
+import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
@@ -35,7 +36,7 @@ public class LessThan implements Function<Cells, Boolean> {
     /**
      * Term to compare.
      */
-    private final Serializable term;
+    private Term<?> term;
 
     /**
      * Name of the field of the cell to compare.
@@ -50,7 +51,7 @@ public class LessThan implements Function<Cells, Boolean> {
      * @param term
      *            Term to compare to.
      */
-    public LessThan(String field, Serializable term) {
+    public LessThan(String field, Term term) {
         this.term = term;
         this.field = field;
     }

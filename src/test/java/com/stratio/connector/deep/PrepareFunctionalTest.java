@@ -93,7 +93,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "title text," +
-                        "year  text," +
+                        "year  bigint," +
                         "length  text," +
                         "description text" +
                         ");");
@@ -103,7 +103,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "age text," +
-                        "rate float" +
+                        "rate double," +
+                        "active boolean" +
                         ");");
 
         buildTestDataInsertBatch(session, TABLE_1, TABLE_2);
@@ -127,7 +128,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                     BasicDBObject doc = origin.equals(TABLE_1) ? new BasicDBObject("artist",
                             fields[1]).append("title", fields[2]).append("year", fields[3]).append("length",fields[4]).append("description",fields[5]):
                             new BasicDBObject("artist",
-                                    fields[1]).append("age", fields[2]).append("rate", fields[3]);
+                                    fields[1]).append("age", fields[2]).append("rate", fields[3]).append("active",
+                                    fields[4]);
 
                     collection.insert(doc);
                 }

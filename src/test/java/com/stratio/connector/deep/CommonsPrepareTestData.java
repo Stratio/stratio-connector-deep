@@ -34,10 +34,11 @@ public interface CommonsPrepareTestData {
 
     public static final String rawSongsInsert = "INSERT INTO %s (" + "\"id\", \"artist\", \"title\", "
             + "\"year\", \"length\", " + "\"description\") "
-            + "values (%s, \'%s\',\'%s\','%s', \'%s\', \'%s\');";
+            + "values (%s, \'%s\',\'%s\',%s, \'%s\', \'%s\');";
 
-    public static final String rawArtistsInsert = "INSERT INTO %s (" + "\"id\", \"artist\", \"age\", \"rate\") "
-            + "values (%s, \'%s\', \'%s\', %s);";
+    public static final String rawArtistsInsert = "INSERT INTO %s (" + "\"id\", \"artist\", \"age\", \"rate\", " +
+            "\"active\") "
+            + "values (%s, \'%s\', \'%s\', %s,  %s);";
     public static final String CREATE_TABLE =" DROP KEYSPACE ";
 
 
