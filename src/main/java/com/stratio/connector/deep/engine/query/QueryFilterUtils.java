@@ -222,6 +222,9 @@ public final class QueryFilterUtils {
         case LT:
             operatorName = FilterOperator.LT;
             break;
+        case MATCH:
+            operatorName = FilterOperator.MATCH;
+            break;
         default:
             break;
         }

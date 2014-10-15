@@ -87,7 +87,7 @@ public class QueryExecutor {
      * @throws UnsupportedException
      */
     private JavaRDD<Cells> executeInitialStep(Project project, ExtractorConfig<Cells> extractorConfig)
-                    throws ExecutionException, UnsupportedException {
+            throws ExecutionException, UnsupportedException {
         // Retrieving project information
         List<String> columnsList = new ArrayList<>();
         for (ColumnName columnName : project.getColumnList()) {
@@ -105,6 +105,7 @@ public class QueryExecutor {
             case FILTER_INDEXED_GT:
             case FILTER_INDEXED_LET:
             case FILTER_INDEXED_LT:
+            case FILTER_FULLTEXT:
                 indexFilters.add((Filter) nextStep);
                 break;
             case FILTER_PK_EQ:
@@ -139,7 +140,7 @@ public class QueryExecutor {
     }
 
     private JavaRDD<Cells> createRdd(Project project, ExtractorConfig<Cells> extractorConfig, List<Filter> filtersList)
-                    throws ExecutionException {
+            throws ExecutionException {
 
         // Retrieving project information
         List<String> columnsList = new ArrayList<>();
@@ -164,7 +165,7 @@ public class QueryExecutor {
      * @throws ExecutionException
      */
     private com.stratio.deep.commons.filter.Filter[] generateFilters(List<Filter> filtersList)
-                    throws ExecutionException {
+            throws ExecutionException {
 
         List<com.stratio.deep.commons.filter.Filter> resultList = new ArrayList<>();
         for (Filter filter : filtersList) {
@@ -172,7 +173,7 @@ public class QueryExecutor {
         }
 
         com.stratio.deep.commons.filter.Filter[] resultArray = new com.stratio.deep.commons.filter.Filter[resultList
-                        .size()];
+                .size()];
         return resultList.toArray(resultArray);
     }
 
@@ -186,8 +187,8 @@ public class QueryExecutor {
         ColumnSelector column = (ColumnSelector) filter.getRelation().getLeftTerm();
 
         return new com.stratio.deep.commons.filter.Filter(column.getName().getName(),
-                        QueryFilterUtils.retrieveFilterOperator(filter.getRelation().getOperator()),
-                        QueryFilterUtils.filterFromRightTermWhereRelation(filter.getRelation()));
+                QueryFilterUtils.retrieveFilterOperator(filter.getRelation().getOperator()),
+                QueryFilterUtils.filterFromRightTermWhereRelation(filter.getRelation()));
     }
 
     /**
@@ -202,7 +203,7 @@ public class QueryExecutor {
             deepConnection = (DeepConnection) deepConnectionHandler.getConnection(clusterName.getName());
         } catch (HandlerConnectionException ex) {
             throw new ExecutionException("Error retrieving the cluster connection information ["
-                            + clusterName.toString() + "]", ex);
+                    + clusterName.toString() + "]", ex);
         }
 
         ExtractorConfig<Cells> extractorConfig = null;
@@ -235,7 +236,7 @@ public class QueryExecutor {
             String columnAlias = columnItem.getValue();
 
             ColumnMetadata columnMetadata = new ColumnMetadata(columnName.getTableName().getQualifiedName(),
-                            columnName.getName());
+                    columnName.getName());
             columnMetadata.setColumnAlias(columnAlias);
             // TODO Check if we have to get the alias or the column qualified name
             // columnMetadata.setType(columnType.get(columnAlias));
@@ -269,7 +270,7 @@ public class QueryExecutor {
 
             // Retrieving the cell to create a new meta cell with its value
             com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
-                            .getQualifiedName(), columnName.getName());
+                    .getQualifiedName(), columnName.getName());
             Cell rowCell = new Cell(cellsCell.getCellValue());
 
             // Adding the cell by column alias
@@ -287,7 +288,7 @@ public class QueryExecutor {
      * @throws UnsupportedException
      */
     private JavaRDD<Cells> executeNextStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
-                    throws ExecutionException, UnsupportedException {
+            throws ExecutionException, UnsupportedException {
 
         String stepId = tableName;
         LogicalStep currentStep = logicalStep;
@@ -308,7 +309,7 @@ public class QueryExecutor {
                         stepId = ((Join) unionStep).getId();
                     } else {
                         throw new ExecutionException("Unknown union step found [" + unionStep.getOperation().toString()
-                                        + "]");
+                                + "]");
                     }
                 }
             } else {
@@ -330,7 +331,7 @@ public class QueryExecutor {
      * @throws UnsupportedException
      */
     private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException,
-                    UnsupportedException {
+            UnsupportedException {
 
         JavaRDD<Cells> joinedRdd = null;
         if (unionStep instanceof Join) {
@@ -340,9 +341,9 @@ public class QueryExecutor {
 
                 PartialResults partialResults = QueryPartialResultsUtils.getPartialResult(joinStep);
                 JavaRDD<Cells> partialResultsRdd = QueryPartialResultsUtils.createRDDFromResultSet(deepContext,
-                                partialResults.getResults());
+                        partialResults.getResults());
                 List<Relation> relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
-                                joinStep.getJoinRelations());
+                        joinStep.getJoinRelations());
                 List<Cells> collect = partialResultsRdd.collect();
                 List<Cells> collect1 = rdd.collect();
                 joinedRdd = executeJoin(partialResultsRdd, rdd, relations);
@@ -391,7 +392,7 @@ public class QueryExecutor {
      */
 
     private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
-                    UnsupportedException {
+            UnsupportedException {
 
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
@@ -401,7 +402,7 @@ public class QueryExecutor {
         } else {
 
             throw new ExecutionException("Unknown Filter found [" + filterStep.getRelation().getOperator().toString()
-                            + "]");
+                    + "]");
 
         }
 
