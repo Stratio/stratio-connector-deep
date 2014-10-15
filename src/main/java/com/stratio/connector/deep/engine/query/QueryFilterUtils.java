@@ -13,12 +13,17 @@ import scala.Tuple2;
 
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 
-import com.stratio.connector.deep.engine.query.functions.FilterColumns;
+import com.stratio.connector.deep.engine.query.transformation.FilterColumns;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
 import com.stratio.connector.deep.engine.query.functions.LessThan;
 import com.stratio.connector.deep.engine.query.functions.NotEquals;
+import com.stratio.connector.deep.engine.query.structures.BooleanTerm;
+import com.stratio.connector.deep.engine.query.structures.DoubleTerm;
+import com.stratio.connector.deep.engine.query.structures.LongTerm;
+import com.stratio.connector.deep.engine.query.structures.StringTerm;
+import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.deep.commons.entity.Cells;
@@ -60,7 +65,7 @@ public final class QueryFilterUtils {
         Operator operator = relation.getOperator();
         JavaRDD<Cells> result = null;
         Serializable field = filterFromLeftTermWhereRelation(relation);
-        Serializable rightTerm = filterFromRightTermWhereRelation(relation);
+        Term rightTerm =  filterFromRightTermWhereRelation(relation);
 
         logger.debug("Rdd doWhere input size: " + rdd.count());
         switch (operator) {
@@ -92,7 +97,7 @@ public final class QueryFilterUtils {
             logger.error("Operator not supported: " + operator);
             result = null;
         }
-
+        result.collect();
         return result;
     }
 
@@ -161,6 +166,7 @@ public final class QueryFilterUtils {
             leftField = ((StringSelector) relation.getLeftTerm()).getValue();
             break;
         case COLUMN:
+
             leftField = ((ColumnSelector) relation.getLeftTerm()).getName().getName();
             break;
         default:
@@ -172,24 +178,23 @@ public final class QueryFilterUtils {
 
     }
 
-    private static Serializable filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
+    private static Term filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
 
         SelectorType type = relation.getRightTerm().getType();
-        Serializable rightField = null;
+        Term rightField = null;
 
         switch (type) {
         case STRING:
-            rightField = ((StringSelector) relation.getRightTerm()).getValue();
+            rightField = new StringTerm(((StringSelector) relation.getRightTerm()).getValue());
             break;
         case BOOLEAN:
-            rightField = ((BooleanSelector) relation.getRightTerm()).getValue();
+            rightField = new BooleanTerm(((BooleanSelector) relation.getRightTerm()).toString());
             break;
         case INTEGER:
-            rightField = ((IntegerSelector) relation.getRightTerm()).getValue();
-            rightField = ((Long)rightField).intValue();
+            rightField = new LongTerm(((IntegerSelector) relation.getRightTerm()).toString());
             break;
         case FLOATING_POINT:
-            rightField = ((FloatingPointSelector) relation.getRightTerm()).getValue();
+            rightField = new DoubleTerm(((FloatingPointSelector) relation.getRightTerm()).toString());
             break;
 
         default:

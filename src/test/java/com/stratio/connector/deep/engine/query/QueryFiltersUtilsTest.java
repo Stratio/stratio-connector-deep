@@ -32,6 +32,7 @@ import com.stratio.meta2.common.data.ClusterName;
 import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.data.TableName;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 /**
@@ -166,7 +167,7 @@ public class QueryFiltersUtilsTest implements Serializable {
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
                 COLUMN1_CONSTANT));
 
-        StringSelector rightSelector = new StringSelector(DATA_CONSTANT);
+        IntegerSelector rightSelector = new IntegerSelector(DATA_CONSTANT);
 
         // SelectTerms selectTerms = new SelectTerms( leftSelector.getName().getName(), Operator.EQ.toString(),
         // rightSelector);

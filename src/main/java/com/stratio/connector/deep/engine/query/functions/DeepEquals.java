@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.apache.spark.api.java.function.Function;
 
+import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.Selector;
@@ -37,7 +38,7 @@ public class DeepEquals implements Function<Cells, Boolean> {
     /**
      * Term to compare.
      */
-    private final Serializable term;
+    private final Term<?> term;
 
     /**
      * Name of the field of the cell to compare.
@@ -52,7 +53,7 @@ public class DeepEquals implements Function<Cells, Boolean> {
      * @param term
      *            Term to compare to.
      */
-    public DeepEquals(String field, Serializable term) {
+    public DeepEquals(String field, Term<?> term) {
         this.term = term;
         this.field = field;
     }

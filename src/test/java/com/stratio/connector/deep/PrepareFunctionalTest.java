@@ -93,7 +93,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "title text," +
-                        "year  int," +
+                        "year  text," +
                         "length  text," +
                         "description text" +
                         ");");
@@ -102,11 +102,12 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                 "CREATE TABLE " + KEYSPACE + "." + TABLE_2 + " (" +
                         "id int PRIMARY KEY," +
                         "artist text," +
-                        "age int" +
+                        "age text," +
+                        "rate float" +
                         ");");
 
         buildTestDataInsertBatch(session, TABLE_1, TABLE_2);
-
+        session.close();
     }
 
     protected static Boolean buildTestMongoDataInsertBatch(DB db, String... csvOrigin) {
@@ -126,7 +127,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                     BasicDBObject doc = origin.equals(TABLE_1) ? new BasicDBObject("artist",
                             fields[1]).append("title", fields[2]).append("year", fields[3]).append("length",fields[4]).append("description",fields[5]):
                             new BasicDBObject("artist",
-                                    fields[1]).append("age", fields[2]);
+                                    fields[1]).append("age", fields[2]).append("rate", fields[3]);
 
                     collection.insert(doc);
                 }
