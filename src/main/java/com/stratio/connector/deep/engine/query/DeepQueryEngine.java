@@ -46,7 +46,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     @Override
     @Deprecated
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
-            ExecutionException {
+                    ExecutionException {
 
         return execute(workflow);
     }
@@ -58,9 +58,9 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      */
     @Override
     public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
-
         QueryExecutor executor = new QueryExecutor(deepContext, deepConnectionHandler);
         return executor.executeWorkFlow(workflow);
+
     }
 
     /*
@@ -71,7 +71,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      */
     @Override
     public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
-            throws UnsupportedException, ExecutionException {
+                    throws UnsupportedException, ExecutionException {
         // TODO Auto-generated method stub
 
     }
