@@ -33,7 +33,6 @@ import com.stratio.meta.common.statements.structures.relationships.Operator;
 
 public class DeepConnectorMongoFT {
 
-
     private static final String KEYSPACE = "functionaltest";
 
     private static final String MYTABLE1_CONSTANT = "songs";
@@ -63,9 +62,8 @@ public class DeepConnectorMongoFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        //prepareDataForTest();
+        // prepareDataForTest();
     }
-
 
     @Test
     public void testSingleProjectAndSelectTest() throws UnsupportedException, ExecutionException {
@@ -113,13 +111,12 @@ public class DeepConnectorMongoFT {
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        for (Operator op : Operator.values()){
+        for (Operator op : Operator.values()) {
 
-            if(op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)){
-                project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT , op , YEAR_EX ));
+            if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)) {
+                project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, op, YEAR_EX, false));
 
-
-                LogicalStep filter =  project.getNextStep();
+                LogicalStep filter = project.getNextStep();
 
                 filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
                         AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
@@ -155,40 +152,37 @@ public class DeepConnectorMongoFT {
 
         }
 
-
     }
 
     private int getResultExpectedFomOp(Operator op) {
 
-        int result =0;
+        int result = 0;
 
-        switch (op){
+        switch (op) {
 
-            case EQ:
-                result=2;
-                break;
-            case LT:
-                result= 183;
-                break;
-            case GT:
-                result= 25;
-                break;
-            case LET:
-                result= 185;
-                break;
-            case GET:
-                result= 27;
-                break;
-            case DISTINCT:
-                result= 208;
-                break;
-            default:
-                result=210;
-                break;
-
+        case EQ:
+            result = 2;
+            break;
+        case LT:
+            result = 183;
+            break;
+        case GT:
+            result = 25;
+            break;
+        case LET:
+            result = 185;
+            break;
+        case GET:
+            result = 27;
+            break;
+        case DISTINCT:
+            result = 208;
+            break;
+        default:
+            result = 210;
+            break;
 
         }
-
 
         return result;
     }

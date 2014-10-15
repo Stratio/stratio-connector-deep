@@ -3,6 +3,7 @@
  */
 package com.stratio.connector.deep;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -25,6 +26,8 @@ import com.stratio.meta2.common.data.ColumnName;
 import com.stratio.meta2.common.data.TableName;
 import com.stratio.meta2.common.metadata.ColumnType;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
+import com.stratio.meta2.common.statements.structures.selectors.Selector;
 import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 
 /**
@@ -47,14 +50,19 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-                    String data) {
+                    Serializable data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
-        StringSelector rightSelector = new StringSelector(data);
+        Selector rightSelector = null;
+        if (data instanceof String) {
+            rightSelector = new StringSelector((String) data);
+        } else if (data instanceof Integer) {
+            rightSelector = new IntegerSelector((Integer) data);
+        }
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator), relation);
+        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
 
         return filter;
     }
@@ -66,27 +74,27 @@ public class LogicalWorkflowBuilder {
      *            Relation operator
      * @return Operation related to the operator
      */
-    public static Operations retrieveFilterOperation(Operator operator) {
+    public static Operations retrieveFilterOperation(Operator operator, boolean indexed) {
 
         Operations operation = null;
         switch (operator) {
         case EQ:
-            operation = Operations.FILTER_FUNCTION_EQ;
+            operation = indexed ? Operations.FILTER_INDEXED_EQ : Operations.FILTER_NON_INDEXED_EQ;
             break;
         case GET:
-            operation = Operations.FILTER_FUNCTION_GET;
+            operation = indexed ? Operations.FILTER_INDEXED_GET : Operations.FILTER_NON_INDEXED_GET;
             break;
         case GT:
-            operation = Operations.FILTER_FUNCTION_GT;
+            operation = indexed ? Operations.FILTER_INDEXED_GT : Operations.FILTER_NON_INDEXED_GT;
             break;
         case LET:
-            operation = Operations.FILTER_FUNCTION_LET;
+            operation = indexed ? Operations.FILTER_INDEXED_LET : Operations.FILTER_NON_INDEXED_LET;
             break;
         case LT:
-            operation = Operations.FILTER_FUNCTION_LT;
+            operation = indexed ? Operations.FILTER_INDEXED_LT : Operations.FILTER_NON_INDEXED_LT;
             break;
         case DISTINCT:
-            operation = Operations.FILTER_FUNCTION_DISTINCT;
+            operation = indexed ? Operations.FILTER_INDEXED_DISTINCT : Operations.FILTER_NON_INDEXED_DISTINCT;
             break;
         default:
             break;

@@ -21,6 +21,7 @@ import com.stratio.connector.deep.engine.query.functions.NotEquals;
 import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.filter.FilterOperator;
 import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
@@ -61,7 +62,6 @@ public final class QueryFilterUtils {
         Serializable field = filterFromLeftTermWhereRelation(relation);
         Serializable rightTerm = filterFromRightTermWhereRelation(relation);
 
-        logger.debug("Rdd doWhere input size: " + rdd.count());
         switch (operator) {
         case EQ:
             result = rdd.filter(new DeepEquals(field.toString(), rightTerm));
@@ -149,7 +149,7 @@ public final class QueryFilterUtils {
 
     }
 
-    private static Serializable filterFromLeftTermWhereRelation(Relation relation) throws ExecutionException {
+    static Serializable filterFromLeftTermWhereRelation(Relation relation) throws ExecutionException {
 
         String leftField = null;
         SelectorType type = relation.getLeftTerm().getType();
@@ -169,7 +169,7 @@ public final class QueryFilterUtils {
 
     }
 
-    private static Serializable filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
+    static Serializable filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
 
         SelectorType type = relation.getRightTerm().getType();
         Serializable rightField = null;
@@ -194,5 +194,38 @@ public final class QueryFilterUtils {
 
         }
         return rightField;
+    }
+
+    /**
+     * @param operator
+     * @return
+     */
+    public static String retrieveFilterOperator(Operator operator) {
+
+        String operatorName = null;
+        switch (operator) {
+        case EQ:
+            operatorName = FilterOperator.IS;
+            break;
+        case DISTINCT:
+            operatorName = FilterOperator.NE;
+            break;
+        case GET:
+            operatorName = FilterOperator.GTE;
+            break;
+        case GT:
+            operatorName = FilterOperator.GT;
+            break;
+        case LET:
+            operatorName = FilterOperator.LTE;
+            break;
+        case LT:
+            operatorName = FilterOperator.LT;
+            break;
+        default:
+            break;
+        }
+
+        return operatorName;
     }
 }
