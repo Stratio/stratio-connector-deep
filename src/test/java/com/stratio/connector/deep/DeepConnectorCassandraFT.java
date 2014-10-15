@@ -123,7 +123,8 @@ public class DeepConnectorCassandraFT {
     }
 
     @Test
-    public void testSingleProjectWithOneNonIndexFilterAndSelectTest() throws UnsupportedException, ExecutionException {
+    public void testSingleProjectWithOneNonIndexStringFilterAndSelectTest() throws UnsupportedException,
+            ExecutionException {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -131,6 +132,49 @@ public class DeepConnectorCassandraFT {
                 Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, TITLE_CONSTANT, Operator.EQ, TITLE_EX, false));
+
+        LogicalStep filter = project.getNextStep();
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+
+        // One single initial step
+        stepList.add(project);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+
+        // Assertions
+        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+        List<Row> rowsList = result.getResultSet().getRows();
+
+        // Checking results number
+        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
+        assertEquals("Wrong number of rows", 1, rowsList.size());
+
+        // Checking metadata
+        assertEquals("Author expected", ARTIST_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                .getTableName());
+
+        // Checking rows
+        for (Row row : rowsList) {
+            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertNotNull("Expecting author column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
+        }
+    }
+
+    @Test
+    public void testSingleProjectWithOneNonIndexIntegerFilterAndSelectTest() throws UnsupportedException,
+            ExecutionException {
+
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+                Arrays.asList(ID_CONSTANT, ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, ID_CONSTANT, Operator.LET, ID_EX, false));
 
         LogicalStep filter = project.getNextStep();
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
