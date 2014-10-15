@@ -99,22 +99,22 @@ public class QueryExecutor {
         LogicalStep nextStep = project.getNextStep();
         while (nextStep instanceof Filter) {
             switch (nextStep.getOperation()) {
-            case FILTER_INDEXED_DISTINCT:
             case FILTER_INDEXED_EQ:
+            case FILTER_INDEXED_DISTINCT:
             case FILTER_INDEXED_GET:
             case FILTER_INDEXED_GT:
             case FILTER_INDEXED_LET:
             case FILTER_INDEXED_LT:
-            case FILTER_PK_DISTINCT:
+                indexFilters.add((Filter) nextStep);
+                break;
             case FILTER_PK_EQ:
+            case FILTER_PK_DISTINCT:
             case FILTER_PK_GET:
             case FILTER_PK_GT:
             case FILTER_PK_LET:
             case FILTER_PK_LT:
-                indexFilters.add((Filter) nextStep);
-                break;
-            case FILTER_NON_INDEXED_DISTINCT:
             case FILTER_NON_INDEXED_EQ:
+            case FILTER_NON_INDEXED_DISTINCT:
             case FILTER_NON_INDEXED_GET:
             case FILTER_NON_INDEXED_GT:
             case FILTER_NON_INDEXED_LET:
