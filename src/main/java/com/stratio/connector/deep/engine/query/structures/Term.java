@@ -54,9 +54,9 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                     Integer obj = Integer.valueOf(o.toString());
                     return value.compareTo(obj);
 
-                }else if ((this.clazz).equals(Float.class)) {
-                    Float value = Float.valueOf(this.getStringValue());
-                    Float obj = Float.valueOf(o.toString());
+                }else if ((this.clazz).equals(Double.class)) {
+                    Double value = Double.valueOf(this.getStringValue());
+                    Double obj = Double.valueOf(o.toString());
                     return value.compareTo(obj);
 
                 }
