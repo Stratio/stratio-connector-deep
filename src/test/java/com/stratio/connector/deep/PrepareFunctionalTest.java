@@ -103,7 +103,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "age int," +
-                        "rate double," +
+                        "rate float," +
                         "active boolean" +
                         ");");
 

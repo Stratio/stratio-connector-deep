@@ -60,5 +60,6 @@ public class LessEqualThan implements Function<Cells, Boolean> {
     public Boolean call(Cells cells) {
         Object obj = cells.getCellByName(field).getCellValue();
         return ((Comparable) term).compareTo(obj) >= 0;
+
     }
 }

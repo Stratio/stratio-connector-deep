@@ -44,6 +44,27 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
     */
     @Override
     public int compareTo(T o) {
+
+
+        if (!(this.clazz.isInstance(o))) {
+
+            try {
+                if ((this.clazz).equals(Long.class)) {
+                    Integer value = Integer.valueOf(this.getStringValue());
+                    Integer obj = Integer.valueOf(o.toString());
+                    return value.compareTo(obj);
+
+                }else if ((this.clazz).equals(Double.class)) {
+                    Double value = Double.valueOf(this.getStringValue());
+                    Double obj = Double.valueOf(o.toString());
+                    return value.compareTo(obj);
+
+                }
+            } catch (NumberFormatException | ClassCastException e) {
+
+            }
+            return -1;
+        }
         return this.value.compareTo(o);
     }
     /**
