@@ -154,9 +154,9 @@ public class QueryExecutor {
         extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
         extractorConfig.putValue(ExtractorConstants.CATALOG, project.getCatalogName());
 
-        if(filtersList.size()!=0){
-            extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList));
-        }
+
+        extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList));
+
 
 
         JavaRDD<Cells> rdd = deepContext.createJavaRDD(extractorConfig);
