@@ -1,6 +1,8 @@
 package com.stratio.connector.deep.engine.query;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,10 +17,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ContextProperties;
+import com.stratio.connector.deep.connection.DeepConnection;
+import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.server.ExtractorServer;
@@ -62,103 +67,123 @@ public class QueryFiltersUtilsTest implements Serializable {
     private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("clusterName");
 
     private static final String DATA_CONSTANT = "001";
+    @Mock
+    private DeepSparkContext deepContext;
 
-    DeepSparkContext deepSparkContext;
+    @Mock
+    private DeepConnectionHandler deepConnectionHandler;
 
+    @Mock
+    private DeepConnection deepConnection;
+
+    @Mock
+    private ExtractorConfig<Cells> extractorConfig;
+
+    @Mock(name = "leftRdd")
     private JavaRDD<Cells> leftRdd;
 
+    @Mock(name = "rightRdd")
     private JavaRDD<Cells> rightRdd;
+
+    @Mock(name = "thirdRdd")
+    private JavaRDD<Cells> thirdRdd;
 
     @Before
     public void before() throws Exception, HandlerConnectionException {
         String job = "java:creatingCellRDD";
-        // Cassandra
+//        // Cassandra
 //        String KEYSPACENAME = CATALOG_CONSTANT;
 //        String TABLENAME_1 = TABLE1_CONSTANT.getName();
 //        String TABLENAME_2 = TABLE2_CONSTANT.getName();
 //        String CQLPORT = "9042";
 //        String RPCPORT = "9160";
 //        String HOST = "127.0.0.1";
-
-        // Mongo
-        String KEYSPACENAME = CATALOG_CONSTANT;
-        String TABLENAME_1 = TABLE1_CONSTANT.getName();
-        String TABLENAME_2 = TABLE2_CONSTANT.getName();
-        String HOST = "localhost:27017";
-
-        // ES
-//        String KEYSPACENAME = CATALOG_CONSTANT;
-//        String TABLENAME_1 = TABLE1_CONSTANT.getName();
-//        String TABLENAME_2 = TABLE2_CONSTANT.getName();
-//        String HOST = "localhost:9200";
-//        String DATABASE1 = "test/mytable";
-//        String DATABASE2 = "test/mytable2";
-
-        // //Call async the Extractor netty Server
-        ExtractorServer.initExtractorServer();
-
-        // Creating the Deep Context
-        ContextProperties p = new ContextProperties();
-        SparkConf sparkConf = new SparkConf()
-                .setMaster(p.getCluster())
-                .setAppName(job)
-                .setJars(p.getJars())
-                .setSparkHome(p.getSparkHome())
-                .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-                .set("spark.kryo.registrator", "com.stratio.deep.serializer.DeepKryoRegistrator");
-
-        // SparkContext sc = new SparkContext(p.getCluster(), job, sparkConf);
-
-        logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
-        logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
-
-        deepSparkContext = new DeepSparkContext(p.getCluster(), job, p.getSparkHome(), p.getJars());
-
-        // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> config_1 = new ExtractorConfig(Cells.class);
-
+//
+//        // Mongo
+////        String KEYSPACENAME = CATALOG_CONSTANT;
+////        String TABLENAME_1 = TABLE1_CONSTANT.getName();
+////        String TABLENAME_2 = TABLE2_CONSTANT.getName();
+////        String HOST = "localhost:27017";
+//
+//        // ES
+////        String KEYSPACENAME = CATALOG_CONSTANT;
+////        String TABLENAME_1 = TABLE1_CONSTANT.getName();
+////        String TABLENAME_2 = TABLE2_CONSTANT.getName();
+////        String HOST = "localhost:9200";
+////        String DATABASE1 = "test/mytable";
+////        String DATABASE2 = "test/mytable2";
+//
+//        // //Call async the Extractor netty Server
+//        ExtractorServer.initExtractorServer();
+//
+//        // Creating the Deep Context
+//        ContextProperties p = new ContextProperties();
+//        SparkConf sparkConf = new SparkConf()
+//                .setMaster(p.getCluster())
+//                .setAppName(job)
+//                .setJars(p.getJars())
+//                .setSparkHome(p.getSparkHome())
+//                .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//                .set("spark.kryo.registrator", "com.stratio.deep.serializer.DeepKryoRegistrator");
+//
+//        // SparkContext sc = new SparkContext(p.getCluster(), job, sparkConf);
+//
+//        logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
+//        logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
+//
+//        deepSparkContext = new DeepSparkContext(p.getCluster(), job, p.getSparkHome(), p.getJars());
+//
+//        // Creating a configuration for the Extractor and initialize it
+//        ExtractorConfig<Cells> config_1 = new ExtractorConfig(Cells.class);
+//
 //        config_1.putValue(ExtractorConstants.KEYSPACE, KEYSPACENAME).putValue(ExtractorConstants.TABLE,
 //        TABLENAME_1).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
 //        RPCPORT).putValue(ExtractorConstants.HOST, HOST);
-
-        config_1.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
-        KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_1);
-
-//        config_1.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_1)
-//                .putValue(ExtractorConstants.HOST, HOST);
-
-        config_1.setExtractorImplClassName(MONGO_CELL_CLASS);
-
-        // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> config_2 = new ExtractorConfig(Cells.class);
-
+//
+////        config_1.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
+////        KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_1);
+//
+////        config_1.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_1)
+////                .putValue(ExtractorConstants.HOST, HOST);
+//
+//        config_1.setExtractorImplClassName(CASSANDRA_CELL_CLASS);
+//
+//        // Creating a configuration for the Extractor and initialize it
+//        ExtractorConfig<Cells> config_2 = new ExtractorConfig(Cells.class);
+//
 //        config_2.putValue(ExtractorConstants.KEYSPACE, KEYSPACENAME).putValue(ExtractorConstants.TABLE,
 //        TABLENAME_2).putValue(ExtractorConstants.CQLPORT, CQLPORT).putValue(ExtractorConstants.RPCPORT,
 //        RPCPORT).putValue(ExtractorConstants.HOST, HOST);
+//
+//        config_2.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
+//        KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_2);
+//
+////        config_2.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_2)
+////                .putValue(ExtractorConstants.HOST, HOST);
+//
+//        config_2.setExtractorImplClassName(MONGO_CELL_CLASS);
+//
+//        // Creating the RDD
+//        leftRdd = deepSparkContext.createJavaRDD(config_1);
+//        if(logger.isDebugEnabled()){
+//            logger.debug("El resultado tabla " + TABLENAME_1 + " es de " + leftRdd.count());
+//        }
+//
+//        rightRdd = deepSparkContext.createJavaRDD(config_2);
+//        if(logger.isDebugEnabled()) {
+//            logger.info("El resultado tabla " + TABLENAME_2 + " es de " + rightRdd.count());
+//        }
 
-        config_2.putValue(ExtractorConstants.HOST, HOST).putValue(ExtractorConstants.DATABASE,
-        KEYSPACENAME).putValue(ExtractorConstants.COLLECTION, TABLENAME_2);
-
-//        config_2.putValue(ExtractorConstants.INDEX, KEYSPACENAME).putValue(ExtractorConstants.TYPE, TABLENAME_2)
-//                .putValue(ExtractorConstants.HOST, HOST);
-
-        config_2.setExtractorImplClassName(MONGO_CELL_CLASS);
-
-        // Creating the RDD
-        leftRdd = deepSparkContext.createJavaRDD(config_1);
-        logger.info("El resultado tabla " + TABLENAME_1 + " es de " + leftRdd.count());
-        List<Cells> cells = leftRdd.collect();
-        rightRdd = deepSparkContext.createJavaRDD(config_2);
-        List<Cells> cells2 = rightRdd.collect();
-        logger.info("El resultado tabla " + TABLENAME_2 + " es de " + rightRdd.count());
-
+        when(deepConnectionHandler.getConnection(CLUSTERNAME_CONSTANT.getName())).thenReturn(deepConnection);
+        when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
+        when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(leftRdd, rightRdd);
     }
 
     @After
     public void after() throws Exception, HandlerConnectionException {
 
-        deepSparkContext.stop();
-        ExtractorServer.close();
+//        deepContext.stop();
+//        ExtractorServer.close();
     }
 
     @Test
@@ -174,11 +199,13 @@ public class QueryFiltersUtilsTest implements Serializable {
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 
         JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, relation);
+        if(logger.isDebugEnabled()) {
+            logger.debug("-------------------resultado Encontrados--------------" + rdd.count());
+            logger.debug("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
+        }
 
-        logger.info("-------------------resultado Encontrados--------------" + rdd.count());
-        logger.info("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
-        rdd.collect();
-
+        when(QueryFilterUtils.doWhere(leftRdd,relation)).thenReturn(thirdRdd);
+        assertEquals(true, true);
     }
 
     @Test
@@ -187,13 +214,12 @@ public class QueryFiltersUtilsTest implements Serializable {
 
         columnsAliases.put(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
                 COLUMN1_CONSTANT), "nameAlias");
-        List<Cells> cells = leftRdd.collect();
 
         JavaRDD<Cells> rdd = QueryFilterUtils.filterSelectedColumns(leftRdd, columnsAliases.keySet());
-
-        logger.info("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
-        rdd.collect();
-
+        if(logger.isDebugEnabled()) {
+            logger.debug("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
+        }
+        when(QueryFilterUtils.filterSelectedColumns(leftRdd, columnsAliases.keySet())).thenReturn(thirdRdd);
         assertEquals(true, true);
     }
 
@@ -211,16 +237,18 @@ public class QueryFiltersUtilsTest implements Serializable {
         relations.add(relation);
 
         JavaRDD<Cells> outputrdd = QueryFilterUtils.doJoin(leftRdd, rightRdd, relations);
+        if(logger.isDebugEnabled()) {
 
-        logger.info("El resultado es :" + outputrdd.count());
-        logger.info("resultado " + outputrdd.first().toString());
-        int i = 0;
-        for (Cells cell : outputrdd.collect()) {
+            logger.debug("El resultado es :" + outputrdd.count());
+            logger.debug("resultado " + outputrdd.first().toString());
 
-            logger.info("-----------------resultado " + (i++) + "  " + cell.getCellValues());
+            int i = 0;
+            for (Cells cell : outputrdd.collect()) {
 
+                logger.debug("-----------------resultado " + (i++) + "  " + cell.getCellValues());
+
+            }
         }
-
         assertEquals(true, true);
     }
 

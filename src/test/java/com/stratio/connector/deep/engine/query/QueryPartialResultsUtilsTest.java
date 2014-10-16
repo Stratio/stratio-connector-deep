@@ -121,11 +121,11 @@ public class QueryPartialResultsUtilsTest {
     }
 
     /**
-     * @param catalog2
-     * @param table2
-     * @param row12
+     * @param catalog
+     * @param table
+     * @param row
      * @param i
-     * @return
+     * @return ColumnMetadata
      */
     private ColumnMetadata metaMetadata(String catalog, String table, String row, ColumnType i) {
 
@@ -133,11 +133,10 @@ public class QueryPartialResultsUtilsTest {
     }
 
     /**
-     * @param cell1Value2
-     * @param row22
-     * @param row12
-     * @param cell1Value1
-     * @return
+     * @param col
+     * @param col2
+     * @params
+     * @return Row
      */
     private Row metaRow(String col, Object cellValue, String col2, Object cellValue2) {
         Row row = new Row(col, new com.stratio.meta.common.data.Cell(cellValue));

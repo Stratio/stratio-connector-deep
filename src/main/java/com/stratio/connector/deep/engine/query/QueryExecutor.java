@@ -133,7 +133,7 @@ public class QueryExecutor {
         JavaRDD<Cells> initialRdd = createRdd(project, extractorConfig, indexFilters);
 
         JavaRDD<Cells> filteredRdd = initialRdd;
-        filteredRdd.collect();
+
         for (Filter filter : nonIndexFilters) {
             filteredRdd = executeFilter(filter, filteredRdd);
         }
@@ -159,7 +159,6 @@ public class QueryExecutor {
 
         JavaRDD<Cells> rdd = deepContext.createJavaRDD(extractorConfig);
 
-        rdd.collect();
         return rdd;
     }
 
@@ -350,8 +349,7 @@ public class QueryExecutor {
                         partialResults.getResults());
                 List<Relation> relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
                         joinStep.getJoinRelations());
-                List<Cells> collect = partialResultsRdd.collect();
-                List<Cells> collect1 = rdd.collect();
+               
                 joinedRdd = executeJoin(partialResultsRdd, rdd, relations);
 
             } else {

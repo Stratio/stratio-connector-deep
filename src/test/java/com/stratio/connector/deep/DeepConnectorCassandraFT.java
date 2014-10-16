@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -177,10 +179,11 @@ public class DeepConnectorCassandraFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 1, rowsList.size());
+        assertEquals("Wrong number of rows", 10, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", ARTIST_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT+"."+ARTIST_CONSTANT,
+                columnsMetadata.get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
 
@@ -324,7 +327,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 1, rowsList.size());
+        assertEquals("Wrong number of rows", 41, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT+"."+ARTIST_CONSTANT,
                 columnsMetadata.get(0).getColumnName());

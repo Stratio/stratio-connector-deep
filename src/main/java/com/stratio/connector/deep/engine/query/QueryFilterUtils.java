@@ -94,7 +94,10 @@ public final class QueryFilterUtils {
             // result = rdd.filter(new Between(field, terms.get(0), terms.get(1)));
             throw new UnsupportedException("BETWEEN operator unsupported");
         default:
-            logger.error("Operator not supported: " + operator);
+            if(logger.isDebugEnabled()) {
+                logger.debug("Operator not supported: " + operator);
+            }
+
             result = null;
         }
 
@@ -115,7 +118,6 @@ public final class QueryFilterUtils {
 
         List<ColumnName> list = new ArrayList<>(selectedCols);
         JavaRDD<Cells> rddResult = rdd.map(new FilterColumns(list));
-        rddResult.collect();
         return rddResult;
     }
 
@@ -134,25 +136,25 @@ public final class QueryFilterUtils {
             if (relation.getOperator().equals(Operator.EQ)) {
                 leftTables.add(selectorLeft.getName());
                 rightTables.add(selectorRight.getName());
-                logger.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
-                        + selectorLeft.getName().getName());
-
+                if(logger.isDebugEnabled()) {
+                    logger.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
+                            + selectorLeft.getName().getName());
+                }
             }
 
         }
-        leftRdd.collect();
-        rightRdd.collect();
+
         JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
-        rddLeft.collect();
+
         JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
-        rddRight.collect();
+
         if (rddLeft != null && rddRight != null) {
             JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
 
             joinedResult = joinRDD.map(new JoinCells());
 
         }
-        joinedResult.collect();
+
         return joinedResult;
 
     }

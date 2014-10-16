@@ -52,19 +52,6 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     }
 
-//    public static void prepareDataForTest(){
-//
-//        prepareDataForCassandra();
-//        prepareDataForMongo();
-//
-//    }
-//
-//    public static void clearData(){
-//
-//        clearDataFromCassandra();
-//        clearDataFromMongo();
-//
-//    }
 
     public static void clearDataFromMongo() {
 
@@ -72,6 +59,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
     }
 
     public static void clearDataFromCassandra() {
+
+        session = cluster1.connect();
 
         session.execute(String.format(DROP_KEYSPACE, KEYSPACE));
 
