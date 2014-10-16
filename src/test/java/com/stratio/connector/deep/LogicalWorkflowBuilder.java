@@ -102,6 +102,19 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
+            Float data, boolean indexed) {
+
+        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        FloatingPointSelector rightSelector = new FloatingPointSelector(data);
+
+        Relation relation = new Relation(leftSelector, operator, rightSelector);
+
+        Filter filter = new Filter(retrieveFilterOperation(operator,indexed), relation);
+
+        return filter;
+    }
+
+    public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Boolean data, boolean indexed) {
 
         ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));

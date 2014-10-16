@@ -55,11 +55,12 @@ public class DeepConnectorCassandraFT {
     private static final String TITLE_CONSTANT = "title";
 
     private static final String TITLE_EX = "Hey Jude";
-    private static final Boolean RATE_EX = true;
+
     private static final Boolean ACTIVE_EX = true;
     private static final Long YEAR_EX = 2004L;
     private static final Long  AGE_EX = 36L;
     private static final Integer ID_EX = 10;
+    private static final Float RATE_EX = 8.3F;
 
 
     private static final String YEAR_CONSTANT = "year";
@@ -147,7 +148,7 @@ public class DeepConnectorCassandraFT {
     }
 
 
-
+    @Test
     public void testSingleProjectWithOneNonIndexIntegerFilterAndSelectTest() throws UnsupportedException,
             ExecutionException {
 
@@ -308,7 +309,7 @@ public class DeepConnectorCassandraFT {
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
                 Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT,ACTIVE_CONSTANT));
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, AGE_CONSTANT, Operator.EQ, AGE_EX,
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, RATE_CONSTANT, Operator.LET, RATE_EX,
                 false));
         LogicalStep filter = project.getNextStep();
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
