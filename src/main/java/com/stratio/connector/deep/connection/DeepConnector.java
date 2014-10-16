@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
+import com.stratio.connectors.ConnectorApp;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.connector.IConfiguration;
@@ -38,8 +39,10 @@ public class DeepConnector implements IConnector {
 
     public static void main(String[] args) {
 
-        DeepConnector conn = new DeepConnector();
+        DeepConnector deepConnector = new DeepConnector();
 
+        ConnectorApp connectorApp = new ConnectorApp();
+        connectorApp.startup(deepConnector);
     }
 
     @Override
