@@ -165,7 +165,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 38, rowsList.size());
+        assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT+"."+ARTIST_CONSTANT,
                 columnsMetadata.get(0).getColumnName());
