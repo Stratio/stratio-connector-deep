@@ -81,11 +81,11 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                 } else if (obj instanceof Float) {
                     Float value = Float.valueOf(this.getStringValue());
                     return value.equals(obj);
-                } else if (obj instanceof Long) {
-                    Long value = Long.valueOf(this.getStringValue());
+                } else if (obj instanceof Integer) {
+                    Integer value = Integer.valueOf(this.getStringValue());
                     return value.equals(obj);
-                } else if (obj instanceof Double) {
-                    Double value = Double.valueOf(this.getStringValue());
+                }else if (obj instanceof Long) {
+                    Long value = Long.valueOf(this.getStringValue());
                     return value.equals(obj);
                 }
             }catch (NumberFormatException e){

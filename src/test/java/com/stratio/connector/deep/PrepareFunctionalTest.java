@@ -93,7 +93,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "id int PRIMARY KEY," +
                         "artist text," +
                         "title text," +
-                        "year  bigint," +
+                        "year  int," +
                         "length  text," +
                         "description text" +
                         ");");
@@ -102,7 +102,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                 "CREATE TABLE " + KEYSPACE + "." + TABLE_2 + " (" +
                         "id int PRIMARY KEY," +
                         "artist text," +
-                        "age text," +
+                        "age int," +
                         "rate double," +
                         "active boolean" +
                         ");");

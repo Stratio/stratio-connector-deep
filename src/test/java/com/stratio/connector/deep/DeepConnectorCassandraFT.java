@@ -57,8 +57,8 @@ public class DeepConnectorCassandraFT {
     private static final String TITLE_EX = "Hey Jude";
     private static final Boolean RATE_EX = true;
     private static final Boolean ACTIVE_EX = true;
-    private static final String YEAR_EX = "2004";
-
+    private static final Long YEAR_EX = 2004L;
+    private static final Long  AGE_EX = 36L;
     private static final Integer ID_EX = 10;
 
 
@@ -150,7 +150,7 @@ public class DeepConnectorCassandraFT {
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
                 Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT,ACTIVE_CONSTANT));
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, ACTIVE_CONSTANT, Operator.DISTINCT, ACTIVE_EX,
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, AGE_CONSTANT, Operator.EQ, AGE_EX,
                 false));
         LogicalStep filter = project.getNextStep();
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
