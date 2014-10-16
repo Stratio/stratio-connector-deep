@@ -56,7 +56,7 @@ public class DeepConnectorCassandraFT {
 
     private static final String TITLE_EX = "Hey Jude";
     private static final Boolean RATE_EX = true;
-    private static final Integer ACTIVE_EX = 11;
+    private static final Boolean ACTIVE_EX = true;
     private static final String YEAR_EX = "2004";
 
     private static final Integer ID_EX = 10;
@@ -94,7 +94,8 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 210, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", ARTIST_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT+"."+ARTIST_CONSTANT,
+                columnsMetadata.get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
         // Checking rows
@@ -130,7 +131,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 2, rowsList.size());
+        assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT+"."+ARTIST_CONSTANT,
                 columnsMetadata.get(0).getColumnName());
@@ -164,9 +165,10 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 1, rowsList.size());
+        assertEquals("Wrong number of rows", 38, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", ARTIST_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT+"."+ARTIST_CONSTANT,
+                columnsMetadata.get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
         // Checking rows
@@ -206,7 +208,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 76, rowsList.size());
+        assertEquals("Wrong number of rows", 74, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
         assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getColumnAlias());

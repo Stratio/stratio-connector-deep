@@ -117,7 +117,7 @@ public class DeepConnectorMongoFT {
 
         // Checking rows
         for (Row row : rowsList) {
-            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertEquals ("Wrong number of columns in the row", 1, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
