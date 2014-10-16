@@ -44,15 +44,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-cluster_2.10</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-testkit_2.10</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-contrib_2.10</artifactId>
+                    <artifactId>akka-remote_2.10</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
