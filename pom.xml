@@ -168,7 +168,7 @@
                 <groupId>com.stratio.meta</groupId>
                 <version>0.1.0-SNAPSHOT</version>
                 <configuration>
-                    <mainClass>com.stratio.connector.cassandra.CassandraConnector</mainClass>
+                    <mainClass>com.stratio.connector.deep.connection.DeepConnector</mainClass>
                     <jmxPort>7189</jmxPort>
                 </configuration>
             </plugin>
