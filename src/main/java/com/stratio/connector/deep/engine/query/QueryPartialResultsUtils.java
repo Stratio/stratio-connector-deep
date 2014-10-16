@@ -16,8 +16,10 @@
 package com.stratio.connector.deep.engine.query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
@@ -32,6 +34,7 @@ import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.Join;
 import com.stratio.meta.common.logicalplan.LogicalStep;
 import com.stratio.meta.common.logicalplan.PartialResults;
+import com.stratio.meta.common.metadata.structures.ColumnMetadata;
 import com.stratio.meta.common.statements.structures.relationships.Relation;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 
@@ -52,16 +55,17 @@ public class QueryPartialResultsUtils {
         if (rows != null && rows.size() > 0) {
             cellsList = new ArrayList<Cells>(rows.size());
             if (cellsList != null) {
-                String qualifiedName = resultSet.getColumnMetadata().get(0).getTableName();
+                List<ColumnMetadata> columnsMetadata = resultSet.getColumnMetadata();
+                String qualifiedName = columnsMetadata.get(0).getTableName();
                 String[] arrNames = qualifiedName.split("\\.");
                 if (arrNames.length != 2)
                     throw new ExecutionException(
                                     "Table name must be a qualified name: [catalog_name.table_name] but is: "
-                                                    + resultSet.getColumnMetadata().get(0).getTableName());
+                                                    + columnsMetadata.get(0).getTableName());
                 String catalogName = arrNames[0];
                 String tableName = arrNames[1];
                 for (Row row : rows) {
-                    cellsList.add(buildCellsFromRow(row, catalogName, tableName));
+                    cellsList.add(buildCellsFromRow(row, catalogName, tableName, columnsMetadata));
                 }
             }
         }
@@ -72,12 +76,24 @@ public class QueryPartialResultsUtils {
      * @param row
      * @param catalogName
      * @param tableName
+     * @param columnsMetadata
      * @return
+     * @throws ExecutionException
      */
-    public static Cells buildCellsFromRow(Row row, String catalogName, String tableName) {
+    public static Cells buildCellsFromRow(Row row, String catalogName, String tableName,
+                    List<ColumnMetadata> columnsMetadata) throws ExecutionException {
         Cells cells = new Cells(catalogName + "." + tableName);
+        Map<String, String> aliasMapping = new HashMap<String, String>();
+        for (ColumnMetadata colMetadata : columnsMetadata) {
+            aliasMapping.put(colMetadata.getColumnAlias(),
+                            getColumnNameFromQualifiedColumnName(colMetadata.getColumnName()));
+
+        }
+
         for (Entry<String, Cell> colItem : row.getCells().entrySet()) {
-            cells.add(com.stratio.deep.commons.entity.Cell.create(colItem.getKey(), colItem.getValue().getValue()));
+            String cellName = aliasMapping.containsKey(colItem.getKey()) ? aliasMapping.get(colItem.getKey()) : colItem
+                            .getKey();
+            cells.add(com.stratio.deep.commons.entity.Cell.create(cellName, colItem.getValue().getValue()));
         }
         return cells;
     }
@@ -135,6 +151,8 @@ public class QueryPartialResultsUtils {
     }
 
     /**
+     * Returns a rearrange list of relations. Assign each "partialResults" selector to the left part of the relation
+     * 
      * @param partialResults
      * @param joinRelations
      * @return
@@ -153,5 +171,29 @@ public class QueryPartialResultsUtils {
             }
         }
         return orderedRelations;
+    }
+
+    /**
+     * @param qualifiedName
+     * @return
+     * @throws ExecutionException
+     */
+    public static String getColumnNameFromQualifiedColumnName(String qualifiedName) throws ExecutionException {
+
+        if (qualifiedName != null && !qualifiedName.trim().isEmpty()) {
+            String[] arrNames = qualifiedName.split("\\.");
+            // TODO qualified
+            // ************
+            if (arrNames.length == 1)
+                return arrNames[0];
+            // ************
+
+            if (arrNames.length == 3) {
+                return arrNames[2];
+            }
+        }
+
+        throw new ExecutionException("Qualified column name is expected instead of : " + qualifiedName);
+
     }
 }

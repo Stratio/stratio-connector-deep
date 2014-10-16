@@ -42,7 +42,7 @@ import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 public class LogicalWorkflowBuilder {
 
     public static Project createProject(String clusterName, String catalogName, String tableName,
-                    List<String> columnList) {
+            List<String> columnList) {
 
         List<ColumnName> columns = new ArrayList<>();
         for (String column : columnList) {
@@ -56,7 +56,7 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-                    Serializable data, boolean indexed) {
+            Serializable data, boolean indexed) {
 
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
@@ -155,6 +155,9 @@ public class LogicalWorkflowBuilder {
         case DISTINCT:
             operation = indexed ? Operations.FILTER_INDEXED_DISTINCT : Operations.FILTER_NON_INDEXED_DISTINCT;
             break;
+        case MATCH:
+            operation = Operations.FILTER_FULLTEXT;
+            break;
         default:
             break;
         }
@@ -178,7 +181,7 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Join createJoinPartialResults(String joinId, ColumnName leftSource, ColumnName rightSource,
-                    List<ColumnMetadata> columnMetadata, List<Row> rows) {
+            List<ColumnMetadata> columnMetadata, List<Row> rows) {
 
         ColumnSelector leftSelector = new ColumnSelector(leftSource);
         ColumnSelector rightSelector = new ColumnSelector(rightSource);
@@ -214,7 +217,7 @@ public class LogicalWorkflowBuilder {
         for (ColumnName column : columnsList) {
             columnsAliases.put(column, aliasesIt.next());
 
-            columnsTypes.put(column.getQualifiedName(), ColumnType.BIGINT);
+            columnsTypes.put(column.getQualifiedName(), ColumnType.TEXT);
         }
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes);
