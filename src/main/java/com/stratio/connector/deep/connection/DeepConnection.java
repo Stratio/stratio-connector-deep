@@ -13,7 +13,6 @@ import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.security.ICredentials;
-import com.stratio.meta2.common.data.ClusterName;
 
 public class DeepConnection extends Connection {
 
@@ -33,7 +32,6 @@ public class DeepConnection extends Connection {
      */
     public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) {
 
-        ClusterName clusterName = config.getName();
         Map<String, String> clusterOptions = config.getOptions();
 
         // Creating a configuration for the Extractor and initialize it
