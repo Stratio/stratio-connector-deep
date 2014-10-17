@@ -58,7 +58,7 @@ public class DeepConnector implements IConnector {
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
 
-        this.connectionHandler = new DeepConnectionHandler(configuration);
+        this.connectionHandler = new DeepConnectionHandler(new ConnectionConfiguration());
         this.deepContext = ConnectionConfiguration.getDeepContext();
     }
 
