@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.ClusterProperties;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.commons.config.ExtractorConfig;
@@ -62,7 +63,10 @@ public class DeepConnection extends Connection {
         values.put(ExtractorConnectConstants.RCPPORT, clusterOptions.get(ExtractorConnectConstants.RCPPORT));
 
         extractorconfig.setValues(values);
-        extractorconfig.setExtractorImplClassName(clusterOptions.get(ExtractorConnectConstants.INNERCLASS));
+
+        ClusterProperties clusterProperties = new ClusterProperties();
+        extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + config.getName() + "."
+                + ExtractorConnectConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
 
