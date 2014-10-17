@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.meta2.common.statements.structures.selectors.Selector;
 
 public class In implements Function<Cells, Boolean> {
 
@@ -36,12 +35,12 @@ public class In implements Function<Cells, Boolean> {
     /**
      * Name of the field of the cell to compare.
      */
-    private String field;
+    private final String field;
 
     /**
      * IDs in the IN clause.
      */
-    private List<Serializable> terms;
+    private final List<Serializable> terms;
 
     /**
      * In apply in filter to a field in a Deep Cell.
@@ -60,7 +59,7 @@ public class In implements Function<Cells, Boolean> {
     public Boolean call(Cells cells) {
 
         Boolean isValid = false;
-        Object cellValue = cells.getCellByName(field).getCellValue();
+        // Object cellValue = cells.getCellByName(field).getCellValue();
 
         /*
          * Class<?> dataType = (Class<?>) terms.get(0).getTermClass(); Object currentValue = dataType.cast(cellValue);
