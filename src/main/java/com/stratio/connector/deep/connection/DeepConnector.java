@@ -60,7 +60,6 @@ public class DeepConnector implements IConnector {
     public void init(IConfiguration configuration) throws InitializationException {
 
         this.connectionHandler     = new DeepConnectionHandler(new ConnectionConfiguration());
-        //this.connectionPropperties = ConnectionConfiguration.getConfigProperties();
         this.deepContext           = ConnectionConfiguration.getDeepContext();
 
     }
