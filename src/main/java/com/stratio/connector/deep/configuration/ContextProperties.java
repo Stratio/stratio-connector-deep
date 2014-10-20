@@ -36,6 +36,9 @@ public class ContextProperties {
     static final String OPT_INT = "int";
 
     private static final Logger LOG = Logger.getLogger(ContextProperties.class);
+
+    private Properties prop ;
+
     /**
      * spark cluster endpoint.
      */
@@ -71,7 +74,7 @@ public class ContextProperties {
      */
     public ContextProperties() {
 
-        Properties prop = new Properties();
+        prop = new Properties();
         InputStream input = null;
 
         try {
@@ -123,4 +126,10 @@ public class ContextProperties {
     public int getThriftPort() {
         return thriftPort;
     }
+
+    public Properties getProp() {
+        return prop;
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.stratio.connector.deep.connection;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
@@ -16,6 +17,8 @@ import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.security.ICredentials;
 
 public class DeepConnection extends Connection {
+
+    private Properties configProperties ;
 
     private final DeepSparkContext deepSparkContext;
 
@@ -64,13 +67,15 @@ public class DeepConnection extends Connection {
 
         ClusterProperties clusterProperties = new ClusterProperties();
 
-        //TODO Find new field add by meta to recognise the database correct to associate the Cell correct
+        //TODO Find new field add by meta to recognise the database to associate the CellExtractor config correct
         String dataBase = checkDatabaseFromClusterName(config);
 
         extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBase + "."
                 + ExtractorConnectConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
+
+        configProperties = ConnectionConfiguration.getConfigProperties();
 
         deepSparkContext = ConnectionConfiguration.getDeepContext();
 
@@ -120,5 +125,9 @@ public class DeepConnection extends Connection {
         }
 
         return db;
+    }
+
+    public Properties getConfigProperties() {
+        return configProperties;
     }
 }
