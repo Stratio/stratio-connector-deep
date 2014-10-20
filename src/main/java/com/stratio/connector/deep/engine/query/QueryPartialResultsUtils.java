@@ -40,7 +40,7 @@ import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 
 /**
  * @author david
- *
+ * 
  */
 public class QueryPartialResultsUtils {
 
@@ -60,8 +60,8 @@ public class QueryPartialResultsUtils {
                 String[] arrNames = qualifiedName.split("\\.");
                 if (arrNames.length != 2)
                     throw new ExecutionException(
-                                    "Table name must be a qualified name: [catalog_name.table_name] but is: "
-                                                    + columnsMetadata.get(0).getTableName());
+                            "Table name must be a qualified name: [catalog_name.table_name] but is: "
+                                    + columnsMetadata.get(0).getTableName());
                 String catalogName = arrNames[0];
                 String tableName = arrNames[1];
                 for (Row row : rows) {
@@ -81,18 +81,18 @@ public class QueryPartialResultsUtils {
      * @throws ExecutionException
      */
     public static Cells buildCellsFromRow(Row row, String catalogName, String tableName,
-                    List<ColumnMetadata> columnsMetadata) throws ExecutionException {
+            List<ColumnMetadata> columnsMetadata) throws ExecutionException {
         Cells cells = new Cells(catalogName + "." + tableName);
         Map<String, String> aliasMapping = new HashMap<String, String>();
         for (ColumnMetadata colMetadata : columnsMetadata) {
             aliasMapping.put(colMetadata.getColumnAlias(),
-                            getColumnNameFromQualifiedColumnName(colMetadata.getColumnName()));
+                    getColumnNameFromQualifiedColumnName(colMetadata.getColumnName()));
 
         }
 
         for (Entry<String, Cell> colItem : row.getCells().entrySet()) {
             String cellName = aliasMapping.containsKey(colItem.getKey()) ? aliasMapping.get(colItem.getKey()) : colItem
-                            .getKey();
+                    .getKey();
             cells.add(com.stratio.deep.commons.entity.Cell.create(cellName, colItem.getValue().getValue()));
         }
         return cells;
@@ -105,7 +105,7 @@ public class QueryPartialResultsUtils {
      * @throws ExecutionException
      */
     public static JavaRDD<Cells> createRDDFromResultSet(DeepSparkContext deepContext, ResultSet resSet)
-                    throws ExecutionException {
+            throws ExecutionException {
         List<Cells> cellsList = createCellsFromResultSet(resSet);
         if (cellsList == null) {
             throw new ExecutionException("An empty result set is not allowed in a join with partial results");
@@ -162,12 +162,12 @@ public class QueryPartialResultsUtils {
         for (Relation relation : joinRelations) {
             ColumnSelector colSelector = (ColumnSelector) relation.getLeftTerm();
             String partialResultsQualifiedTableName = partialResults.getResults().getColumnMetadata().get(0)
-                            .getTableName();
+                    .getTableName();
             if (colSelector.getName().getTableName().getQualifiedName().equals(partialResultsQualifiedTableName)) {
                 orderedRelations.add(relation);
             } else {
                 orderedRelations.add(new Relation(relation.getRightTerm(), relation.getOperator(), relation
-                                .getLeftTerm()));
+                        .getLeftTerm()));
             }
         }
         return orderedRelations;
@@ -182,11 +182,6 @@ public class QueryPartialResultsUtils {
 
         if (qualifiedName != null && !qualifiedName.trim().isEmpty()) {
             String[] arrNames = qualifiedName.split("\\.");
-            // TODO qualified
-            // ************
-            if (arrNames.length == 1)
-                return arrNames[0];
-            // ************
 
             if (arrNames.length == 3) {
                 return arrNames[2];
