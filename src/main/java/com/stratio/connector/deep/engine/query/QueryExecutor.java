@@ -244,7 +244,6 @@ public class QueryExecutor {
 
             columnMetadata.setColumnAlias(columnAlias);
             // TODO Check if we have to get the alias or the column qualified name
-            // columnMetadata.setType(columnType.get(columnAlias));
             columnMetadata.setType(columnType.get(columnName.getQualifiedName()));
 
             resultMetadata.add(columnMetadata);

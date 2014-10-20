@@ -10,6 +10,8 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
 import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForCassandra;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -33,6 +35,10 @@ import com.stratio.meta.common.logicalplan.Project;
 import com.stratio.meta.common.metadata.structures.ColumnMetadata;
 import com.stratio.meta.common.result.QueryResult;
 import com.stratio.meta.common.statements.structures.relationships.Operator;
+import com.stratio.meta2.common.statements.structures.selectors.FloatingPointSelector;
+import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
+import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
+
 /**
  * Functional tests using Cassandra DB
  */
@@ -64,6 +70,11 @@ public class DeepConnectorCassandraFT {
     private static final Integer ID_EX = 10;
     private static final Float RATE_EX = 8.3F;
 
+    private static final String  RATE_ST_EX  = "8.3";
+    private static final Long    RATE_LNG_EX = 5L;
+    private static final Integer RATE_INT_EX = 5;
+    private static final Float   RATE_FLO_EX = 8.3F;
+    private static final Double  RATE_DOU_EX = 8.3D;
 
     private static final String YEAR_CONSTANT = "year";
     private static final String CASSANDRA_CLUSTERNAME_CONSTANT = "cassandra";
@@ -74,7 +85,7 @@ public class DeepConnectorCassandraFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        prepareDataForCassandra();
+        //prepareDataForCassandra();
     }
 
     @Test
@@ -340,6 +351,175 @@ public class DeepConnectorCassandraFT {
             assertNotNull("Expecting author column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
         }
     }
+
+
+    @Test
+    public void testSingleProjectWithAllComparatorFiltersAndSelectTest() throws UnsupportedException,
+            ExecutionException {
+        // Input data
+        List<Serializable> rateValues = new ArrayList<>();
+        //rateValues.add(RATE_ST_EX);
+        rateValues.add(RATE_LNG_EX);
+        rateValues.add(RATE_INT_EX);
+        rateValues.add(RATE_FLO_EX);
+        rateValues.add(RATE_DOU_EX);
+
+
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT,ACTIVE_CONSTANT));
+
+        for (Operator op : Operator.values()) {
+
+            if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
+                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH) ) {
+
+                for(Serializable value:rateValues) {
+
+                    if(case1(op,value) || case2(op,value)) {
+
+                        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, RATE_CONSTANT, op, value,
+                                false));
+                        LogicalStep filter = project.getNextStep();
+                        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+                        // One single initial step
+                        stepList.add(project);
+                        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+                        // Execution
+                        QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+                        // Assertions
+                        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+                        List<Row> rowsList = result.getResultSet().getRows();
+                        // Checking results number
+                        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
+                        assertEquals(
+                                "Wrong number of rows in Operation " + op.name() + " with value " + value + " type ->"
+                                        + value
+                                        .getClass(),
+                                getResultExpectedFomOp(op, value), rowsList.size());
+                        System.out.println("number of rows in Operation " + op.name() + " with value " + value + " " +
+                                        "type ->"+ value.getClass()+"  "+  getResultExpectedFomOp(op, value));
+                        // Checking metadata
+                        assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
+                                columnsMetadata.get(0).getColumnName());
+                        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
+                                .getTableName());
+
+                        // Checking rows
+                        for (Row row : rowsList) {
+                            assertEquals("Wrong number of columns in the row", 1, row.size());
+                            assertNotNull("Expecting author column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean case1(Operator op, Serializable value) {
+
+        return (op.equals(Operator.LT) || op.equals(Operator.LET) || op.equals(Operator.GT)|| op.equals
+                (Operator.GET)) && (value.getClass().equals(Float.class) || value.getClass().equals
+                (Double.class));
+    }
+
+    private boolean case2(Operator op, Serializable value) {
+
+        return (op.equals(Operator.EQ) || op.equals(Operator.DISTINCT) );
+    }
+
+    private int getResultExpectedFomOp(Operator op, Serializable data) {
+
+        int result =0;
+
+        switch (op){
+
+        case EQ:
+            if (data instanceof String) {
+                result=1;
+            } else if (data instanceof Integer) {
+                result=40;
+            }else if (data instanceof Long) {
+                result=40;
+            }else if (data instanceof Float) {
+                result=1;
+            }else if (data instanceof Double) {
+                result=1;
+            }
+            break;
+        case LT:
+            if (data instanceof String) {
+                result=0;
+            } else if (data instanceof Integer) {
+                result=0;
+            }else if (data instanceof Long) {
+                result=0;
+            }else if (data instanceof Float) {
+                result=41;
+            }else if (data instanceof Double) {
+                result=40;
+            }
+            break;
+        case GT:
+            if (data instanceof String) {
+                result=0;
+            } else if (data instanceof Integer) {
+                result=0;
+            }else if (data instanceof Long) {
+                result=0;
+            }else if (data instanceof Float) {
+                result=0;
+            }else if (data instanceof Double) {
+                result=0;
+            }
+            break;
+        case LET:
+            if (data instanceof String) {
+                result=2;
+            } else if (data instanceof Integer) {
+                result=2;
+            }else if (data instanceof Long) {
+                result=2;
+            }else if (data instanceof Float) {
+                result=41;
+            }else if (data instanceof Double) {
+                result=41;
+            }
+            break;
+        case GET:
+            if (data instanceof String) {
+                result=0;
+            } else if (data instanceof Integer) {
+                result=0;
+            }else if (data instanceof Long) {
+                result=0;
+            }else if (data instanceof Float) {
+                result=0;
+            }else if (data instanceof Double) {
+                result=1;
+            }
+            break;
+        case DISTINCT:
+            if (data instanceof String) {
+                result=2;
+            } else if (data instanceof Integer) {
+                result=1;
+            }else if (data instanceof Long) {
+                result=1;
+            }else if (data instanceof Float) {
+                result=40;
+            }else if (data instanceof Double) {
+                result=40;
+            }
+            break;
+        default:
+
+            break;
+        }
+        return result;
+    }
+
     @AfterClass
     public static void setDown() {
         // clearData();

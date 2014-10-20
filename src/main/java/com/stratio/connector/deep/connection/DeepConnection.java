@@ -58,8 +58,8 @@ public class DeepConnection extends Connection {
         } else {
             values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
         }
-        values.put(ExtractorConnectConstants.CQLPORT, clusterOptions.get(ExtractorConnectConstants.CQLPORT));
-        values.put(ExtractorConnectConstants.RCPPORT, clusterOptions.get(ExtractorConnectConstants.RCPPORT));
+        //values.put(ExtractorConnectConstants.CQLPORT, clusterOptions.get(ExtractorConnectConstants.CQLPORT));
+        //values.put(ExtractorConnectConstants.RCPPORT, clusterOptions.get(ExtractorConnectConstants.RCPPORT));
 
         extractorconfig.setValues(values);
         extractorconfig.setExtractorImplClassName(clusterOptions.get(ExtractorConnectConstants.INNERCLASS));
@@ -74,7 +74,7 @@ public class DeepConnection extends Connection {
     @Override
     public void close() {
         if (deepSparkContext != null) {
-            // deepSparkContext.stop();
+
             isConnect = false;
         }
 

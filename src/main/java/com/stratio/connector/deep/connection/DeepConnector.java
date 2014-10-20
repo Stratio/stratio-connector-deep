@@ -41,8 +41,8 @@ public class DeepConnector implements IConnector {
 
         DeepConnector deepConnector = new DeepConnector();
 
-        ConnectorApp connectorApp = new ConnectorApp();
-        connectorApp.startup(deepConnector);
+    //    ConnectorApp connectorApp = new ConnectorApp();
+    //    connectorApp.startup(deepConnector);
     }
 
     @Override
@@ -90,6 +90,7 @@ public class DeepConnector implements IConnector {
         while (it.hasNext()) {
             DeepConnection conn = (DeepConnection) it.next();
             while (conn.isWorkInProgress()) {
+                shutdown();
             }
         }
         deepContext.stop();

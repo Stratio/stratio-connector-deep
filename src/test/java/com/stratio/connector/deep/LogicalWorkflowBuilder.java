@@ -65,6 +65,12 @@ public class LogicalWorkflowBuilder {
             rightSelector = new StringSelector((String) data);
         } else if (data instanceof Integer) {
             rightSelector = new IntegerSelector((Integer) data);
+        }else if (data instanceof Long) {
+            rightSelector = new IntegerSelector(data.toString());
+        }else if (data instanceof Double) {
+            rightSelector = new FloatingPointSelector((Double)data);
+        }else if (data instanceof Float) {
+            rightSelector = new FloatingPointSelector((Float)data);
         }
 
 
