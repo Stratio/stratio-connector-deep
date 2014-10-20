@@ -137,7 +137,7 @@ public class DeepConnectorCassandraAndMongoFT {
 
         // Checking rows
         for (Row row : rowsList) {
-            assertEquals("Wrong number of columns in the row", 4, row.size());
+            assertEquals ("Wrong number of columns in the row", 4, row.size());
             assertNotNull("Expecting author column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
             assertNotNull("Expecting author column in row", row.getCell(ARTIST_ALIAS2_CONSTANT));
             assertNotNull("Expecting author column in row", row.getCell(DESCRIPTION_ALIAS_CONSTANT));

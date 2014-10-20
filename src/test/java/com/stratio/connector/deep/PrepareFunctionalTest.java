@@ -52,7 +52,6 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     }
 
-
     public static void clearDataFromMongo() {
 
         mongoClient.dropDatabase(KEYSPACE);
@@ -84,8 +83,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "title text," +
                         "year  int," +
                         "length  text," +
-                        "description text" +
-                        ");");
+                        "description text," +
+                        "lucene1 text);");
 
         session.execute(
                 "CREATE TABLE " + KEYSPACE + "." + TABLE_2 + " (" +
@@ -93,8 +92,37 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                         "artist text," +
                         "age int," +
                         "rate float," +
-                        "active boolean" +
-                        ");");
+                        "active boolean," +
+                        "lucene2 text);");
+
+        session.execute(
+                "CREATE CUSTOM INDEX lucene1 ON "
+                        + KEYSPACE
+                        + "."
+                        + TABLE_1
+                        + " (lucene1) USING 'org.apache.cassandra.db.index.stratio.RowIndex' "
+                        + "WITH OPTIONS = { 'refresh_seconds':'10', 'filter_cache_size':'10', "
+                        + "'write_buffer_size':'100', 'stored_rows':'false', "
+                        + "'schema':'{default_analyzer:\"org.apache.lucene.analysis.standard.StandardAnalyzer\", fields:{ "
+                        + "artist:{type:\"string\"}, "
+                        + "title:{type:\"string\"}, "
+                        + "year:{type:\"integer\"}, "
+                        + "length:{type:\"string\"}, "
+                        + "description:{type:\"string\"}}}'};");
+
+        session.execute(
+                "CREATE CUSTOM INDEX lucene2 ON "
+                        + KEYSPACE
+                        + "."
+                        + TABLE_2
+                        + " (lucene2) USING 'org.apache.cassandra.db.index.stratio.RowIndex' "
+                        + "WITH OPTIONS = { 'refresh_seconds':'10', 'filter_cache_size':'10', "
+                        + "'write_buffer_size':'100', 'stored_rows':'false', "
+                        + "'schema':'{default_analyzer:\"org.apache.lucene.analysis.standard.StandardAnalyzer\", fields:{ "
+                        + "artist:{type:\"string\"}, "
+                        + "age:{type:\"integer\"}, "
+                        + "rate:{type:\"float\"}, "
+                        + "active:{type:\"boolean\"}}}'};");
 
         buildTestDataInsertBatch(session, TABLE_1, TABLE_2);
         session.close();
@@ -115,7 +143,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                 while ((line = br.readLine()) != null) {
                     String[] fields = (line).split(",");
                     BasicDBObject doc = origin.equals(TABLE_1) ? new BasicDBObject("artist",
-                            fields[1]).append("title", fields[2]).append("year", fields[3]).append("length",fields[4]).append("description",fields[5]):
+                            fields[1]).append("title", fields[2]).append("year", fields[3]).append("length", fields[4])
+                            .append("description", fields[5]) :
                             new BasicDBObject("artist",
                                     fields[1]).append("age", fields[2]).append("rate", fields[3]).append("active",
                                     fields[4]);
@@ -152,12 +181,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             }
         }
 
-        // try {
-        // //Wait 6 secons...change to 60
-        // // Thread.sleep(6000);
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
+
         return true;
     }
 

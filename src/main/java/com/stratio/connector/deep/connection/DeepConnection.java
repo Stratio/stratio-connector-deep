@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.ClusterProperties;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.commons.config.ExtractorConfig;
@@ -58,11 +59,16 @@ public class DeepConnection extends Connection {
         } else {
             values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
         }
-        //values.put(ExtractorConnectConstants.CQLPORT, clusterOptions.get(ExtractorConnectConstants.CQLPORT));
-        //values.put(ExtractorConnectConstants.RCPPORT, clusterOptions.get(ExtractorConnectConstants.RCPPORT));
 
         extractorconfig.setValues(values);
-        extractorconfig.setExtractorImplClassName(clusterOptions.get(ExtractorConnectConstants.INNERCLASS));
+
+        ClusterProperties clusterProperties = new ClusterProperties();
+
+        //TODO Find new field add by meta to recognise the database correct to associate the Cell correct
+        String dataBase = checkDatabaseFromClusterName(config);
+
+        extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBase + "."
+                + ExtractorConnectConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
 
@@ -70,6 +76,8 @@ public class DeepConnection extends Connection {
 
         isConnect = true;
     }
+
+
 
     @Override
     public void close() {
@@ -99,4 +107,18 @@ public class DeepConnection extends Connection {
         deepSparkContext.stop();
     }
 
+
+    private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
+
+        String db ="";
+        if(config.getName().getName().contains(ExtractorConnectConstants.db_cassandra)){
+            db = ExtractorConnectConstants.db_cassandra;
+        }else  if(config.getName().getName().contains(ExtractorConnectConstants.db_mongo)){
+            db = ExtractorConnectConstants.db_mongo;
+        }else  if(config.getName().getName().contains(ExtractorConnectConstants.db_elasticsearch)){
+            db = ExtractorConnectConstants.db_elasticsearch;
+        }
+
+        return db;
+    }
 }

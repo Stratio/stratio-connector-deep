@@ -49,7 +49,7 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
         if (!(this.clazz.isInstance(o))) {
 
             try {
-                if ((this.clazz).isInstance(Long.class) && o.getClass().equals(Integer.class) ) {
+                if ((this.clazz).equals(Long.class) && o.getClass().equals(Integer.class) ) {
                     Integer value = Integer.valueOf(this.getStringValue());
                     Integer obj = Integer.valueOf(o.toString());
                     return value.compareTo(obj);

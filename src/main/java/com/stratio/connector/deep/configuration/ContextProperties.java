@@ -88,11 +88,11 @@ public class ContextProperties {
             jar = prop.get("jars") != null ? ((String) prop.get("jars")).split(",") : new String[] {};
             cluster = defaultIfEmpty((String) prop.get("master"), "local");
             sparkHome = defaultIfEmpty((String) prop.get("spark.home"), "");
-            host = !prop.get("host").equals("") ? (String) prop.get("host") : Constants.DEFAULT_HOST;
+            host = !prop.get("host").equals("") ? (String) prop.get("host") : ExtractorConnectConstants.DEFAULT_HOST;
             port = !prop.get("port").equals("") ? Integer.valueOf((String) prop.get("port"))
-                    : Constants.DEFAULT_PORT;
+                    : ExtractorConnectConstants.DEFAULT_PORT;
             thriftPort = !prop.get("thriftPort").equals("") ? Integer.valueOf((String) prop.get("thriftPort"))
-                    : Constants.DEFAULT_RPC_PORT;
+                    : ExtractorConnectConstants.DEFAULT_RPC_PORT;
 
         } catch (IOException e) {
 

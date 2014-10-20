@@ -212,6 +212,33 @@ public final class QueryFilterUtils {
         return rightField;
     }
 
+    public static Serializable filterFromRightWhereRelation(Relation relation) throws ExecutionException {
+
+
+        SelectorType type = relation.getRightTerm().getType();
+        Serializable rightField = null;
+
+        switch (type) {
+        case STRING:
+            rightField = new String(relation.getRightTerm().getStringValue());
+            break;
+        case BOOLEAN:
+            rightField = new Boolean(((BooleanSelector) relation.getRightTerm()).toString());
+            break;
+        case INTEGER:
+            rightField = new Long(((IntegerSelector) relation.getRightTerm()).toString());
+            break;
+        case FLOATING_POINT:
+            rightField = new Double(((FloatingPointSelector) relation.getRightTerm()).toString());
+            break;
+
+        default:
+            throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
+                    + "]");
+
+        }
+        return rightField;
+    }
     /**
      * @param operator
      * @return
