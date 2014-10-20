@@ -3,9 +3,11 @@ package com.stratio.connector.deep.connection;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.ClusterProperties;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.commons.config.ExtractorConfig;
@@ -15,6 +17,8 @@ import com.stratio.meta.common.connector.ConnectorClusterConfig;
 import com.stratio.meta.common.security.ICredentials;
 
 public class DeepConnection extends Connection {
+
+    private Properties configProperties ;
 
     private final DeepSparkContext deepSparkContext;
 
@@ -58,23 +62,32 @@ public class DeepConnection extends Connection {
         } else {
             values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
         }
-        values.put(ExtractorConnectConstants.CQLPORT, clusterOptions.get(ExtractorConnectConstants.CQLPORT));
-        values.put(ExtractorConnectConstants.RCPPORT, clusterOptions.get(ExtractorConnectConstants.RCPPORT));
 
         extractorconfig.setValues(values);
-        extractorconfig.setExtractorImplClassName(clusterOptions.get(ExtractorConnectConstants.INNERCLASS));
+
+        ClusterProperties clusterProperties = new ClusterProperties();
+
+        //TODO Find new field add by meta to recognise the database to associate the CellExtractor config correct
+        String dataBase = checkDatabaseFromClusterName(config);
+
+        extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBase + "."
+                + ExtractorConnectConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
+
+        configProperties = ConnectionConfiguration.getConfigProperties();
 
         deepSparkContext = ConnectionConfiguration.getDeepContext();
 
         isConnect = true;
     }
 
+
+
     @Override
     public void close() {
         if (deepSparkContext != null) {
-            // deepSparkContext.stop();
+
             isConnect = false;
         }
 
@@ -99,4 +112,22 @@ public class DeepConnection extends Connection {
         deepSparkContext.stop();
     }
 
+
+    private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
+
+        String db ="";
+        if(config.getName().getName().contains(ExtractorConnectConstants.db_cassandra)){
+            db = ExtractorConnectConstants.db_cassandra;
+        }else  if(config.getName().getName().contains(ExtractorConnectConstants.db_mongo)){
+            db = ExtractorConnectConstants.db_mongo;
+        }else  if(config.getName().getName().contains(ExtractorConnectConstants.db_elasticsearch)){
+            db = ExtractorConnectConstants.db_elasticsearch;
+        }
+
+        return db;
+    }
+
+    public Properties getConfigProperties() {
+        return configProperties;
+    }
 }

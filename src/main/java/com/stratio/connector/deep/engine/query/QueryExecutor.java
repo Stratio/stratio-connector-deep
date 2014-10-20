@@ -192,7 +192,7 @@ public class QueryExecutor {
 
         return new com.stratio.deep.commons.filter.Filter(column.getName().getName(),
                 QueryFilterUtils.retrieveFilterOperator(filter.getRelation().getOperator()),
-                QueryFilterUtils.filterFromRightTermWhereRelation(filter.getRelation()));
+                QueryFilterUtils.filterFromRightWhereRelation(filter.getRelation()));
     }
 
     /**
@@ -226,7 +226,7 @@ public class QueryExecutor {
      */
     private QueryResult buildQueryResult(JavaRDD<Cells> resultRdd, Select selectStep) {
 
-        // TODO Build the ResultSet
+        // TODO Build the ResultSet, Capture Exceptions! Rare Comparator Cases
         List<Cells> resultCells = resultRdd.collect();
 
         Map<ColumnName, String> columnMap = selectStep.getColumnMap();
@@ -244,7 +244,6 @@ public class QueryExecutor {
 
             columnMetadata.setColumnAlias(columnAlias);
             // TODO Check if we have to get the alias or the column qualified name
-            // columnMetadata.setType(columnType.get(columnAlias));
             columnMetadata.setType(columnType.get(columnName.getQualifiedName()));
 
             resultMetadata.add(columnMetadata);

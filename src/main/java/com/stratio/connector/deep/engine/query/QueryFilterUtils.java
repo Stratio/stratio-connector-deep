@@ -68,39 +68,42 @@ public final class QueryFilterUtils {
         Serializable field = filterFromLeftTermWhereRelation(relation);
         Term rightTerm =  filterFromRightTermWhereRelation(relation);
 
-        switch (operator) {
-        case EQ:
-            result = rdd.filter(new DeepEquals(field.toString(), rightTerm));
-            break;
-        case DISTINCT:
-            result = rdd.filter(new NotEquals(field.toString(), rightTerm));
-            break;
-        case GT:
-            result = rdd.filter(new GreaterThan(field.toString(), rightTerm));
-            break;
-        case GET:
-            result = rdd.filter(new GreaterEqualThan(field.toString(), rightTerm));
-            break;
-        case LT:
-            result = rdd.filter(new LessThan(field.toString(), rightTerm));
-            break;
-        case LET:
-            result = rdd.filter(new LessEqualThan(field.toString(), rightTerm));
-            break;
-        case IN:
-            // result = rdd.filter(new In(field, terms));
-            throw new UnsupportedException("IN operator unsupported");
-        case BETWEEN:
-            // result = rdd.filter(new Between(field, terms.get(0), terms.get(1)));
-            throw new UnsupportedException("BETWEEN operator unsupported");
-        default:
-            if(logger.isDebugEnabled()) {
-                logger.debug("Operator not supported: " + operator);
+        try {
+            switch (operator) {
+            case EQ:
+                result = rdd.filter(new DeepEquals(field.toString(), rightTerm));
+                break;
+            case DISTINCT:
+                result = rdd.filter(new NotEquals(field.toString(), rightTerm));
+                break;
+            case GT:
+                result = rdd.filter(new GreaterThan(field.toString(), rightTerm));
+                break;
+            case GET:
+                result = rdd.filter(new GreaterEqualThan(field.toString(), rightTerm));
+                break;
+            case LT:
+                result = rdd.filter(new LessThan(field.toString(), rightTerm));
+                break;
+            case LET:
+                result = rdd.filter(new LessEqualThan(field.toString(), rightTerm));
+                break;
+            case IN:
+
+                throw new UnsupportedException("IN operator unsupported");
+            case BETWEEN:
+
+                throw new UnsupportedException("BETWEEN operator unsupported");
+            default:
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Operator not supported: " + operator);
+                }
+
+                result = null;
             }
-
-            result = null;
+        }catch (Exception e){
+            throw new ExecutionException(" Error when try to comparate fields[ ]");
         }
-
         return result;
     }
 
@@ -209,6 +212,33 @@ public final class QueryFilterUtils {
         return rightField;
     }
 
+    public static Serializable filterFromRightWhereRelation(Relation relation) throws ExecutionException {
+
+
+        SelectorType type = relation.getRightTerm().getType();
+        Serializable rightField = null;
+
+        switch (type) {
+        case STRING:
+            rightField = new String(relation.getRightTerm().getStringValue());
+            break;
+        case BOOLEAN:
+            rightField = new Boolean(((BooleanSelector) relation.getRightTerm()).toString());
+            break;
+        case INTEGER:
+            rightField = new Long(((IntegerSelector) relation.getRightTerm()).toString());
+            break;
+        case FLOATING_POINT:
+            rightField = new Double(((FloatingPointSelector) relation.getRightTerm()).toString());
+            break;
+
+        default:
+            throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
+                    + "]");
+
+        }
+        return rightField;
+    }
     /**
      * @param operator
      * @return

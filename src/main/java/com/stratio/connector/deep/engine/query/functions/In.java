@@ -59,22 +59,16 @@ public class In implements Function<Cells, Boolean> {
     public Boolean call(Cells cells) {
 
         Boolean isValid = false;
-        // Object cellValue = cells.getCellByName(field).getCellValue();
 
-        /*
-         * Class<?> dataType = (Class<?>) terms.get(0).getTermClass(); Object currentValue = dataType.cast(cellValue);
-         * if (currentValue != null) { isValid = isIncludedInList(terms, currentValue); }
-         */
+        //TODO: Implements call to create IN stuff
+
 
         return isValid;
     }
 
     private Boolean isIncludedInList(List<Serializable> list, Object value) {
-        for (Serializable term : list) {
-            /*
-             * if (term.getTermValue().equals(value)) return true;
-             */
-        }
+        //TODO: Implements call to create IN stuff
+
 
         return false;
     }

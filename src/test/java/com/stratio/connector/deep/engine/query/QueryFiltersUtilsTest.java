@@ -2,7 +2,10 @@ package com.stratio.connector.deep.engine.query;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +15,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.Function;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +29,9 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.deep.configuration.ContextProperties;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
+import com.stratio.connector.deep.engine.query.functions.DeepEquals;
+import com.stratio.connector.deep.engine.query.transformation.JoinCells;
+import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.server.ExtractorServer;
@@ -39,6 +47,8 @@ import com.stratio.meta2.common.data.TableName;
 import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
+
+import scala.Tuple2;
 
 /**
  * Created by dgomez on 30/09/14.
@@ -87,6 +97,15 @@ public class QueryFiltersUtilsTest implements Serializable {
 
     @Mock(name = "thirdRdd")
     private JavaRDD<Cells> thirdRdd;
+
+    @Mock(name = "rddLeft")
+    JavaPairRDD<List<Object>, Cells> rddLeft;
+
+    @Mock(name = "rddRight")
+    JavaPairRDD<List<Object>, Cells> rddRight;
+
+    @Mock(name = "joinRDD")
+    JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD;
 
     @Before
     public void before() throws Exception, HandlerConnectionException {
@@ -177,6 +196,10 @@ public class QueryFiltersUtilsTest implements Serializable {
         when(deepConnectionHandler.getConnection(CLUSTERNAME_CONSTANT.getName())).thenReturn(deepConnection);
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(leftRdd, rightRdd);
+
+        when(leftRdd.mapToPair(any(MapKeyForJoin.class))).thenReturn(rddLeft,rddRight);
+
+
     }
 
     @After
@@ -187,7 +210,7 @@ public class QueryFiltersUtilsTest implements Serializable {
     }
 
     @Test
-    public void doWhereTest() throws UnsupportedException, ExecutionException {
+    public void doWhereTest() throws UnsupportedException, ExecutionException,Exception{
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
                 COLUMN1_CONSTANT));
@@ -201,11 +224,15 @@ public class QueryFiltersUtilsTest implements Serializable {
         JavaRDD<Cells> rdd = QueryFilterUtils.doWhere(leftRdd, relation);
         if(logger.isDebugEnabled()) {
             logger.debug("-------------------resultado Encontrados--------------" + rdd.count());
-            logger.debug("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
+            logger.debug("---------------il----resultado de filterSelectedColumns--------------" + rdd.first()
+                    .toString());
         }
 
-        when(QueryFilterUtils.doWhere(leftRdd,relation)).thenReturn(thirdRdd);
-        assertEquals(true, true);
+
+        //verifyPrivate(queryFilterUtils).invoke("filterFromLeftTermWhereRelation");
+        verify(leftRdd, times(1)).filter(any(DeepEquals.class));
+
+
     }
 
     @Test
@@ -219,8 +246,9 @@ public class QueryFiltersUtilsTest implements Serializable {
         if(logger.isDebugEnabled()) {
             logger.debug("-------------------resultado de filterSelectedColumns--------------" + rdd.first().toString());
         }
-        when(QueryFilterUtils.filterSelectedColumns(leftRdd, columnsAliases.keySet())).thenReturn(thirdRdd);
-        assertEquals(true, true);
+        verify(leftRdd, times(1)).map(any(Function.class));
+
+
     }
 
     @Test
@@ -249,7 +277,12 @@ public class QueryFiltersUtilsTest implements Serializable {
 
             }
         }
-        assertEquals(true, true);
+        verify(leftRdd, times(1)).mapToPair(any(MapKeyForJoin.class));
+        verify(rightRdd, times(1)).mapToPair(any(MapKeyForJoin.class));
+
+        verify(rddLeft, times(0)).join(rddRight);
+        verify(joinRDD, times(0)).map(any(JoinCells.class));
+
     }
 
 }

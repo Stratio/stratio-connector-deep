@@ -1,6 +1,7 @@
 package com.stratio.connector.deep.connection;
 
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +59,9 @@ public class DeepConnector implements IConnector {
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
 
-        this.connectionHandler = new DeepConnectionHandler(new ConnectionConfiguration());
-        this.deepContext = ConnectionConfiguration.getDeepContext();
+        this.connectionHandler     = new DeepConnectionHandler(new ConnectionConfiguration());
+        this.deepContext           = ConnectionConfiguration.getDeepContext();
+
     }
 
     @Override
@@ -90,6 +92,7 @@ public class DeepConnector implements IConnector {
         while (it.hasNext()) {
             DeepConnection conn = (DeepConnection) it.next();
             while (conn.isWorkInProgress()) {
+                shutdown();
             }
         }
         deepContext.stop();

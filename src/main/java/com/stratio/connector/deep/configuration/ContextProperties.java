@@ -36,6 +36,9 @@ public class ContextProperties {
     static final String OPT_INT = "int";
 
     private static final Logger LOG = Logger.getLogger(ContextProperties.class);
+
+    private Properties prop ;
+
     /**
      * spark cluster endpoint.
      */
@@ -71,7 +74,7 @@ public class ContextProperties {
      */
     public ContextProperties() {
 
-        Properties prop = new Properties();
+        prop = new Properties();
         InputStream input = null;
 
         try {
@@ -88,11 +91,11 @@ public class ContextProperties {
             jar = prop.get("jars") != null ? ((String) prop.get("jars")).split(",") : new String[] {};
             cluster = defaultIfEmpty((String) prop.get("master"), "local");
             sparkHome = defaultIfEmpty((String) prop.get("spark.home"), "");
-            host = !prop.get("host").equals("") ? (String) prop.get("host") : Constants.DEFAULT_HOST;
+            host = !prop.get("host").equals("") ? (String) prop.get("host") : ExtractorConnectConstants.DEFAULT_HOST;
             port = !prop.get("port").equals("") ? Integer.valueOf((String) prop.get("port"))
-                    : Constants.DEFAULT_PORT;
+                    : ExtractorConnectConstants.DEFAULT_PORT;
             thriftPort = !prop.get("thriftPort").equals("") ? Integer.valueOf((String) prop.get("thriftPort"))
-                    : Constants.DEFAULT_RPC_PORT;
+                    : ExtractorConnectConstants.DEFAULT_RPC_PORT;
 
         } catch (IOException e) {
 
@@ -123,4 +126,10 @@ public class ContextProperties {
     public int getThriftPort() {
         return thriftPort;
     }
+
+    public Properties getProp() {
+        return prop;
+    }
+
+
 }
