@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.rdd.RDD;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
@@ -65,6 +66,18 @@ public class QueryExecutor {
         this.deepConnectionHandler = deepConnectionHandler;
     }
 
+    /**
+     * Execute a workflow to retrieve a subset of data.
+     * 
+     * @param workflow
+     *            The {@link com.stratio.meta.common.logicalplan.LogicalWorkflow} that contains the
+     *            {@link com.stratio.meta.common.logicalplan.LogicalStep} to be executed.
+     * @return A {@link com.stratio.meta.common.result.QueryResult}.
+     * @throws UnsupportedException
+     *             If the required set of operations are not supported by the connector.
+     * @throws ExecutionException
+     *             If the execution of the required steps fails.
+     */
     public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
 
         List<LogicalStep> initialSteps = workflow.getInitialSteps();
@@ -73,7 +86,6 @@ public class QueryExecutor {
             Project project = (Project) initialStep;
             ExtractorConfig<Cells> extractorConfig = retrieveConfiguration(project.getClusterName());
 
-
             partialResultRdd = executeInitialStep((Project) initialStep, extractorConfig);
         }
 
@@ -81,11 +93,21 @@ public class QueryExecutor {
     }
 
     /**
+     * Executes an initial step returning a partial query result if there are more steps waiting to be executed.
+     * Otherwise, it returns the final result.
+     * 
      * @param project
+     *            Initial step
      * @param extractorConfig
-     * @return
+     *            Query job configuration
+     * 
+     * @return A {@link RDD}. It can be a partial result if more steps are waiting to be executed, otherwise, a final
+     *         one.
+     * 
      * @throws ExecutionException
+     *             If the execution of the required steps fails.
      * @throws UnsupportedException
+     *             If the required set of operations are not supported by the connector.
      */
     private JavaRDD<Cells> executeInitialStep(Project project, ExtractorConfig<Cells> extractorConfig)
             throws ExecutionException, UnsupportedException {
@@ -141,9 +163,24 @@ public class QueryExecutor {
         return executeNextStep(nextStep, filteredRdd, project.getTableName().getQualifiedName());
     }
 
+    /**
+     * Creates a new {@link RDD} based on the project and the query job configurations. It the filters list is not
+     * empty, the rdd will contain the data filtered by them.
+     * 
+     * @param project
+     *            Query columns needed to be retrieved.
+     * @param extractorConfig
+     *            Query job configuration.
+     * @param filtersList
+     *            List of filters to be applied while retrieving the data.
+     * 
+     * @return A {@link RDD} contained the requested information.
+     * 
+     * @throws ExecutionException
+     *             If the execution of the required steps fails.
+     */
     private JavaRDD<Cells> createRdd(Project project, ExtractorConfig<Cells> extractorConfig, List<Filter> filtersList)
             throws ExecutionException {
-
 
         // Retrieving project information
         List<String> columnsList = new ArrayList<>();
@@ -162,11 +199,16 @@ public class QueryExecutor {
         return rdd;
     }
 
-
     /**
+     * Generates the deep filters list from the crossdata ones.
+     * 
      * @param filtersList
-     * @return
+     *            List of crossdata filters.
+     * 
+     * @return List of deep filters.
+     * 
      * @throws ExecutionException
+     *             If the execution of the required steps fails.
      */
     private com.stratio.deep.commons.filter.Filter[] generateFilters(List<Filter> filtersList)
             throws ExecutionException {
@@ -182,9 +224,15 @@ public class QueryExecutor {
     }
 
     /**
+     * Returns a deep filter from a crossdata one.
+     * 
      * @param filter
-     * @return
+     *            Crossdata filter.
+     * 
+     * @return Deep filter.
+     * 
      * @throws ExecutionException
+     *             If the execution of the required steps fails.
      */
     private com.stratio.deep.commons.filter.Filter transformFilter(Filter filter) throws ExecutionException {
 
@@ -196,9 +244,15 @@ public class QueryExecutor {
     }
 
     /**
+     * Creates a new query job configuration object from the generic one related to the cluster name.
+     * 
      * @param clusterName
-     * @return
+     *            Cluster name.
+     * 
+     * @return A new query job object containing the cluster configuration.
+     * 
      * @throws ExecutionException
+     *             If the execution of the required steps fails.
      */
     private ExtractorConfig<Cells> retrieveConfiguration(ClusterName clusterName) throws ExecutionException {
 
@@ -221,8 +275,14 @@ public class QueryExecutor {
     }
 
     /**
+     * Creates a {@link QueryResult} from the given {@link RDD} based on the select information.
+     * 
      * @param resultRdd
-     * @return
+     *            Result {@link RDD}.
+     * @param selectStep
+     *            {@link LogicalStep} containing the select information such as choosen columns and aliases.
+     * 
+     * @return {@link QueryResult} containing the result.
      */
     private QueryResult buildQueryResult(JavaRDD<Cells> resultRdd, Select selectStep) {
 
@@ -240,7 +300,7 @@ public class QueryExecutor {
             String columnAlias = columnItem.getValue();
 
             ColumnMetadata columnMetadata = new ColumnMetadata(columnName.getTableName().getQualifiedName(),
-                            columnName.getQualifiedName());
+                    columnName.getQualifiedName());
 
             columnMetadata.setColumnAlias(columnAlias);
             // TODO Check if we have to get the alias or the column qualified name
@@ -263,8 +323,14 @@ public class QueryExecutor {
     }
 
     /**
+     * Transforms a {@link Cells} object to a {@link Row} one.
+     * 
      * @param cells
-     * @return
+     *            Input data to be transformed.
+     * @param columnMap
+     *            Aliases information.
+     * 
+     * @return A {@link Row} containing the information in the related database row.
      */
     private Row buildRowFromCells(Cells cells, Map<ColumnName, String> columnMap) {
 
@@ -285,11 +351,19 @@ public class QueryExecutor {
     }
 
     /**
+     * Transforms the given {@link RDD} using the operations in the {@link LogicalStep}.
+     * 
      * @param logicalStep
+     *            The {@link LogicalStep} including the requested transformations.
      * @param rdd
-     * @return
+     *            The initial, but filtered if needed, {@link RDD} retrieved from the data source.
+     * 
+     * @return The {@link RDD} after applying the requested transformations.
+     * 
      * @throws ExecutionException
+     *             If the execution of the required steps fails.
      * @throws UnsupportedException
+     *             If the required set of operations are not supported by the connector.
      */
     private JavaRDD<Cells> executeNextStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
             throws ExecutionException, UnsupportedException {
@@ -329,10 +403,21 @@ public class QueryExecutor {
     }
 
     /**
+     * Joins the given {@link RDD} to the one specified in the {@link UnionStep} if it's ready; otherwise, the
+     * {@link RDD} is stored to wait for the other {@link RDD} to be ready.
+     * 
      * @param unionStep
+     *            Union information.
      * @param rdd
+     *            Original {@link RDD} to be joined.
+     * 
+     * @return The resultant {@link RDD} after executing the join method. It might be the original one if the other
+     *         {@link RDD} is not ready yet.
+     * 
      * @throws ExecutionException
+     *             If the execution of the required steps fails.
      * @throws UnsupportedException
+     *             If the required set of operations are not supported by the connector.
      */
     private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException,
             UnsupportedException {
@@ -348,7 +433,7 @@ public class QueryExecutor {
                         partialResults.getResults());
                 List<Relation> relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
                         joinStep.getJoinRelations());
-               
+
                 joinedRdd = executeJoin(partialResultsRdd, rdd, relations);
 
             } else {
@@ -358,7 +443,6 @@ public class QueryExecutor {
                 if (leftRdd != null) {
                     joinedRdd = executeJoin(leftRdd, rdd, joinStep.getJoinRelations());
                     partialResultsMap.remove(joinLeftTableName);
-                    // partialResultsMap.put(joinStep.getId(), rdd);
                 }
             }
         } else {
@@ -369,9 +453,16 @@ public class QueryExecutor {
     }
 
     /**
+     * Joins the left {@link RDD} to the right one based on the given list of relations.
+     * 
      * @param leftRdd
+     *            Left {@link RDD}.
      * @param rdd
+     *            right {@link RDD}.
      * @param joinRelations
+     *            List of relations to take into account when joining.
+     * 
+     * @return Joined {@link RDD}.
      */
     private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
@@ -379,8 +470,14 @@ public class QueryExecutor {
     }
 
     /**
+     * Returns a {@link RDD} just containing the columns specified in the {@link Select}.
+     * 
      * @param selectStep
+     *            Selection columns information.
      * @param rdd
+     *            Original {@link RDD}.
+     * 
+     * @return The {@link RDD} with the desired columns.
      */
     private JavaRDD<Cells> prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
@@ -389,9 +486,17 @@ public class QueryExecutor {
     }
 
     /**
+     * Returns a {@link RDD} filtered with the requested {@link Filter}.
+     * 
      * @param filterStep
+     *            Filtering information.
      * @param rdd
+     *            Original {@link RDD}.
+     * 
+     * @return The {@link RDD} filtered by the given criteria.
+     * 
      * @throws UnsupportedException
+     *             If the required set of operations are not supported by the connector.
      */
 
     private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
