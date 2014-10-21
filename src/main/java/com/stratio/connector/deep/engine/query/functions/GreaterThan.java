@@ -18,13 +18,13 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
-import java.io.Serializable;
+
 
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.meta2.common.statements.structures.selectors.Selector;
+
 
 public class GreaterThan implements Function<Cells, Boolean> {
 

@@ -294,6 +294,7 @@ public class QueryExecutor {
     private JavaRDD<Cells> executeNextStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
             throws ExecutionException, UnsupportedException {
 
+
         String stepId = tableName;
         LogicalStep currentStep = logicalStep;
         while (currentStep != null) {

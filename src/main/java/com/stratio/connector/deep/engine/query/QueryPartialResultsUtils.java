@@ -58,10 +58,11 @@ public class QueryPartialResultsUtils {
                 List<ColumnMetadata> columnsMetadata = resultSet.getColumnMetadata();
                 String qualifiedName = columnsMetadata.get(0).getTableName();
                 String[] arrNames = qualifiedName.split("\\.");
-                if (arrNames.length != 2)
+                if (arrNames.length != 2) {
                     throw new ExecutionException(
                             "Table name must be a qualified name: [catalog_name.table_name] but is: "
                                     + columnsMetadata.get(0).getTableName());
+                }
                 String catalogName = arrNames[0];
                 String tableName = arrNames[1];
                 for (Row row : rows) {

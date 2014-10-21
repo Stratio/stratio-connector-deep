@@ -37,6 +37,11 @@ public class DeepConnection extends Connection {
      */
     public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) {
 
+
+        if(credentials!=null){
+            //TODO check the credentials
+        }
+
         Map<String, String> clusterOptions = config.getOptions();
 
         // Creating a configuration for the Extractor and initialize it
@@ -115,12 +120,12 @@ public class DeepConnection extends Connection {
     private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
 
         String db ="";
-        if(config.getName().getName().contains(ExtractorConnectConstants.db_cassandra)){
-            db = ExtractorConnectConstants.db_cassandra;
-        }else  if(config.getName().getName().contains(ExtractorConnectConstants.db_mongo)){
-            db = ExtractorConnectConstants.db_mongo;
-        }else  if(config.getName().getName().contains(ExtractorConnectConstants.db_elasticsearch)){
-            db = ExtractorConnectConstants.db_elasticsearch;
+        if(config.getName().getName().contains(ExtractorConnectConstants.DB_CASSANDRA)){
+            db = ExtractorConnectConstants.DB_CASSANDRA;
+        }else  if(config.getName().getName().contains(ExtractorConnectConstants.DB_MONGO)){
+            db = ExtractorConnectConstants.DB_MONGO;
+        }else  if(config.getName().getName().contains(ExtractorConnectConstants.DB_ELASTICSEARCH)){
+            db = ExtractorConnectConstants.DB_ELASTICSEARCH;
         }
 
         return db;

@@ -12,7 +12,7 @@ import com.stratio.meta.common.connector.IConfiguration;
  */
 public class ConnectionConfiguration implements IConfiguration {
 
-    private static final Logger logger = Logger.getLogger(ConnectionConfiguration.class);
+    private static final Logger LOG = Logger.getLogger(ConnectionConfiguration.class);
 
     private static DeepSparkContext deepContext;
 
@@ -20,20 +20,20 @@ public class ConnectionConfiguration implements IConfiguration {
 
     static {
 
-        logger.info("-------------StartUp the SparkContext------------ ");
+        LOG.info("-------------StartUp the SparkContext------------ ");
 
         String job = "java:deepJob";
 
         ContextProperties p = new ContextProperties();
 
 
-        logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
-        logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
+        LOG.info("spark.serializer: " + System.getProperty("spark.serializer"));
+        LOG.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
         deepContext = new DeepSparkContext(p.getCluster(), job, p.getSparkHome(), p.getJars());
 
         configProperties = p.getProp();
-        logger.info("-------------End StartUp the SparkContext------------ ");
+        LOG.info("-------------End StartUp the SparkContext------------ ");
     }
 
     public static DeepSparkContext getDeepContext() {

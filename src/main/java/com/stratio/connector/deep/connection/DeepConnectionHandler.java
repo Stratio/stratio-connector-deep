@@ -17,10 +17,6 @@ public class DeepConnectionHandler extends ConnectionHandler {
         super(configuration);
     }
 
-    @Override
-    public boolean isConnected(String clusterName) {
-        return super.isConnected(clusterName);
-    }
 
     @Override
     protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)

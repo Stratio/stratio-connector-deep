@@ -16,9 +16,9 @@
 
 package com.stratio.connector.deep.configuration;
 
-import com.stratio.deep.commons.exception.DeepGenericException;
 
-import org.apache.commons.cli.*;
+
+
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -82,7 +82,7 @@ public class ContextProperties {
             String filename = "context.properties";
             input = getClass().getClassLoader().getResourceAsStream(filename);
             if (input == null) {
-                System.out.println("Sorry, unable to find " + filename);
+                LOG.error("Sorry, unable to find " + filename);
                 return;
             }
 

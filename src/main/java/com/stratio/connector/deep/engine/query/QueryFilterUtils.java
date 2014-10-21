@@ -48,7 +48,7 @@ public final class QueryFilterUtils {
     /**
      * Class logger.
      */
-    private static final Logger logger = Logger.getLogger(QueryFilterUtils.class);
+    private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
 
     /**
      * Take a RDD and a Relation and apply suitable filter to the RDD. Execute where clause on Deep.
@@ -95,14 +95,14 @@ public final class QueryFilterUtils {
 
                 throw new UnsupportedException("BETWEEN operator unsupported");
             default:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Operator not supported: " + operator);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Operator not supported: " + operator);
                 }
 
                 result = null;
             }
         }catch (Exception e){
-            throw new ExecutionException(" Error when try to comparate fields[ ]");
+            throw new ExecutionException(" Error when try to comparate fields[ ]"+e);
         }
         return result;
     }
@@ -139,8 +139,8 @@ public final class QueryFilterUtils {
             if (relation.getOperator().equals(Operator.EQ)) {
                 leftTables.add(selectorLeft.getName());
                 rightTables.add(selectorRight.getName());
-                if(logger.isDebugEnabled()) {
-                    logger.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
+                if(LOG.isDebugEnabled()) {
+                    LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
                             + selectorLeft.getName().getName());
                 }
             }
@@ -220,16 +220,16 @@ public final class QueryFilterUtils {
 
         switch (type) {
         case STRING:
-            rightField = new String(relation.getRightTerm().getStringValue());
+            rightField = String.valueOf(relation.getRightTerm().getStringValue());
             break;
         case BOOLEAN:
-            rightField = new Boolean(((BooleanSelector) relation.getRightTerm()).toString());
+            rightField = Boolean.valueOf(((BooleanSelector) relation.getRightTerm()).toString());
             break;
         case INTEGER:
-            rightField = new Long(((IntegerSelector) relation.getRightTerm()).toString());
+            rightField = Long.valueOf(((IntegerSelector) relation.getRightTerm()).toString());
             break;
         case FLOATING_POINT:
-            rightField = new Double(((FloatingPointSelector) relation.getRightTerm()).toString());
+            rightField = Double.valueOf(((FloatingPointSelector) relation.getRightTerm()).toString());
             break;
 
         default:

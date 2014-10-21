@@ -3,14 +3,11 @@ package com.stratio.connector.deep.engine;
 import java.util.Collection;
 
 import com.stratio.connector.commons.connection.Connection;
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-import com.stratio.connector.commons.engine.CommonsQueryEngine;
+
 import com.stratio.connector.commons.engine.CommonsStorageEngine;
-import com.stratio.connector.deep.connection.DeepConnection;
+import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.meta.common.connector.IQueryEngine;
 import com.stratio.meta.common.data.Row;
-import com.stratio.meta.common.exceptions.ExecutionException;
 import com.stratio.meta.common.exceptions.UnsupportedException;
 import com.stratio.meta.common.logicalplan.LogicalWorkflow;
 import com.stratio.meta.common.result.QueryResult;
@@ -28,7 +25,7 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     /**
      * The log.
      */
-    final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DeepStorageEngine(DeepConnectionHandler connectionHandler) {
 
@@ -37,20 +34,20 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     }
 
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow, Connection connection)
-            throws UnsupportedException, ExecutionException {
+            throws UnsupportedException {
 
-        throw new UnsupportedException("Not supported");
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
     }
 
     @Override
-    protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException,
-            ExecutionException {
-        throw new UnsupportedException("Not supported");
+    protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException
+             {
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
     }
 
     @Override
     protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection)
-            throws UnsupportedException, ExecutionException {
-        throw new UnsupportedException("Not supported");
+            throws UnsupportedException {
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
     }
 }

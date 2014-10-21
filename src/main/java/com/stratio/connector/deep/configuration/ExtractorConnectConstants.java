@@ -12,9 +12,9 @@ public class ExtractorConnectConstants extends ExtractorConstants {
     public final static String PORT       = "Port";
     public final static String INNERCLASS = "implClass";
 
-    public static final String db_cassandra     = "cassandra";
-    public static final String db_elasticsearch = "elasticsearch";
-    public static final String db_mongo         = "mongo";
+    public static final String DB_CASSANDRA     = "cassandra";
+    public static final String DB_ELASTICSEARCH = "elasticsearch";
+    public static final String DB_MONGO         = "mongo";
 
     public static final String DEFAULT_HOST   = "localhost";
     public static final int DEFAULT_RPC_PORT  = 9160;
@@ -43,4 +43,5 @@ public class ExtractorConnectConstants extends ExtractorConstants {
     public static final String SPARK_PARTITION_ID = "spark.partition.id";
     public static final String SPARK_RDD_ID       = "spark.rdd.id";
 
+    public static final String METHOD_NOT_SUPPORTED = "Not supported";
 }

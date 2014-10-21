@@ -46,7 +46,7 @@ public class ClusterProperties {
             String filename = "context.properties";
             input = getClass().getClassLoader().getResourceAsStream(filename);
             if (input == null) {
-                System.out.println("Sorry, unable to find " + filename);
+                LOG.error("Sorry, unable to find " + filename);
                 return;
             }
 

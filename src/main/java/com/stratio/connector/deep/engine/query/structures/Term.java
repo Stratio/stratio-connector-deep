@@ -2,9 +2,18 @@ package com.stratio.connector.deep.engine.query.structures;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+
+import sun.rmi.runtime.Log;
 
 public abstract class Term<T extends Comparable<T>> extends ValueCell<T> implements Comparable<T>,
         Serializable {
+
+    /**
+     * Class logger.
+     */
+    private static final Logger LOG = Logger.getLogger(Term.class);
+
     private static final long serialVersionUID = -4258938152892510227L;
     protected Class<? extends Comparable<?>> clazz;
     protected T value;
@@ -59,7 +68,7 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                     return value.compareTo(obj);
                 }
             } catch (NumberFormatException | ClassCastException e) {
-
+                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz +" & "+ o.getClass());
             }
             return this.value.compareTo(o);
         }
@@ -94,21 +103,21 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
         }
         if (!(this.clazz.isInstance(obj))) {
             try {
-                if (obj instanceof String) {
+                if (obj.getClass().equals(String.class)) {
                     String value = this.getStringValue();
                     return value.equals(obj);
-                } else if (obj instanceof Float) {
+                } else  if (obj.getClass().equals(Float.class) ) {
                     Float value = Float.valueOf(this.getStringValue());
                     return value.equals(obj);
-                } else if (obj instanceof Integer) {
+                } else if (obj.getClass().equals(Integer.class)) {
                     Integer value = Integer.valueOf(this.getStringValue());
                     return value.equals(obj);
-                }else if (obj instanceof Long) {
+                }else if (obj.getClass().equals(Long.class)) {
                     Long value = Long.valueOf(this.getStringValue());
                     return value.equals(obj);
                 }
             }catch (NumberFormatException e){
-
+                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz +" & "+ obj.getClass());
             }
             return super.equals(obj);
         }

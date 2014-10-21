@@ -1,7 +1,6 @@
 package com.stratio.connector.deep.connection;
 
 import java.util.Iterator;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class DeepConnector implements IConnector {
 
     private DeepSparkContext deepContext;
 
-    final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static void main(String[] args) {
 

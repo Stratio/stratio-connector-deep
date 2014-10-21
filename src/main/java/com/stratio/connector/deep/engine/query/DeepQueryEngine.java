@@ -35,7 +35,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
     private final DeepConnectionHandler deepConnectionHandler;
 
-    private final Map<String, JavaRDD<Cells>> partialResultsMap = new HashMap<>();
+
 
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
         super(deepConnectionHandler);
