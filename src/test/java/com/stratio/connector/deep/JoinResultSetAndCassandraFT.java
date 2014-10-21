@@ -113,7 +113,7 @@ public class JoinResultSetAndCassandraFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 74, rowsList.size());
+        assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
@@ -196,7 +196,7 @@ public class JoinResultSetAndCassandraFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 74, rowsList.size());
+        assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());

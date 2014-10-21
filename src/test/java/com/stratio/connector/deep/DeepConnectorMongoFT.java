@@ -271,7 +271,7 @@ public class DeepConnectorMongoFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 74, rowsList.size());
+        assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT+"."+AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());

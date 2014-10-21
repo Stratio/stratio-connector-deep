@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.commons.util.ConnectorParser;
 import com.stratio.connector.deep.configuration.ClusterProperties;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
@@ -45,18 +46,16 @@ public class DeepConnection extends Connection {
 
         if (clusterOptions.get(ExtractorConnectConstants.HOSTS) != null) {
             values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get(ExtractorConnectConstants.HOSTS));
-            String[] hosts = clusterOptions.get(ExtractorConnectConstants.HOSTS)
-                    .substring(1, clusterOptions.get(ExtractorConnectConstants.HOSTS).length() - 1).split(",");
+            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConnectConstants.HOSTS));
 
-            values.put(ExtractorConnectConstants.HOST, hosts[0]);
+            values.put(ExtractorConnectConstants.HOST,hosts[0]);
         } else {
             values.put(ExtractorConnectConstants.HOST, clusterOptions.get(ExtractorConnectConstants.HOST));
         }
 
         if (clusterOptions.get(ExtractorConnectConstants.PORTS) != null) {
             values.put(ExtractorConnectConstants.PORTS, clusterOptions.get(ExtractorConnectConstants.PORTS));
-            String[] ports = clusterOptions.get(ExtractorConnectConstants.PORTS)
-                    .substring(1, clusterOptions.get(ExtractorConnectConstants.PORTS).length() - 1).split(",");
+            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConnectConstants.PORTS));
 
             values.put(ExtractorConnectConstants.PORT, ports[0]);
         } else {

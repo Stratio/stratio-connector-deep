@@ -234,7 +234,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 74, rowsList.size());
+        assertEquals("Wrong number of rows", 72, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
         assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getColumnAlias());
@@ -340,7 +340,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 41, rowsList.size());
+        assertEquals("Wrong number of rows", 40, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
                 columnsMetadata.get(0).getColumnName());
@@ -442,9 +442,9 @@ public class DeepConnectorCassandraFT {
             if (data instanceof String) {
                 result = 1;
             } else if (data instanceof Integer) {
-                result = 40;
+                result = 39;
             } else if (data instanceof Long) {
-                result = 40;
+                result = 39;
             } else if (data instanceof Float) {
                 result = 1;
             } else if (data instanceof Double) {
@@ -459,9 +459,9 @@ public class DeepConnectorCassandraFT {
             } else if (data instanceof Long) {
                 result = 0;
             } else if (data instanceof Float) {
-                result = 41;
-            } else if (data instanceof Double) {
                 result = 40;
+            } else if (data instanceof Double) {
+                result = 39;
             }
             break;
         case GT:
@@ -485,9 +485,9 @@ public class DeepConnectorCassandraFT {
             } else if (data instanceof Long) {
                 result = 2;
             } else if (data instanceof Float) {
-                result = 41;
+                result = 40;
             } else if (data instanceof Double) {
-                result = 41;
+                result = 40;
             }
             break;
         case GET:
@@ -511,9 +511,9 @@ public class DeepConnectorCassandraFT {
             } else if (data instanceof Long) {
                 result = 1;
             } else if (data instanceof Float) {
-                result = 40;
+                result = 39;
             } else if (data instanceof Double) {
-                result = 40;
+                result = 39;
             }
             break;
         default:
@@ -560,7 +560,7 @@ public class DeepConnectorCassandraFT {
         List<Row> rowsList = result.getResultSet().getRows();
         // Checking results number
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 2, rowsList.size());
+        assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
                 columnsMetadata.get(0).getColumnName());

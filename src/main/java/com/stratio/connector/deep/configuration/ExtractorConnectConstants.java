@@ -7,8 +7,9 @@ import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
  */
 public class ExtractorConnectConstants extends ExtractorConstants {
 
-    public final static String HOSTS      = "hosts";
-    public final static String PORTS      = "ports";
+    public final static String HOSTS      = "Hosts";
+    public final static String PORTS      = "Port";
+    public final static String PORT       = "Port";
     public final static String INNERCLASS = "implClass";
 
     public static final String db_cassandra     = "cassandra";

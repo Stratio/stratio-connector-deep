@@ -7,6 +7,7 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
+import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForCassandra;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -76,7 +77,7 @@ public class DeepConnectorCassandraAndMongoFT {
         connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
         connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        // prepareDataForTest();
+        prepareDataForCassandra();
 
     }
 
@@ -119,7 +120,7 @@ public class DeepConnectorCassandraAndMongoFT {
 
         // Checking results number
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
-        assertEquals("Wrong number of rows", 74, rowsList.size());
+        assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
