@@ -4,13 +4,14 @@
  * (C) licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.stratio.connector.deep.engine.query;
 
 import java.util.ArrayList;
@@ -26,12 +27,10 @@ import org.apache.spark.rdd.RDD;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.deep.commons.config.ExtractorConfig;
-import com.stratio.deep.commons.entity.Cells;
-import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.crossdata.common.connector.Operations;
 import com.stratio.crossdata.common.data.Cell;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
@@ -44,14 +43,16 @@ import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.logicalplan.UnionStep;
+import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
 import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.data.ClusterName;
-import com.stratio.crossdata.common.data.ColumnName;
-import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.deep.commons.config.ExtractorConfig;
+import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
+import com.stratio.deep.core.context.DeepSparkContext;
 
 public class QueryExecutor {
 
@@ -367,7 +368,6 @@ public class QueryExecutor {
      */
     private JavaRDD<Cells> executeNextStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
             throws ExecutionException, UnsupportedException {
-
 
         String stepId = tableName;
         LogicalStep currentStep = logicalStep;
