@@ -58,9 +58,4 @@ public class In implements Function<Cells, Boolean> {
 
         return isValid;
     }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 0d1268be97b4610d373a625dca109e63bc493e25
 }

@@ -22,7 +22,6 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
-
 public abstract class Term<T extends Comparable<T>> extends ValueCell<T> implements Comparable<T>,
         Serializable {
 
@@ -80,13 +79,11 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
 
             try {
                 if ((this.clazz).equals(Long.class) && o.getClass().equals(Integer.class)) {
-                    Long value = Long.valueOf(this.getStringValue());
                     Long obj = Long.valueOf(o.toString());
-                    return value.compareTo(obj);
+                    return Long.valueOf(this.getStringValue()).compareTo(obj);
                 } else if ((this.clazz).equals(Double.class) && o.getClass().equals(Float.class)) {
-                    Double value = Double.valueOf(this.getStringValue());
                     Double obj = Double.valueOf(o.toString());
-                    return value.compareTo(obj);
+                    return Double.valueOf(this.getStringValue()).compareTo(obj);
                 }
             } catch (NumberFormatException | ClassCastException e) {
                 LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + o.getClass());
@@ -128,17 +125,13 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
         if (!(this.clazz.isInstance(obj))) {
             try {
                 if (obj.getClass().equals(String.class)) {
-                    String value = this.getStringValue();
-                    return value.equals(obj);
+                    return this.getStringValue().equals(obj);
                 } else if (obj.getClass().equals(Float.class)) {
-                    Float value = Float.valueOf(this.getStringValue());
-                    return value.equals(obj);
+                    return Float.valueOf(this.getStringValue()).equals(obj);
                 } else if (obj.getClass().equals(Integer.class)) {
-                    Integer value = Integer.valueOf(this.getStringValue());
-                    return value.equals(obj);
+                    return Integer.valueOf(this.getStringValue()).equals(obj);
                 } else if (obj.getClass().equals(Long.class)) {
-                    Long value = Long.valueOf(this.getStringValue());
-                    return value.equals(obj);
+                    return Long.valueOf(this.getStringValue()).equals(obj);
                 }
             } catch (NumberFormatException e) {
                 LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + obj.getClass());
