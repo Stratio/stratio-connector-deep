@@ -26,27 +26,21 @@ import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that filters requested columns from a given {@link Cells} object.
+ */
 public class FilterColumns implements Function<Cells, Cells> {
 
+    private static final long serialVersionUID = -6143471789450703044L;
+
     /*
-     * 
-     * Filter Columns
+     * Columns to be kept
      */
     private final List<ColumnName> columns;
 
-    /**
-     *
-     *
-     *
-     */
     public FilterColumns(List<ColumnName> columns) {
         this.columns = columns;
     }
-
-    /**
-     * Serial version UID.
-     */
-    private static final long serialVersionUID = -6143471789450703044L;
 
     @Override
     public Cells call(Cells cells) throws Exception {

@@ -24,11 +24,11 @@ import scala.Tuple2;
 
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that removes the left term in a {@link Tuple2}.
+ */
 public class KeyRemover implements Function<Tuple2<Cells, Cells>, Cells> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = 5540221408306143803L;
 
     @Override

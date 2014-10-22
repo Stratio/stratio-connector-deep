@@ -24,11 +24,11 @@ import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that determines if the value in the given field is between the provided lower and uppper bounds.
+ */
 public class Between implements Function<Cells, Boolean> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = -4498262312538738011L;
 
     /**
@@ -46,16 +46,6 @@ public class Between implements Function<Cells, Boolean> {
      */
     private final Serializable upperBound;
 
-    /**
-     * In apply in filter to a field in a Deep Cell.
-     * 
-     * @param field
-     *            Name of the field to check.
-     * @param lowerBound
-     *            List of values of the IN clause.
-     * @param upperBound
-     *            List of values of the IN clause.
-     */
     public Between(String field, Serializable lowerBound, Serializable upperBound) {
         this.field = field;
         this.lowerBound = lowerBound;

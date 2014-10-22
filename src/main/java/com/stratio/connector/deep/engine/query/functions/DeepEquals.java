@@ -23,11 +23,11 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that determines if the value in the given field is equals to the provided term.
+ */
 public class DeepEquals implements Function<Cells, Boolean> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = -6143471452730703044L;
 
     /**
@@ -40,14 +40,6 @@ public class DeepEquals implements Function<Cells, Boolean> {
      */
     private final String field;
 
-    /**
-     * DeepEquals apply = filter to a field in a Deep Cell.
-     * 
-     * @param field
-     *            Name of the field to check.
-     * @param term
-     *            Term to compare to.
-     */
     public DeepEquals(String field, Term<?> term) {
         this.term = term;
         this.field = field;

@@ -26,16 +26,13 @@ import scala.Tuple2;
 
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that joins the fields of two Cells as a result of InnerJoin.
+ */
 public class JoinCells implements Function<Tuple2<List<Object>, Tuple2<Cells, Cells>>, Cells> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = 4534397129761833793L;
 
-    /**
-     * JoinCells join the fields of two Cells as a result of InnerJoin.
-     */
     public JoinCells() {
 
     }
