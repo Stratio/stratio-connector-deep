@@ -373,21 +373,22 @@ public class QueryExecutor {
     private JavaRDD<Cells> executeNextStep(LogicalStep logicalStep, JavaRDD<Cells> rdd, String tableName)
             throws ExecutionException, UnsupportedException {
 
+        JavaRDD<Cells> resultRdd = rdd;
         String stepId = tableName;
         LogicalStep currentStep = logicalStep;
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
-                rdd = executeFilter((Filter) currentStep, rdd);
+                resultRdd = executeFilter((Filter) currentStep, resultRdd);
 
             } else if (currentStep instanceof Select) {
-                rdd = prepareResult((Select) currentStep, rdd);
+                resultRdd = prepareResult((Select) currentStep, resultRdd);
             } else if (currentStep instanceof UnionStep) {
                 UnionStep unionStep = (UnionStep) currentStep;
-                JavaRDD<Cells> joinedRdd = executeUnion(unionStep, rdd);
+                JavaRDD<Cells> joinedRdd = executeUnion(unionStep, resultRdd);
                 if (joinedRdd == null) {
                     break;
                 } else {
-                    rdd = joinedRdd;
+                    resultRdd = joinedRdd;
                     if (unionStep instanceof Join) {
                         stepId = ((Join) unionStep).getId();
                     } else {
@@ -402,9 +403,9 @@ public class QueryExecutor {
             currentStep = currentStep.getNextStep();
         }
 
-        partialResultsMap.put(stepId, rdd);
+        partialResultsMap.put(stepId, resultRdd);
 
-        return rdd;
+        return resultRdd;
     }
 
     /**

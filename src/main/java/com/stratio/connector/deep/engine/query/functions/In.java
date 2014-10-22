@@ -68,10 +68,4 @@ public class In implements Function<Cells, Boolean> {
     }
 
 
-//    private Boolean isIncludedInList(List<Serializable> list, Object value) {
-//        // TODO: Implements call to create IN stuff
-//
-//        return false;
-//    }
-
 }

@@ -40,8 +40,8 @@ public class ExtractorConnectConstants extends ExtractorConstants {
     public static final int DEFAULT_RPC_PORT = 9160;
     public static final int DEFAULT_PORT = 9042;
 
-    public final static String CQLPORT = "cqlPort";
-    public final static String RCPPORT = "rcpPort";
+    public static final String CQLPORT = "cqlPort";
+    public static final String RCPPORT = "rcpPort";
 
     public static final String DEFAULT_MONGO_HOST = "localhost:27017";
 
