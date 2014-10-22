@@ -30,8 +30,4 @@ public class BooleanTerm extends Term<Boolean> {
     public BooleanTerm(String term) {
         super(Boolean.class, Boolean.valueOf(term));
     }
-
-    public BooleanTerm(Term<Boolean> term) {
-        super(Boolean.class, term.getTermValue().booleanValue());
-    }
 }

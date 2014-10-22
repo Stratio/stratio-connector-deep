@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.rdd.RDD;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
@@ -65,6 +64,10 @@ public class QueryExecutor {
     private final DeepConnectionHandler deepConnectionHandler;
 
     private final Map<String, JavaRDD<Cells>> partialResultsMap = new HashMap<>();
+
+    private List<Filter> indexFilters;
+
+    private List<Filter> nonIndexFilters;
 
     public QueryExecutor(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
         this.deepContext = deepContext;
@@ -106,8 +109,8 @@ public class QueryExecutor {
      * @param extractorConfig
      *            Query job configuration
      * 
-     * @return A {@link RDD}. It can be a partial result if more steps are waiting to be executed, otherwise, a final
-     *         one.
+     * @return A {@link JavaRDD}. It can be a partial result if more steps are waiting to be executed, otherwise, a
+     *         final one.
      * 
      * @throws ExecutionException
      *             If the execution of the required steps fails.
@@ -116,15 +119,36 @@ public class QueryExecutor {
      */
     private JavaRDD<Cells> executeInitialStep(Project project, ExtractorConfig<Cells> extractorConfig)
             throws ExecutionException, UnsupportedException {
-        // Retrieving project information
-        List<String> columnsList = new ArrayList<>();
-        for (ColumnName columnName : project.getColumnList()) {
-            columnsList.add(columnName.getName());
+
+        LogicalStep nextStep = project.getNextStep();
+
+        // Filters arrangement determining whether they are executed by the data store or by deep
+        nextStep = arrangeQueryFilters(nextStep);
+
+        JavaRDD<Cells> initialRdd = createRdd(project, extractorConfig, indexFilters);
+
+        JavaRDD<Cells> filteredRdd = initialRdd;
+
+        for (Filter filter : nonIndexFilters) {
+            filteredRdd = executeFilter(filter, filteredRdd);
         }
 
-        List<Filter> indexFilters = new ArrayList<Filter>();
-        List<Filter> nonIndexFilters = new ArrayList<Filter>();
-        LogicalStep nextStep = project.getNextStep();
+        return executeNextStep(nextStep, filteredRdd, project.getTableName().getQualifiedName());
+    }
+
+    /**
+     * Sets the filters fields depending on whether they are executed by the data source or by deep
+     * 
+     * @param nextStep
+     *            Next {@link LogicalStep} to the project.
+     * @throws ExecutionException
+     *             If the execution of the required steps fails.
+     */
+    private LogicalStep arrangeQueryFilters(LogicalStep nextStep) throws ExecutionException {
+
+        this.indexFilters = new ArrayList<Filter>();
+        this.nonIndexFilters = new ArrayList<Filter>();
+
         while (nextStep instanceof Filter) {
             switch (nextStep.getOperation()) {
             case FILTER_INDEXED_EQ:
@@ -157,19 +181,11 @@ public class QueryExecutor {
             nextStep = nextStep.getNextStep();
         }
 
-        JavaRDD<Cells> initialRdd = createRdd(project, extractorConfig, indexFilters);
-
-        JavaRDD<Cells> filteredRdd = initialRdd;
-
-        for (Filter filter : nonIndexFilters) {
-            filteredRdd = executeFilter(filter, filteredRdd);
-        }
-
-        return executeNextStep(nextStep, filteredRdd, project.getTableName().getQualifiedName());
+        return nextStep;
     }
 
     /**
-     * Creates a new {@link RDD} based on the project and the query job configurations. It the filters list is not
+     * Creates a new {@link JavaRDD} based on the project and the query job configurations. It the filters list is not
      * empty, the rdd will contain the data filtered by them.
      * 
      * @param project
@@ -179,7 +195,7 @@ public class QueryExecutor {
      * @param filtersList
      *            List of filters to be applied while retrieving the data.
      * 
-     * @return A {@link RDD} contained the requested information.
+     * @return A {@link JavaRDD} contained the requested information.
      * 
      * @throws ExecutionException
      *             If the execution of the required steps fails.
@@ -280,10 +296,10 @@ public class QueryExecutor {
     }
 
     /**
-     * Creates a {@link QueryResult} from the given {@link RDD} based on the select information.
+     * Creates a {@link QueryResult} from the given {@link JavaRDD} based on the select information.
      * 
      * @param resultRdd
-     *            Result {@link RDD}.
+     *            Result {@link JavaRDD}.
      * @param selectStep
      *            {@link LogicalStep} containing the select information such as choosen columns and aliases.
      * 
@@ -291,7 +307,6 @@ public class QueryExecutor {
      */
     private QueryResult buildQueryResult(JavaRDD<Cells> resultRdd, Select selectStep) {
 
-        // TODO Build the ResultSet, Capture Exceptions! Rare Comparator Cases
         List<Cells> resultCells = resultRdd.collect();
 
         Map<ColumnName, String> columnMap = selectStep.getColumnMap();
@@ -356,14 +371,14 @@ public class QueryExecutor {
     }
 
     /**
-     * Transforms the given {@link RDD} using the operations in the {@link LogicalStep}.
+     * Transforms the given {@link JavaRDD} using the operations in the {@link LogicalStep}.
      * 
      * @param logicalStep
      *            The {@link LogicalStep} including the requested transformations.
      * @param rdd
-     *            The initial, but filtered if needed, {@link RDD} retrieved from the data source.
+     *            The initial, but filtered if needed, {@link JavaRDD} retrieved from the data source.
      * 
-     * @return The {@link RDD} after applying the requested transformations.
+     * @return The {@link JavaRDD} after applying the requested transformations.
      * 
      * @throws ExecutionException
      *             If the execution of the required steps fails.
@@ -379,7 +394,6 @@ public class QueryExecutor {
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
                 resultRdd = executeFilter((Filter) currentStep, resultRdd);
-
             } else if (currentStep instanceof Select) {
                 resultRdd = prepareResult((Select) currentStep, resultRdd);
             } else if (currentStep instanceof UnionStep) {
@@ -409,16 +423,16 @@ public class QueryExecutor {
     }
 
     /**
-     * Joins the given {@link RDD} to the one specified in the {@link UnionStep} if it's ready; otherwise, the
-     * {@link RDD} is stored to wait for the other {@link RDD} to be ready.
+     * Joins the given {@link JavaRDD} to the one specified in the {@link UnionStep} if it's ready; otherwise, the
+     * {@link JavaRDD} is stored to wait for the other {@link JavaRDD} to be ready.
      * 
      * @param unionStep
      *            Union information.
      * @param rdd
-     *            Original {@link RDD} to be joined.
+     *            Original {@link JavaRDD} to be joined.
      * 
-     * @return The resultant {@link RDD} after executing the join method. It might be the original one if the other
-     *         {@link RDD} is not ready yet.
+     * @return The resultant {@link JavaRDD} after executing the join method. It might be the original one if the other
+     *         {@link JavaRDD} is not ready yet.
      * 
      * @throws ExecutionException
      *             If the execution of the required steps fails.
@@ -459,16 +473,16 @@ public class QueryExecutor {
     }
 
     /**
-     * Joins the left {@link RDD} to the right one based on the given list of relations.
+     * Joins the left {@link JavaRDD} to the right one based on the given list of relations.
      * 
      * @param leftRdd
-     *            Left {@link RDD}.
+     *            Left {@link JavaRDD}.
      * @param rdd
-     *            right {@link RDD}.
+     *            right {@link JavaRDD}.
      * @param joinRelations
      *            List of relations to take into account when joining.
      * 
-     * @return Joined {@link RDD}.
+     * @return Joined {@link JavaRDD}.
      */
     private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
@@ -476,14 +490,14 @@ public class QueryExecutor {
     }
 
     /**
-     * Returns a {@link RDD} just containing the columns specified in the {@link Select}.
+     * Returns a {@link JavaRDD} just containing the columns specified in the {@link Select}.
      * 
      * @param selectStep
      *            Selection columns information.
      * @param rdd
-     *            Original {@link RDD}.
+     *            Original {@link JavaRDD}.
      * 
-     * @return The {@link RDD} with the desired columns.
+     * @return The {@link JavaRDD} with the desired columns.
      */
     private JavaRDD<Cells> prepareResult(Select selectStep, JavaRDD<Cells> rdd) throws ExecutionException {
 
@@ -492,14 +506,14 @@ public class QueryExecutor {
     }
 
     /**
-     * Returns a {@link RDD} filtered with the requested {@link Filter}.
+     * Returns a {@link JavaRDD} filtered with the requested {@link Filter}.
      * 
      * @param filterStep
      *            Filtering information.
      * @param rdd
-     *            Original {@link RDD}.
+     *            Original {@link JavaRDD}.
      * 
-     * @return The {@link RDD} filtered by the given criteria.
+     * @return The {@link JavaRDD} filtered by the given criteria.
      * 
      * @throws UnsupportedException
      *             If the required set of operations are not supported by the connector.

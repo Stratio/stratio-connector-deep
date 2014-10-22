@@ -29,8 +29,4 @@ public class DoubleTerm extends Term<Double> {
     public DoubleTerm(Double term) {
         super(Double.class, term);
     }
-
-    public DoubleTerm(Term<Double> term) {
-        super(Double.class, term.getTermValue().doubleValue());
-    }
 }

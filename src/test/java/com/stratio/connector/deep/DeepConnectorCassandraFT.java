@@ -12,9 +12,7 @@ import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForCas
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -38,11 +36,6 @@ import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
-
-import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
-
 
 /**
  * Functional tests using Cassandra DB
@@ -76,13 +69,11 @@ public class DeepConnectorCassandraFT {
     private static final Integer ID_EX = 10;
     private static final Float RATE_EX = 8.3F;
 
-
-    private static final String  RATE_ST_EX  = "8.3";
-    private static final Long    RATE_LNG_EX = 5L;
+    private static final String RATE_ST_EX = "8.3";
+    private static final Long RATE_LNG_EX = 5L;
     private static final Integer RATE_INT_EX = 5;
-    private static final Float   RATE_FLO_EX = 8.3F;
-    private static final Double  RATE_DOU_EX = 8.3D;
-
+    private static final Float RATE_FLO_EX = 8.3F;
+    private static final Double RATE_DOU_EX = 8.3D;
 
     private static final String YEAR_CONSTANT = "year";
     private static final String CASSANDRA_CLUSTERNAME_CONSTANT = "cassandra";
@@ -325,7 +316,7 @@ public class DeepConnectorCassandraFT {
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
                 Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, RATE_CONSTANT, Operator.LET, RATE_EX,
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, Operator.LET, RATE_EX,
                 false));
         LogicalStep filter = project.getNextStep();
         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
@@ -354,34 +345,31 @@ public class DeepConnectorCassandraFT {
         }
     }
 
-
-
     @Test
     public void testSingleProjectWithAllComparatorFiltersAndSelectTest() throws UnsupportedException,
             ExecutionException {
         // Input data
         List<Serializable> rateValues = new ArrayList<>();
-        //rateValues.add(RATE_ST_EX);
+        // rateValues.add(RATE_ST_EX);
         rateValues.add(RATE_LNG_EX);
         rateValues.add(RATE_INT_EX);
         rateValues.add(RATE_FLO_EX);
         rateValues.add(RATE_DOU_EX);
 
-
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT,ACTIVE_CONSTANT));
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
 
         for (Operator op : Operator.values()) {
 
             if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
-                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH) ) {
+                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
 
-                for(Serializable value:rateValues) {
+                for (Serializable value : rateValues) {
 
-                    if(case1(op,value) || case2(op,value)) {
+                    if (case1(op, value) || case2(op, value)) {
 
-                        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, RATE_CONSTANT, op, value,
+                        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, op, value,
                                 false));
                         LogicalStep filter = project.getNextStep();
                         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
@@ -399,10 +387,10 @@ public class DeepConnectorCassandraFT {
                         assertEquals(
                                 "Wrong number of rows in Operation " + op.name() + " with value " + value + " type ->"
                                         + value
-                                        .getClass(),
+                                                .getClass(),
                                 getResultExpectedFomOp(op, value), rowsList.size());
                         System.out.println("number of rows in Operation " + op.name() + " with value " + value + " " +
-                                        "type ->"+ value.getClass()+"  "+  getResultExpectedFomOp(op, value));
+                                "type ->" + value.getClass() + "  " + getResultExpectedFomOp(op, value));
                         // Checking metadata
                         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
                                 columnsMetadata.get(0).getColumnName());
@@ -422,14 +410,14 @@ public class DeepConnectorCassandraFT {
 
     private boolean case1(Operator op, Serializable value) {
 
-        return (op.equals(Operator.LT) || op.equals(Operator.LET) || op.equals(Operator.GT)|| op.equals
+        return (op.equals(Operator.LT) || op.equals(Operator.LET) || op.equals(Operator.GT) || op.equals
                 (Operator.GET)) && (value.getClass().equals(Float.class) || value.getClass().equals
                 (Double.class));
     }
 
     private boolean case2(Operator op, Serializable value) {
 
-        return (op.equals(Operator.EQ) || op.equals(Operator.DISTINCT) );
+        return (op.equals(Operator.EQ) || op.equals(Operator.DISTINCT));
     }
 
     private int getResultExpectedFomOp(Operator op, Serializable data) {
@@ -523,11 +511,10 @@ public class DeepConnectorCassandraFT {
         return result;
     }
 
-
     @Test
     public void luceneIndexFilterTest() throws UnsupportedException, ExecutionException {
 
-        //Wait 10 secons...for the Cassandra index
+        // Wait 10 secons...for the Cassandra index
         try {
 
             Thread.sleep(10000);
