@@ -7,12 +7,16 @@ import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.engine.CommonsStorageEngine;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.meta.common.data.Row;
-import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.logicalplan.LogicalWorkflow;
-import com.stratio.meta.common.result.QueryResult;
-import com.stratio.meta2.common.data.ClusterName;
-import com.stratio.meta2.common.metadata.TableMetadata;
+
+
+import com.stratio.crossdata.common.data.Row;
+
+import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
+import com.stratio.crossdata.common.result.QueryResult;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.metadata.TableMetadata;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -28,17 +28,17 @@ import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.filter.FilterOperator;
-import com.stratio.meta.common.exceptions.ExecutionException;
-import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.statements.structures.relationships.Operator;
-import com.stratio.meta.common.statements.structures.relationships.Relation;
-import com.stratio.meta2.common.data.ColumnName;
-import com.stratio.meta2.common.statements.structures.selectors.BooleanSelector;
-import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
-import com.stratio.meta2.common.statements.structures.selectors.FloatingPointSelector;
-import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
-import com.stratio.meta2.common.statements.structures.selectors.SelectorType;
-import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.statements.structures.relationships.Operator;
+import com.stratio.crossdata.common.statements.structures.relationships.Relation;
+import com.stratio.crossdata.common.data.ColumnName;
+import com.stratio.crossdata.common.statements.structures.selectors.BooleanSelector;
+import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
+import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
+import com.stratio.crossdata.common.statements.structures.selectors.SelectorType;
+import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
 
 /**
  * Created by dgomez on 26/09/14.
@@ -56,7 +56,7 @@ public final class QueryFilterUtils {
      * @param rdd
      *            RDD which filter must be applied.
      * @param relation
-     *            {@link com.stratio.meta.common.statements.structures.relationships.Relation} to apply
+     *            {@link com.stratio.crossdata.common.statements.structures.relationships.Relation} to apply
      * @return A new RDD with the result.
      * @throws UnsupportedException
      */

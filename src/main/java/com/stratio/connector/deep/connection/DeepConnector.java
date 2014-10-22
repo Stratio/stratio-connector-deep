@@ -8,20 +8,20 @@ import org.slf4j.LoggerFactory;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
-import com.stratio.connectors.ConnectorApp;
+import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.connector.IConfiguration;
+import com.stratio.crossdata.common.connector.IConnector;
+import com.stratio.crossdata.common.connector.IMetadataEngine;
+import com.stratio.crossdata.common.connector.IQueryEngine;
+import com.stratio.crossdata.common.connector.IStorageEngine;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.exceptions.InitializationException;
+import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.security.ICredentials;
+import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.ConnectorClusterConfig;
-import com.stratio.meta.common.connector.IConfiguration;
-import com.stratio.meta.common.connector.IConnector;
-import com.stratio.meta.common.connector.IMetadataEngine;
-import com.stratio.meta.common.connector.IQueryEngine;
-import com.stratio.meta.common.connector.IStorageEngine;
-import com.stratio.meta.common.exceptions.ConnectionException;
-import com.stratio.meta.common.exceptions.ExecutionException;
-import com.stratio.meta.common.exceptions.InitializationException;
-import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.security.ICredentials;
-import com.stratio.meta2.common.data.ClusterName;
 
 /**
  * Created by dgomez on 16/09/14.
@@ -58,8 +58,8 @@ public class DeepConnector implements IConnector {
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
 
-        this.connectionHandler     = new DeepConnectionHandler(new ConnectionConfiguration());
-        this.deepContext           = ConnectionConfiguration.getDeepContext();
+        this.connectionHandler = new DeepConnectionHandler(new ConnectionConfiguration());
+        this.deepContext = ConnectionConfiguration.getDeepContext();
 
     }
 

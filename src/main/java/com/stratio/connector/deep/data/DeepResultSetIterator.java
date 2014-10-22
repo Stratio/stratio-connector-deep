@@ -21,7 +21,7 @@ package com.stratio.connector.deep.data;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class DeepResultSetIterator implements Iterator<com.stratio.meta.common.data.Row> {
+public class DeepResultSetIterator implements Iterator<com.stratio.crossdata.common.data.Row> {
 
     /**
      * Set representing a result from Cassandra.
@@ -50,7 +50,7 @@ public class DeepResultSetIterator implements Iterator<com.stratio.meta.common.d
     }
 
     @Override
-    public com.stratio.meta.common.data.Row next() throws NoSuchElementException {
+    public com.stratio.crossdata.common.data.Row next() throws NoSuchElementException {
         return deepResultSet.getRows().get(current++);
     }
 

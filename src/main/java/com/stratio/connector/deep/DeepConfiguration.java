@@ -17,7 +17,7 @@
  */
 package com.stratio.connector.deep;
 
-import com.stratio.meta.common.connector.IConfiguration;
+import com.stratio.crossdata.common.connector.IConfiguration;
 
 /**
  * Created by jjlopez on 26/08/14.

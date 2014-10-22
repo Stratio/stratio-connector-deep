@@ -4,10 +4,10 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.ConnectorClusterConfig;
-import com.stratio.meta.common.connector.IConfiguration;
-import com.stratio.meta.common.security.ICredentials;
-import com.stratio.meta2.common.data.ClusterName;
+import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.connector.IConfiguration;
+import com.stratio.crossdata.common.security.ICredentials;
+import com.stratio.crossdata.common.data.ClusterName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 public class ConnectionHandlerTest {
 
-    private static final String CLUSTER_NAME = "CLUSTER_NAME";
+    private static final String CLUSTER_NAME = "cluster_name";
     private DeepConnectionHandler connectionHandler = null;
     @Mock
     private IConfiguration iConfiguration;

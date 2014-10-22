@@ -14,8 +14,8 @@ import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.ConnectorClusterConfig;
-import com.stratio.meta.common.security.ICredentials;
+import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.security.ICredentials;
 
 public class DeepConnection extends Connection {
 

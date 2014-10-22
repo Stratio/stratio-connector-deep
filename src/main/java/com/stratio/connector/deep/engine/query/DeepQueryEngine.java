@@ -22,12 +22,12 @@ import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.IResultHandler;
-import com.stratio.meta.common.exceptions.ExecutionException;
-import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.logicalplan.LogicalWorkflow;
-import com.stratio.meta.common.result.QueryResult;
-import com.stratio.meta2.common.data.ClusterName;
+import com.stratio.crossdata.common.connector.IResultHandler;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
+import com.stratio.crossdata.common.result.QueryResult;
+import com.stratio.crossdata.common.data.ClusterName;
 
 public class DeepQueryEngine extends CommonsQueryEngine {
 
@@ -54,7 +54,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     /*
      * (non-Javadoc)
      * 
-     * @see com.stratio.meta.common.connector.IQueryEngine#execute(com.stratio.meta.common.logicalplan.LogicalWorkflow)
+     * @see com.stratio.crossdata.common.connector.IQueryEngine#execute(com.stratio.crossdata.common.logicalplan.LogicalWorkflow)
      */
     @Override
     public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
@@ -66,8 +66,8 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     /*
      * (non-Javadoc)
      * 
-     * @see com.stratio.meta.common.connector.IQueryEngine#asyncExecute(java.lang.String,
-     * com.stratio.meta.common.logicalplan.LogicalWorkflow, com.stratio.meta.common.connector.IResultHandler)
+     * @see com.stratio.crossdata.common.connector.IQueryEngine#asyncExecute(java.lang.String,
+     * com.stratio.crossdata.common.logicalplan.LogicalWorkflow, com.stratio.crossdata.common.connector.IResultHandler)
      */
     @Override
     public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
@@ -79,7 +79,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     /*
      * (non-Javadoc)
      * 
-     * @see com.stratio.meta.common.connector.IQueryEngine#stop(java.lang.String)
+     * @see com.stratio.crossdata.common.connector.IQueryEngine#stop(java.lang.String)
      */
     @Override
     public void stop(String queryId) throws UnsupportedException, ExecutionException {
