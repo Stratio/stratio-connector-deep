@@ -25,7 +25,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * Created by dgomez on 15/09/14.
+ *
  */
 
 public class ClusterProperties {
