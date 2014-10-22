@@ -12,9 +12,7 @@ import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForCas
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -38,11 +36,6 @@ import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
-
-import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
-
 
 /**
  * Functional tests using Cassandra DB
@@ -381,7 +374,7 @@ public class DeepConnectorCassandraFT {
 
                     if(case1(op,value) || case2(op,value)) {
 
-                        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, RATE_CONSTANT, op, value,
+                        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, op, value,
                                 false));
                         LogicalStep filter = project.getNextStep();
                         filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
@@ -451,6 +444,7 @@ public class DeepConnectorCassandraFT {
                 result = 1;
             }
             break;
+
         case LT:
             if (data instanceof String) {
                 result = 0;

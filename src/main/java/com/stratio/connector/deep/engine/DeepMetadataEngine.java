@@ -30,7 +30,11 @@ import com.stratio.crossdata.common.metadata.IndexMetadata;
 import com.stratio.crossdata.common.metadata.TableMetadata;
 
 /**
- * Created by dgomez on 30/09/14.
+ *
+ *  Class use for admin table meta Data, not implemented for Deep connector
+ *  {@link com.stratio.connector.commons.engine.CommonsMetadataEngine}
+ *
+ *  @throw UnsupportedException
  */
 public class DeepMetadataEngine extends CommonsMetadataEngine {
 

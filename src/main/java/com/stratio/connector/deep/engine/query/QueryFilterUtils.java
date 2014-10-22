@@ -58,7 +58,7 @@ import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.filter.FilterOperator;
 
 /**
- * Created by dgomez on 26/09/14.
+ * Utils for the query Filters
  */
 public final class QueryFilterUtils {
 
@@ -259,7 +259,7 @@ public final class QueryFilterUtils {
 
     /**
      * @param operator
-     * @return
+     * @return String
      */
     public static String retrieveFilterOperator(Operator operator) {
 

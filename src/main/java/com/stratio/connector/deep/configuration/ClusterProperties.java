@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 /**
  *
  */
-
 public class ClusterProperties {
 
     static final String OPT_INT = "int";
