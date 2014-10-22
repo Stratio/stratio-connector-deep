@@ -27,7 +27,9 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * Charge the properties to up the Deep spark context
+ * Charge the properties to up the Deep spark context.
+ *
+ *
  */
 
 public class ContextProperties {
@@ -37,7 +39,7 @@ public class ContextProperties {
     private static final Logger LOG = Logger.getLogger(ContextProperties.class);
 
     /*
-    * spark config propertes
+    * spark config propertes.
     *
     */
     private Properties prop;
@@ -48,7 +50,7 @@ public class ContextProperties {
     private String cluster;
 
     /**
-     * spark home
+     * spark home.
      */
     private String sparkHome;
 
@@ -73,7 +75,7 @@ public class ContextProperties {
     private int thriftPort;
 
     /**
-     * Public constructor. Load the context.properties
+     * Public constructor. Load the context.properties.
      */
     public ContextProperties() {
 

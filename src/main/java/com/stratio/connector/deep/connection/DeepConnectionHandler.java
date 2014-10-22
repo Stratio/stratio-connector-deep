@@ -26,7 +26,8 @@ import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.security.ICredentials;
 
 /**
- * Created by dgomez on 18/09/14.
+ *
+ * 
  */
 public class DeepConnectionHandler extends ConnectionHandler {
 

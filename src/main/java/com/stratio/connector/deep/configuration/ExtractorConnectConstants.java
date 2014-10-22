@@ -21,7 +21,7 @@ package com.stratio.connector.deep.configuration;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 
 /**
- * Config constants
+ * Config constants.
  */
 public class ExtractorConnectConstants extends ExtractorConstants {
 
