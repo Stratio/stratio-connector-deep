@@ -11,18 +11,18 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.stratio.deep.commons.entity.Cells;
 import com.stratio.crossdata.common.connector.Operations;
+import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
+import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
 import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.data.ColumnName;
-import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.deep.commons.entity.Cells;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(QueryPartialResultsUtils.class)
@@ -79,9 +79,9 @@ public class QueryPartialResultsUtilsTest {
         List<Relation> orderedRelations = QueryPartialResultsUtils.getOrderedRelations(partialResults, listRelations);
         assertEquals(listRelations.size(), orderedRelations.size());
         assertEquals(colSelectorLeft.getName().getQualifiedName(), ((ColumnSelector) orderedRelations.get(0)
-                        .getLeftTerm()).getName().getQualifiedName());
+                .getLeftTerm()).getName().getQualifiedName());
         assertEquals(colSelectorLeft.getName().getQualifiedName(), ((ColumnSelector) orderedRelations.get(1)
-                        .getLeftTerm()).getName().getQualifiedName());
+                .getLeftTerm()).getName().getQualifiedName());
 
     }
 
@@ -90,9 +90,9 @@ public class QueryPartialResultsUtilsTest {
 
         ResultSet resultSet = new ResultSet();
         resultSet.setColumnMetadata(Arrays.asList(metaMetadata(CATALOG, TABLE, ROW1, ColumnType.INT),
-                        metaMetadata(CATALOG, TABLE, ROW2, ColumnType.VARCHAR)));
+                metaMetadata(CATALOG, TABLE, ROW2, ColumnType.VARCHAR)));
         resultSet.setRows(Arrays.asList(metaRow(ROW1, CELL1_VALUE1, ROW2, CELL1_VALUE2),
-                        metaRow(ROW1, CELL2_VALUE1, ROW2, CELL2_VALUE2)));
+                metaRow(ROW1, CELL2_VALUE1, ROW2, CELL2_VALUE2)));
 
         // mockStatic(QueryPartialResultsUtils.class);
         // when(
@@ -129,7 +129,7 @@ public class QueryPartialResultsUtilsTest {
      */
     private ColumnMetadata metaMetadata(String catalog, String table, String row, ColumnType i) {
 
-        return new ColumnMetadata(catalog + "." + table, row, i);
+        return new ColumnMetadata(catalog + "." + table, catalog + "." + table + "." + row, i);
     }
 
     /**
