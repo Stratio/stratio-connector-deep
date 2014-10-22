@@ -29,8 +29,4 @@ public class LongTerm extends Term<Long> {
     public LongTerm(Long term) {
         super(Long.class, term);
     }
-
-    public LongTerm(Term<Long> term) {
-        super(Long.class, term.getTermValue().longValue());
-    }
 }

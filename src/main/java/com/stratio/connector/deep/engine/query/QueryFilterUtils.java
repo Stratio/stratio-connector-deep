@@ -85,28 +85,28 @@ public final class QueryFilterUtils {
 
         Operator operator = relation.getOperator();
         JavaRDD<Cells> result = null;
-        Serializable field = filterFromLeftTermWhereRelation(relation);
+        ColumnName column = ((ColumnSelector) relation.getLeftTerm()).getName();
         Term rightTerm = filterFromRightTermWhereRelation(relation);
 
         try {
             switch (operator) {
             case EQ:
-                result = rdd.filter(new DeepEquals(field.toString(), rightTerm));
+                result = rdd.filter(new DeepEquals(column, rightTerm));
                 break;
             case DISTINCT:
-                result = rdd.filter(new NotEquals(field.toString(), rightTerm));
+                result = rdd.filter(new NotEquals(column, rightTerm));
                 break;
             case GT:
-                result = rdd.filter(new GreaterThan(field.toString(), rightTerm));
+                result = rdd.filter(new GreaterThan(column, rightTerm));
                 break;
             case GET:
-                result = rdd.filter(new GreaterEqualThan(field.toString(), rightTerm));
+                result = rdd.filter(new GreaterEqualThan(column, rightTerm));
                 break;
             case LT:
-                result = rdd.filter(new LessThan(field.toString(), rightTerm));
+                result = rdd.filter(new LessThan(column, rightTerm));
                 break;
             case LET:
-                result = rdd.filter(new LessEqualThan(field.toString(), rightTerm));
+                result = rdd.filter(new LessEqualThan(column, rightTerm));
                 break;
             case IN:
 
@@ -141,7 +141,7 @@ public final class QueryFilterUtils {
 
         List<ColumnName> list = new ArrayList<>(selectedCols);
 
-        return  rdd.map(new FilterColumns(list));
+        return rdd.map(new FilterColumns(list));
     }
 
     static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
@@ -179,27 +179,6 @@ public final class QueryFilterUtils {
         }
 
         return joinedResult;
-
-    }
-
-    static Serializable filterFromLeftTermWhereRelation(Relation relation) throws ExecutionException {
-
-        String leftField = null;
-        SelectorType type = relation.getLeftTerm().getType();
-        switch (type) {
-        case STRING:
-            leftField = ((StringSelector) relation.getLeftTerm()).getValue();
-            break;
-        case COLUMN:
-
-            leftField = ((ColumnSelector) relation.getLeftTerm()).getName().getName();
-            break;
-        default:
-            throw new ExecutionException("Unknown Relation Left Selector Where found [" + relation.getLeftTerm()
-                    .getType() + "]");
-
-        }
-        return leftField;
 
     }
 

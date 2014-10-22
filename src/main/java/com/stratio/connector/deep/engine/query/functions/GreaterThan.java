@@ -21,6 +21,7 @@ package com.stratio.connector.deep.engine.query.functions;
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
+import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
@@ -36,18 +37,18 @@ public class GreaterThan implements Function<Cells, Boolean> {
     private final Term<?> term;
 
     /**
-     * Name of the field of the cell to compare.
+     * Column cell to compare to.
      */
-    private final String field;
+    private final ColumnName column;
 
-    public GreaterThan(String field, Term term) {
+    public GreaterThan(ColumnName column, Term term) {
         this.term = term;
-        this.field = field;
+        this.column = column;
     }
 
     @Override
     public Boolean call(Cells cells) {
-        Object obj = cells.getCellByName(field).getCellValue();
+        Object obj = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName()).getCellValue();
         return ((Comparable) term).compareTo(obj) < 0;
     }
 }
