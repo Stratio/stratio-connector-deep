@@ -20,9 +20,7 @@ package com.stratio.connector.deep.engine.query;
 
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-
 import com.stratio.crossdata.common.connector.IResultHandler;
-import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
@@ -39,14 +37,6 @@ public class DeepQueryEngine extends CommonsQueryEngine {
         super(deepConnectionHandler);
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
-    }
-
-    @Override
-    @Deprecated
-    public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow) throws UnsupportedException,
-            ExecutionException {
-
-        return execute(workflow);
     }
 
     /*
