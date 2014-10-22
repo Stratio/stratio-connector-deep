@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
+
 public abstract class Term<T extends Comparable<T>> extends ValueCell<T> implements Comparable<T>,
         Serializable {
 

@@ -25,10 +25,12 @@ import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
  */
 public class ExtractorConnectConstants extends ExtractorConstants {
 
-    public final static String HOSTS = "Hosts";
-    public final static String PORTS = "Port";
-    public final static String PORT = "Port";
-    public final static String INNERCLASS = "implClass";
+
+    public static final String HOSTS      = "Hosts";
+    public static final String PORTS      = "Port";
+    public static final String PORT       = "Port";
+    public static final String INNERCLASS = "implClass";
+
 
     public static final String DB_CASSANDRA = "cassandra";
     public static final String DB_ELASTICSEARCH = "elasticsearch";

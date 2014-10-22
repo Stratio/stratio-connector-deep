@@ -20,6 +20,7 @@ package com.stratio.connector.deep.engine.query;
 
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
+
 import com.stratio.crossdata.common.connector.IResultHandler;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.exceptions.ExecutionException;

@@ -39,10 +39,6 @@ import com.stratio.crossdata.common.result.QueryResult;
  */
 public class DeepStorageEngine extends CommonsStorageEngine {
 
-    /**
-     * The log.
-     */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DeepStorageEngine(DeepConnectionHandler connectionHandler) {
 

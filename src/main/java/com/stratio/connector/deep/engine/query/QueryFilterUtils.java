@@ -137,8 +137,8 @@ public final class QueryFilterUtils {
     static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<ColumnName> selectedCols) {
 
         List<ColumnName> list = new ArrayList<>(selectedCols);
-        JavaRDD<Cells> rddResult = rdd.map(new FilterColumns(list));
-        return rddResult;
+
+        return  rdd.map(new FilterColumns(list));
     }
 
     static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {

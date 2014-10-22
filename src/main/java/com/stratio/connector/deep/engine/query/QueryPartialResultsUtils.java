@@ -114,8 +114,8 @@ public class QueryPartialResultsUtils {
         if (cellsList == null) {
             throw new ExecutionException("An empty result set is not allowed in a join with partial results");
         }
-        JavaRDD<Cells> partialResultsRDD = deepContext.parallelize(cellsList);
-        return partialResultsRDD;
+
+        return deepContext.parallelize(cellsList);
     }
 
     /**
