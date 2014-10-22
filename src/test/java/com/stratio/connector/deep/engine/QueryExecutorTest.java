@@ -61,19 +61,19 @@ import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
 @RunWith(PowerMockRunner.class)
 public class QueryExecutorTest {
 
-    private static final String CATALOG_CONSTANT = "catalogName";
+    private static final String CATALOG_CONSTANT = "catalogname";
 
-    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "tableName1");
+    private static final TableName TABLE1_CONSTANT = new TableName(CATALOG_CONSTANT, "tablename1");
 
-    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "tableName2");
+    private static final TableName TABLE2_CONSTANT = new TableName(CATALOG_CONSTANT, "tablename2");
 
-    private static final TableName TABLE3_CONSTANT = new TableName(CATALOG_CONSTANT, "tableName3");
+    private static final TableName TABLE3_CONSTANT = new TableName(CATALOG_CONSTANT, "tablename3");
 
-    private static final String COLUMN1_CONSTANT = "column1Name";
+    private static final String COLUMN1_CONSTANT = "column1name";
 
-    private static final String COLUMN2_CONSTANT = "column2Name";
+    private static final String COLUMN2_CONSTANT = "column2name";
 
-    private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("clusterName");
+    private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("clustername");
 
     private static final String DATA_CONSTANT = "DATA";
 
