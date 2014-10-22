@@ -127,11 +127,11 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                 if (obj.getClass().equals(String.class)) {
                     return this.getStringValue().equals(obj);
                 } else if (obj.getClass().equals(Float.class)) {
-                    return Float.valueOf(this.getStringValue()).equals(obj);
+                    return Float.valueOf(this.getStringValue()).equals((Float) obj);
                 } else if (obj.getClass().equals(Integer.class)) {
-                    return Integer.valueOf(this.getStringValue()).equals(obj);
+                    return Integer.valueOf(this.getStringValue()).equals((Integer) obj);
                 } else if (obj.getClass().equals(Long.class)) {
-                    return Long.valueOf(this.getStringValue()).equals(obj);
+                    return Long.valueOf(this.getStringValue()).equals((Long) obj);
                 }
             } catch (NumberFormatException e) {
                 LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + obj.getClass());
