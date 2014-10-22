@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 public class ConnectionHandlerTest {
 
-    private static final String CLUSTER_NAME = "CLUSTER_NAME";
+    private static final String CLUSTER_NAME = "cluster_name";
     private DeepConnectionHandler connectionHandler = null;
     @Mock
     private IConfiguration iConfiguration;
