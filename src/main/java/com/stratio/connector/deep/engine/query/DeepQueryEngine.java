@@ -13,14 +13,10 @@
  */
 package com.stratio.connector.deep.engine.query;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.spark.api.java.JavaRDD;
 
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.deep.commons.entity.Cells;
+
 import com.stratio.deep.core.context.DeepSparkContext;
 import com.stratio.crossdata.common.connector.IResultHandler;
 import com.stratio.crossdata.common.exceptions.ExecutionException;

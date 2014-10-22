@@ -59,17 +59,11 @@ public class In implements Function<Cells, Boolean> {
     public Boolean call(Cells cells) {
 
         Boolean isValid = false;
-
-        //TODO: Implements call to create IN stuff
-
+        if(this.field !=null && this.terms!=null) {
+            //TODO: Implements call to create IN stuff
+        }
 
         return isValid;
     }
 
-    private Boolean isIncludedInList(List<Serializable> list, Object value) {
-        //TODO: Implements call to create IN stuff
-
-
-        return false;
-    }
 }
