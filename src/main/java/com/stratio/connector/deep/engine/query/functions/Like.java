@@ -32,12 +32,12 @@ public class Like implements Function<Cells, Boolean> {
     /**
      * Name of the field of the cell to match.
      */
-    private String field;
+    private final String field;
 
     /**
      * Regular expression.
      */
-    private String regexp;
+    private final String regexp;
 
     /**
      * Like filter.

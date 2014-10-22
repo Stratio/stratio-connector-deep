@@ -58,6 +58,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * @param rows
      *            The list.
      */
+    @Override
     public void setRows(List<Row> rows) {
         this.rows = rows;
     }
@@ -67,6 +68,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * 
      * @return A List of {@link com.stratio.crossdata.common.data.Row}
      */
+    @Override
     public List<Row> getRows() {
         return rows;
     }
@@ -77,6 +79,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * @param columnMetadata
      *            A list of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata} in order.
      */
+    @Override
     public void setColumnMetadata(List<ColumnMetadata> columnMetadata) {
         this.columnMetadata = columnMetadata;
     }
@@ -86,6 +89,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * 
      * @return A list of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata}.
      */
+    @Override
     public List<ColumnMetadata> getColumnMetadata() {
         return columnMetadata;
     }
@@ -96,6 +100,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * @param row
      *            {@link com.stratio.crossdata.common.data.Row} to add
      */
+    @Override
     public void add(Row row) {
         rows.add(row);
     }
@@ -106,6 +111,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * @param index
      *            Index of the row to remove
      */
+    @Override
     public void remove(int index) {
         rows.remove(index);
     }
@@ -115,6 +121,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * 
      * @return Size.
      */
+    @Override
     public int size() {
         return rows.size();
     }

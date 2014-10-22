@@ -18,13 +18,10 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
-
-
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
-
 
 public class DeepEquals implements Function<Cells, Boolean> {
 

@@ -24,7 +24,6 @@ import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
 
-
 public class Between implements Function<Cells, Boolean> {
 
     /**
@@ -35,17 +34,17 @@ public class Between implements Function<Cells, Boolean> {
     /**
      * Name of the field of the cell to compare.
      */
-    private String field;
+    private final String field;
 
     /**
      * Lower bound
      */
-    private Serializable lowerBound;
+    private final Serializable lowerBound;
 
     /**
      * Upper bound
      */
-    private Serializable upperBound;
+    private final Serializable upperBound;
 
     /**
      * In apply in filter to a field in a Deep Cell.

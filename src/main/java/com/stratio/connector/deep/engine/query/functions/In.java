@@ -60,15 +60,13 @@ public class In implements Function<Cells, Boolean> {
 
         Boolean isValid = false;
 
-        //TODO: Implements call to create IN stuff
-
+        // TODO: Implements call to create IN stuff
 
         return isValid;
     }
 
     private Boolean isIncludedInList(List<Serializable> list, Object value) {
-        //TODO: Implements call to create IN stuff
-
+        // TODO: Implements call to create IN stuff
 
         return false;
     }

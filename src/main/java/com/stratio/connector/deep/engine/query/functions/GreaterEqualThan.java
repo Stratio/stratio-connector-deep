@@ -18,13 +18,10 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
-
-
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
-
 
 public class GreaterEqualThan implements Function<Cells, Boolean> {
 
@@ -41,7 +38,7 @@ public class GreaterEqualThan implements Function<Cells, Boolean> {
     /**
      * Name of the field of the cell to compare.
      */
-    private String field;
+    private final String field;
 
     /**
      * GreaterEqualThan apply >= filter to a field in a Deep Cell.

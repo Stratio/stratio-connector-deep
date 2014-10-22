@@ -18,13 +18,10 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
-
-
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
-
 
 public class LessThan implements Function<Cells, Boolean> {
 
@@ -36,7 +33,7 @@ public class LessThan implements Function<Cells, Boolean> {
     /**
      * Term to compare.
      */
-    private Term<?> term;
+    private final Term<?> term;
 
     /**
      * Name of the field of the cell to compare.

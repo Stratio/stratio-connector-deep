@@ -18,12 +18,10 @@
 
 package com.stratio.connector.deep.engine.query.functions;
 
-
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
-
 
 public class NotEquals implements Function<Cells, Boolean> {
 
@@ -35,12 +33,12 @@ public class NotEquals implements Function<Cells, Boolean> {
     /**
      * Term to compare.
      */
-    private Term<?> term;
+    private final Term<?> term;
 
     /**
      * Name of the field of the cell to compare.
      */
-    private String field;
+    private final String field;
 
     /**
      * DeepEquals apply <> filter to a field in a Deep Cell.
