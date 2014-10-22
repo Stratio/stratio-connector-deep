@@ -22,11 +22,11 @@ import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that determines if the value in the given field matches the provided regular expression.
+ */
 public class Like implements Function<Cells, Boolean> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = 5642510017426647895L;
 
     /**
@@ -39,14 +39,6 @@ public class Like implements Function<Cells, Boolean> {
      */
     private final String regexp;
 
-    /**
-     * Like filter.
-     * 
-     * @param field
-     *            Name of the field to check.
-     * @param regexp
-     *            Regular expresion that value must match with.
-     */
     public Like(String field, String regexp) {
         this.field = field;
         this.regexp = regexp;

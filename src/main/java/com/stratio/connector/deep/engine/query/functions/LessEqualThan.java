@@ -23,11 +23,11 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that determines if the value in the given field is less or equal than the provided term.
+ */
 public class LessEqualThan implements Function<Cells, Boolean> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = 2775666112428131116L;
 
     /**
@@ -40,14 +40,6 @@ public class LessEqualThan implements Function<Cells, Boolean> {
      */
     private final String field;
 
-    /**
-     * LessEqualThan apply >= filter to a field in a Deep Cell.
-     * 
-     * @param field
-     *            Name of the field to check.
-     * @param term
-     *            Term to compare to.
-     */
     public LessEqualThan(String field, Term term) {
         this.term = term;
         this.field = field;

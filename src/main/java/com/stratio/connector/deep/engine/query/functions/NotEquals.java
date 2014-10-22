@@ -23,11 +23,11 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that determines if the value in the given field is different to the provided term.
+ */
 public class NotEquals implements Function<Cells, Boolean> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = 927384912608139416L;
 
     /**
@@ -40,14 +40,6 @@ public class NotEquals implements Function<Cells, Boolean> {
      */
     private final String field;
 
-    /**
-     * DeepEquals apply <> filter to a field in a Deep Cell.
-     * 
-     * @param field
-     *            Name of the field to check.
-     * @param term
-     *            Term to compare to.
-     */
     public NotEquals(String field, Term term) {
         this.term = term;
         this.field = field;

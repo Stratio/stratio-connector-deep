@@ -25,11 +25,11 @@ import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
 
+/**
+ * Spark function that determines if the value in the given field is included in the provided list of terms.
+ */
 public class In implements Function<Cells, Boolean> {
 
-    /**
-     * Serial version UID.
-     */
     private static final long serialVersionUID = -6637139616271541577L;
 
     /**
@@ -42,14 +42,6 @@ public class In implements Function<Cells, Boolean> {
      */
     private final List<Serializable> terms;
 
-    /**
-     * In apply in filter to a field in a Deep Cell.
-     * 
-     * @param field
-     *            Name of the field to check.
-     * @param terms
-     *            List of terms of the IN clause.
-     */
     public In(String field, List<Serializable> terms) {
         this.field = field;
         this.terms = terms;
@@ -60,12 +52,15 @@ public class In implements Function<Cells, Boolean> {
 
         Boolean isValid = false;
 
-        if(this.field !=null && this.terms!=null) {
-            //TODO: Implements call to create IN stuff
+        if (this.field != null && this.terms != null) {
+            // TODO: Implements call to create IN stuff
         }
 
         return isValid;
     }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 0d1268be97b4610d373a625dca109e63bc493e25
 }
