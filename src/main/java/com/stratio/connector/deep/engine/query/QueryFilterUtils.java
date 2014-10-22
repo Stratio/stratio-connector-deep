@@ -67,6 +67,9 @@ public final class QueryFilterUtils {
      */
     private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
 
+    private QueryFilterUtils() {
+    }
+
     /**
      * Take a RDD and a Relation and apply suitable filter to the RDD. Execute where clause on Deep.
      * 
