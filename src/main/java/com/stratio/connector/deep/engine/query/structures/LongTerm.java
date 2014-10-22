@@ -1,5 +1,3 @@
-package com.stratio.connector.deep.engine.query.structures;
-
 /*
  * Licensed to STRATIO (C) under one or more contributor license agreements.
  * See the NOTICE file distributed with this work for additional information
@@ -18,6 +16,8 @@ package com.stratio.connector.deep.engine.query.structures;
  * under the License.
  */
 
+package com.stratio.connector.deep.engine.query.structures;
+
 public class LongTerm extends Term<Long> {
 
     private static final long serialVersionUID = 7097178218828822792L;
@@ -34,7 +34,3 @@ public class LongTerm extends Term<Long> {
         super(Long.class, term.getTermValue().longValue());
     }
 }
-
-
-
-

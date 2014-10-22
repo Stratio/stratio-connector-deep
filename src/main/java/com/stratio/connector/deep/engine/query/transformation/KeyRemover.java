@@ -20,9 +20,9 @@ package com.stratio.connector.deep.engine.query.transformation;
 
 import org.apache.spark.api.java.function.Function;
 
-import com.stratio.deep.commons.entity.Cells;
-
 import scala.Tuple2;
+
+import com.stratio.deep.commons.entity.Cells;
 
 public class KeyRemover implements Function<Tuple2<Cells, Cells>, Cells> {
 

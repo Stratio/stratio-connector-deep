@@ -25,9 +25,9 @@ import org.apache.spark.api.java.function.PairFunction;
 
 import scala.Tuple2;
 
+import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.crossdata.common.data.ColumnName;
 
 public class MapKeyForJoin implements PairFunction<Cells, List<Object>, Cells> {
 

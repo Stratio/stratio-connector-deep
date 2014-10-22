@@ -1,3 +1,21 @@
+/*
+ * Licensed to STRATIO (C) under one or more contributor license agreements.
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership.  The STRATIO (C) licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package com.stratio.connector.deep.engine.query;
 
 import java.io.Serializable;
@@ -12,8 +30,6 @@ import org.apache.spark.api.java.JavaRDD;
 import scala.Tuple2;
 
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
-
-import com.stratio.connector.deep.engine.query.transformation.FilterColumns;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
@@ -24,21 +40,22 @@ import com.stratio.connector.deep.engine.query.structures.DoubleTerm;
 import com.stratio.connector.deep.engine.query.structures.LongTerm;
 import com.stratio.connector.deep.engine.query.structures.StringTerm;
 import com.stratio.connector.deep.engine.query.structures.Term;
+import com.stratio.connector.deep.engine.query.transformation.FilterColumns;
 import com.stratio.connector.deep.engine.query.transformation.JoinCells;
 import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
-import com.stratio.deep.commons.entity.Cells;
-import com.stratio.deep.commons.filter.FilterOperator;
+import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
 import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.crossdata.common.statements.structures.selectors.BooleanSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.SelectorType;
 import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
+import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.filter.FilterOperator;
 
 /**
  * Created by dgomez on 26/09/14.
@@ -66,7 +83,7 @@ public final class QueryFilterUtils {
         Operator operator = relation.getOperator();
         JavaRDD<Cells> result = null;
         Serializable field = filterFromLeftTermWhereRelation(relation);
-        Term rightTerm =  filterFromRightTermWhereRelation(relation);
+        Term rightTerm = filterFromRightTermWhereRelation(relation);
 
         try {
             switch (operator) {
@@ -101,8 +118,8 @@ public final class QueryFilterUtils {
 
                 result = null;
             }
-        }catch (Exception e){
-            throw new ExecutionException(" Error when try to comparate fields[ ]"+e);
+        } catch (Exception e) {
+            throw new ExecutionException(" Error when try to comparate fields[ ]" + e);
         }
         return result;
     }
@@ -139,7 +156,7 @@ public final class QueryFilterUtils {
             if (relation.getOperator().equals(Operator.EQ)) {
                 leftTables.add(selectorLeft.getName());
                 rightTables.add(selectorRight.getName());
-                if(LOG.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
                             + selectorLeft.getName().getName());
                 }
@@ -183,9 +200,7 @@ public final class QueryFilterUtils {
 
     }
 
-
     public static Term filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
-
 
         SelectorType type = relation.getRightTerm().getType();
         Term rightField = null;
@@ -214,7 +229,6 @@ public final class QueryFilterUtils {
 
     public static Serializable filterFromRightWhereRelation(Relation relation) throws ExecutionException {
 
-
         SelectorType type = relation.getRightTerm().getType();
         Serializable rightField = null;
 
@@ -239,6 +253,7 @@ public final class QueryFilterUtils {
         }
         return rightField;
     }
+
     /**
      * @param operator
      * @return

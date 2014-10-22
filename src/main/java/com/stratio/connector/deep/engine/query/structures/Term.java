@@ -1,5 +1,3 @@
-package com.stratio.connector.deep.engine.query.structures;
-
 /*
  * Licensed to STRATIO (C) under one or more contributor license agreements.
  * See the NOTICE file distributed with this work for additional information
@@ -17,11 +15,12 @@ package com.stratio.connector.deep.engine.query.structures;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package com.stratio.connector.deep.engine.query.structures;
+
 import java.io.Serializable;
 
 import org.apache.log4j.Logger;
-
-import sun.rmi.runtime.Log;
 
 public abstract class Term<T extends Comparable<T>> extends ValueCell<T> implements Comparable<T>,
         Serializable {
@@ -39,62 +38,67 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
         this.clazz = clazz;
         this.value = value;
     }
+
     /**
      * Get the Term Java Class.
-     *
+     * 
      * @return A {@link java.lang.Class}.
      */
     public Class<? extends Comparable<?>> getTermClass() {
         return clazz;
     }
+
     /**
      * Get the term value.
-     *
+     * 
      * @return A {@link java.lang.Object} with the value.
      */
     public T getTermValue() {
         return value;
     }
+
     @Override
     public String getStringValue() {
         return value.toString();
     }
+
     @Override
     public String toString() {
         return value.toString();
     }
+
     /*
-    * (non-Javadoc)
-    *
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
     @Override
     public int compareTo(T o) {
-
 
         if (!(this.clazz.isInstance(o))) {
 
             try {
-                if ((this.clazz).equals(Long.class) && o.getClass().equals(Integer.class) ) {
+                if ((this.clazz).equals(Long.class) && o.getClass().equals(Integer.class)) {
                     Long value = Long.valueOf(this.getStringValue());
-                    Long obj   = Long.valueOf(o.toString());
+                    Long obj = Long.valueOf(o.toString());
                     return value.compareTo(obj);
-                }else if ((this.clazz).equals(Double.class)  && o.getClass().equals(Float.class) ) {
+                } else if ((this.clazz).equals(Double.class) && o.getClass().equals(Float.class)) {
                     Double value = Double.valueOf(this.getStringValue());
-                    Double obj   = Double.valueOf(o.toString());
+                    Double obj = Double.valueOf(o.toString());
                     return value.compareTo(obj);
                 }
             } catch (NumberFormatException | ClassCastException e) {
-                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz +" & "+ o.getClass());
+                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + o.getClass());
             }
             return this.value.compareTo(o);
         }
         return this.value.compareTo(o);
     }
+
     /**
-     * Returns a hash code value for the object. This method is supported for the benefit of hash
-     * tables such as those provided by {@link java.util.HashMap}.
-     *
+     * Returns a hash code value for the object. This method is supported for the benefit of hash tables such as those
+     * provided by {@link java.util.HashMap}.
+     * 
      * @return a hash code value for this object.
      * @see Object#equals(Object)
      * @see System#identityHashCode
@@ -103,12 +107,14 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
     public int hashCode() {
         return clazz.hashCode() * this.getTermValue().hashCode();
     }
+
     /**
      * Indicates whether some other object is "equal to" this one.
      * <p/>
      * The {@code equals} method implements an equivalence relation on non-null object references:
-     *
-     * @param obj the reference object with which to compare.
+     * 
+     * @param obj
+     *            the reference object with which to compare.
      * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
      * @see #hashCode()
      * @see java.util.HashMap
@@ -123,21 +129,21 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                 if (obj.getClass().equals(String.class)) {
                     String value = this.getStringValue();
                     return value.equals(obj);
-                } else  if (obj.getClass().equals(Float.class) ) {
+                } else if (obj.getClass().equals(Float.class)) {
                     Float value = Float.valueOf(this.getStringValue());
                     return value.equals(obj);
                 } else if (obj.getClass().equals(Integer.class)) {
                     Integer value = Integer.valueOf(this.getStringValue());
                     return value.equals(obj);
-                }else if (obj.getClass().equals(Long.class)) {
+                } else if (obj.getClass().equals(Long.class)) {
                     Long value = Long.valueOf(this.getStringValue());
                     return value.equals(obj);
                 }
-            }catch (NumberFormatException e){
-                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz +" & "+ obj.getClass());
+            } catch (NumberFormatException e) {
+                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + obj.getClass());
             }
             return super.equals(obj);
         }
-        return this.value.equals((T) obj);
+        return this.value.equals(obj);
     }
 }

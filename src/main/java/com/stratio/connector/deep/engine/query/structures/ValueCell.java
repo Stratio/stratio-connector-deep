@@ -1,5 +1,3 @@
-package com.stratio.connector.deep.engine.query.structures;
-
 /*
  * Licensed to STRATIO (C) under one or more contributor license agreements.
  * See the NOTICE file distributed with this work for additional information
@@ -18,6 +16,8 @@ package com.stratio.connector.deep.engine.query.structures;
  * under the License.
  */
 
+package com.stratio.connector.deep.engine.query.structures;
+
 public abstract class ValueCell<T extends Comparable<T>> {
     public static final int TYPE_TERM = 1;
     public static final int TYPE_COLLECTION_LITERAL = 2;
@@ -33,7 +33,7 @@ public abstract class ValueCell<T extends Comparable<T>> {
 
     /**
      * Get the String value representation.
-     *
+     * 
      * @return The String value.
      */
     public abstract String getStringValue();
