@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
-import com.stratio.meta.common.connector.ConnectorClusterConfig;
-import com.stratio.meta2.common.data.ClusterName;
+import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.data.ClusterName;
 
 public class MongoConnectionConfigurationBuilder {
 

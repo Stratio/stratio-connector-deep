@@ -24,9 +24,9 @@ import org.apache.spark.api.java.function.Function;
 
 import com.stratio.connector.deep.engine.query.structures.Term;
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.meta2.common.statements.structures.selectors.IntegerSelector;
-import com.stratio.meta2.common.statements.structures.selectors.Selector;
-import com.stratio.meta2.common.statements.structures.selectors.StringSelector;
+import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
+import com.stratio.crossdata.common.statements.structures.selectors.Selector;
+import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
 
 public class DeepEquals implements Function<Cells, Boolean> {
 

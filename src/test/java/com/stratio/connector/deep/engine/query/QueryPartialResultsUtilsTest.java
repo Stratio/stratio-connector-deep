@@ -12,17 +12,17 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.meta.common.connector.Operations;
-import com.stratio.meta.common.data.ResultSet;
-import com.stratio.meta.common.data.Row;
-import com.stratio.meta.common.exceptions.ExecutionException;
-import com.stratio.meta.common.logicalplan.PartialResults;
-import com.stratio.meta.common.metadata.structures.ColumnMetadata;
-import com.stratio.meta.common.statements.structures.relationships.Operator;
-import com.stratio.meta.common.statements.structures.relationships.Relation;
-import com.stratio.meta2.common.data.ColumnName;
-import com.stratio.meta2.common.metadata.ColumnType;
-import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.crossdata.common.connector.Operations;
+import com.stratio.crossdata.common.data.ResultSet;
+import com.stratio.crossdata.common.data.Row;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.logicalplan.PartialResults;
+import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.statements.structures.relationships.Operator;
+import com.stratio.crossdata.common.statements.structures.relationships.Relation;
+import com.stratio.crossdata.common.data.ColumnName;
+import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(QueryPartialResultsUtils.class)
@@ -139,8 +139,8 @@ public class QueryPartialResultsUtilsTest {
      * @return Row
      */
     private Row metaRow(String col, Object cellValue, String col2, Object cellValue2) {
-        Row row = new Row(col, new com.stratio.meta.common.data.Cell(cellValue));
-        row.addCell(col2, new com.stratio.meta.common.data.Cell(cellValue2));
+        Row row = new Row(col, new com.stratio.crossdata.common.data.Cell(cellValue));
+        row.addCell(col2, new com.stratio.crossdata.common.data.Cell(cellValue2));
         return row;
     }
 

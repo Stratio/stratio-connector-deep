@@ -23,7 +23,7 @@ import java.io.Serializable;
 import org.apache.spark.api.java.function.Function;
 
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.meta2.common.statements.structures.selectors.Selector;
+import com.stratio.crossdata.common.statements.structures.selectors.Selector;
 
 public class Between implements Function<Cells, Boolean> {
 

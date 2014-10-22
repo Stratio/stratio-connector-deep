@@ -27,7 +27,7 @@ import scala.Tuple2;
 
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.meta2.common.data.ColumnName;
+import com.stratio.crossdata.common.data.ColumnName;
 
 public class MapKeyForJoin implements PairFunction<Cells, List<Object>, Cells> {
 

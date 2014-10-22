@@ -30,28 +30,28 @@ import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.Operations;
-import com.stratio.meta.common.data.Cell;
-import com.stratio.meta.common.data.ResultSet;
-import com.stratio.meta.common.data.Row;
-import com.stratio.meta.common.exceptions.ExecutionException;
-import com.stratio.meta.common.exceptions.UnsupportedException;
-import com.stratio.meta.common.logicalplan.Filter;
-import com.stratio.meta.common.logicalplan.Join;
-import com.stratio.meta.common.logicalplan.LogicalStep;
-import com.stratio.meta.common.logicalplan.LogicalWorkflow;
-import com.stratio.meta.common.logicalplan.PartialResults;
-import com.stratio.meta.common.logicalplan.Project;
-import com.stratio.meta.common.logicalplan.Select;
-import com.stratio.meta.common.logicalplan.UnionStep;
-import com.stratio.meta.common.metadata.structures.ColumnMetadata;
-import com.stratio.meta.common.result.QueryResult;
-import com.stratio.meta.common.statements.structures.relationships.Operator;
-import com.stratio.meta.common.statements.structures.relationships.Relation;
-import com.stratio.meta2.common.data.ClusterName;
-import com.stratio.meta2.common.data.ColumnName;
-import com.stratio.meta2.common.metadata.ColumnType;
-import com.stratio.meta2.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.crossdata.common.connector.Operations;
+import com.stratio.crossdata.common.data.Cell;
+import com.stratio.crossdata.common.data.ResultSet;
+import com.stratio.crossdata.common.data.Row;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.logicalplan.Filter;
+import com.stratio.crossdata.common.logicalplan.Join;
+import com.stratio.crossdata.common.logicalplan.LogicalStep;
+import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
+import com.stratio.crossdata.common.logicalplan.PartialResults;
+import com.stratio.crossdata.common.logicalplan.Project;
+import com.stratio.crossdata.common.logicalplan.Select;
+import com.stratio.crossdata.common.logicalplan.UnionStep;
+import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.result.QueryResult;
+import com.stratio.crossdata.common.statements.structures.relationships.Operator;
+import com.stratio.crossdata.common.statements.structures.relationships.Relation;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.data.ColumnName;
+import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
 
 public class QueryExecutor {
 
@@ -70,9 +70,9 @@ public class QueryExecutor {
      * Execute a workflow to retrieve a subset of data.
      * 
      * @param workflow
-     *            The {@link com.stratio.meta.common.logicalplan.LogicalWorkflow} that contains the
-     *            {@link com.stratio.meta.common.logicalplan.LogicalStep} to be executed.
-     * @return A {@link com.stratio.meta.common.result.QueryResult}.
+     *            The {@link com.stratio.crossdata.common.logicalplan.LogicalWorkflow} that contains the
+     *            {@link com.stratio.crossdata.common.logicalplan.LogicalStep} to be executed.
+     * @return A {@link com.stratio.crossdata.common.result.QueryResult}.
      * @throws UnsupportedException
      *             If the required set of operations are not supported by the connector.
      * @throws ExecutionException

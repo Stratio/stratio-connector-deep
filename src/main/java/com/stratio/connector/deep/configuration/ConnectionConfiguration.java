@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.meta.common.connector.IConfiguration;
+import com.stratio.crossdata.common.connector.IConfiguration;
 
 /**
  * Created by dgomez on 17/09/14.

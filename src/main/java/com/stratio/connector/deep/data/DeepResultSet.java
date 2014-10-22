@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.stratio.meta.common.data.ResultSet;
-import com.stratio.meta.common.data.Row;
-import com.stratio.meta.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.data.ResultSet;
+import com.stratio.crossdata.common.data.Row;
+import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 
 public class DeepResultSet extends ResultSet implements Serializable {
 
@@ -35,12 +35,12 @@ public class DeepResultSet extends ResultSet implements Serializable {
     private static final long serialVersionUID = 7054678344109801821L;
 
     /**
-     * List of {@link com.stratio.meta.common.data.Row}.
+     * List of {@link com.stratio.crossdata.common.data.Row}.
      */
     private List<Row> rows;
 
     /**
-     * List of {@link com.stratio.meta.common.metadata.structures.ColumnMetadata}.
+     * List of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata}.
      */
     private List<ColumnMetadata> columnMetadata;
 
@@ -65,7 +65,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
     /**
      * Get the rows of the Result Set.
      * 
-     * @return A List of {@link com.stratio.meta.common.data.Row}
+     * @return A List of {@link com.stratio.crossdata.common.data.Row}
      */
     public List<Row> getRows() {
         return rows;
@@ -75,7 +75,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * Set the list of column metadata.
      * 
      * @param columnMetadata
-     *            A list of {@link com.stratio.meta.common.metadata.structures.ColumnMetadata} in order.
+     *            A list of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata} in order.
      */
     public void setColumnMetadata(List<ColumnMetadata> columnMetadata) {
         this.columnMetadata = columnMetadata;
@@ -84,7 +84,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
     /**
      * Get the column metadata in order.
      * 
-     * @return A list of {@link com.stratio.meta.common.metadata.structures.ColumnMetadata}.
+     * @return A list of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata}.
      */
     public List<ColumnMetadata> getColumnMetadata() {
         return columnMetadata;
@@ -94,7 +94,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * Add a row to the Result Set.
      * 
      * @param row
-     *            {@link com.stratio.meta.common.data.Row} to add
+     *            {@link com.stratio.crossdata.common.data.Row} to add
      */
     public void add(Row row) {
         rows.add(row);
