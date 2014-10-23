@@ -137,7 +137,7 @@ public class QueryExecutor {
     }
 
     /**
-     * Sets the filters fields depending on whether they are executed by the data source or by deep
+     * Sets the filters fields depending on whether they are executed by the data source or by deep.
      * 
      * @param nextStep
      *            Next {@link LogicalStep} to the project.

@@ -44,7 +44,7 @@ public class ContextProperties {
     private String cluster;
 
     /**
-     * spark home
+     * spark home.
      */
     private String sparkHome;
 

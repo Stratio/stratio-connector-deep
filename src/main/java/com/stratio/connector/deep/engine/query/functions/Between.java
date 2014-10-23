@@ -37,12 +37,12 @@ public class Between implements Function<Cells, Boolean> {
     private final String field;
 
     /**
-     * Lower bound
+     * Lower bound.
      */
     private final Serializable lowerBound;
 
     /**
-     * Upper bound
+     * Upper bound.
      */
     private final Serializable upperBound;
 

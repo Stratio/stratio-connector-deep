@@ -34,7 +34,7 @@ public class DeepResultSetIterator implements Iterator<com.stratio.crossdata.com
     private int current;
 
     /**
-     * Build a {@link com.stratio.connector.deep.data.DeepResultSet}
+     * Build a {@link com.stratio.connector.deep.data.DeepResultSet}.
      * 
      * @param deepResultSet
      *            Result Set.
