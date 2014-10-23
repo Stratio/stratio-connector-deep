@@ -33,7 +33,7 @@ import com.stratio.crossdata.common.result.QueryResult;
 
 /**
  *
- *  Class use for insert Data table, not implemented for Deep connector
+ *  Class use for insert Data table, not implemented for Deep connector.
  *  {@link com.stratio.connector.commons.engine.CommonsMetadataEngine}
  *
  * @throw UnsupportedException

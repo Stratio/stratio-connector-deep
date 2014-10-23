@@ -42,7 +42,7 @@ import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
- * Class implements Crossdata Interface to connect {@link com.stratio.crossdata.common.connector.IConnector}
+ * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
  *
  */
 public class DeepConnector implements IConnector {
@@ -61,7 +61,7 @@ public class DeepConnector implements IConnector {
 
 
     /**
-     * Main uses to asociate the connector to crossdata
+     * Main uses to asociate the connector to crossdata.
      *
      * */
     public static void main(String[] args) {
@@ -83,8 +83,8 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-    * Init Connection
-    * @param  configuration @see{com.stratio.connector.deep.configuration.ConnectionConfiguration}
+    * Init Connection.
+    * @param  configuration @see{com.stratio.connector.deep.configuration.ConnectionConfiguration}.
     */
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
@@ -94,8 +94,8 @@ public class DeepConnector implements IConnector {
 
     }
     /**
-       * Connect with the config expecified associate to a clusterName {ConnectionHandler}
-       * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}
+       * Connect with the config expecified associate to a clusterName {ConnectionHandler}.
+       * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
        *
        * @param  credentials
        * @param  config {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}
@@ -116,8 +116,8 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-       * Close connection associate to the clusterName
-       * @see{com.stratio.connector.commons.connection.ConnectionHandler.close}
+       * Close connection associate to the clusterName.
+       * @see{com.stratio.connector.commons.connection.ConnectionHandler.close}.
        *
        * @param name {@link com.stratio.crossdata.common.data.ClusterName}
        */
@@ -129,7 +129,7 @@ public class DeepConnector implements IConnector {
 
     /**
       * Shutdown when all the connections associate to the clusterNames end all the works
-      * stop the context
+      * stop the context.
       */
     @Override
     public void shutdown() throws ExecutionException {
@@ -145,8 +145,8 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-     * Check if the  connection associate to the clusterName is connected
-     * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}
+     * Check if the  connection associate to the clusterName is connected.
+     * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}.
      *
      * @param name {@link com.stratio.crossdata.common.data.ClusterName}
      * @return boolean
@@ -159,7 +159,7 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-      * Unsupported method
+      * Unsupported method.
       * @return IStorageEngine
       *
       */
@@ -172,8 +172,8 @@ public class DeepConnector implements IConnector {
     }
 
     /*
-     * Return  the interface to invoke queries from crossdata
-     * @return DeepQueryEngine
+     * Return  the interface to invoke queries from crossdata.
+     * @return DeepQueryEngine.
      *
      */
     @Override
@@ -184,8 +184,8 @@ public class DeepConnector implements IConnector {
     }
 
     /*
-   * Unsupported method
-   * @return IMetadataEngine
+   * Unsupported method.
+   * @return IMetadataEngine.
    *
    */
     @Override

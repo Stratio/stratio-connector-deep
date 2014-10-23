@@ -31,7 +31,7 @@ import com.stratio.crossdata.common.metadata.TableMetadata;
 
 /**
  *
- *  Class use for admin table meta Data, not implemented for Deep connector
+ *  Class use for admin table meta Data, not implemented for Deep connector.
  *  {@link com.stratio.connector.commons.engine.CommonsMetadataEngine}
  *
  *  @throw UnsupportedException

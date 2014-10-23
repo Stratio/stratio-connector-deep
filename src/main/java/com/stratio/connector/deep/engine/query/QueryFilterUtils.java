@@ -27,8 +27,6 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 
-import scala.Tuple2;
-
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
@@ -57,8 +55,10 @@ import com.stratio.crossdata.common.statements.structures.selectors.StringSelect
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.filter.FilterOperator;
 
+import scala.Tuple2;
+
 /**
- * Utils for the query Filters
+ * Utils for the query Filters.
  */
 public final class QueryFilterUtils {
 
