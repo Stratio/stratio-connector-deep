@@ -10,30 +10,26 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.stratio.crossdata.common.connector.Operations;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
+import com.stratio.crossdata.common.data.TableName;
 import com.stratio.crossdata.common.logicalplan.Filter;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
+import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
 import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.data.ClusterName;
-import com.stratio.crossdata.common.data.ColumnName;
-import com.stratio.crossdata.common.data.TableName;
-import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.statements.structures.selectors.BooleanSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
-
 import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
-
-import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
 import com.stratio.crossdata.common.statements.structures.selectors.Selector;
-
 import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
 
 /**

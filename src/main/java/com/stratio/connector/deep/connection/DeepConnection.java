@@ -108,10 +108,10 @@ public class DeepConnection extends Connection {
         isConnect = true;
     }
 
-    /*
+    /**
     * Change the connection status.
     *
-     */
+    */
     @Override
     public void close() {
         if (deepSparkContext != null) {
@@ -121,8 +121,10 @@ public class DeepConnection extends Connection {
 
     }
 
-    /*
+    /**
     * return the connection status.
+     *
+     * @return Boolean
     */
     @Override
     public boolean isConnect() {
@@ -143,6 +145,11 @@ public class DeepConnection extends Connection {
         deepSparkContext.stop();
     }
 
+    /**
+     * return the connection status.
+     * @param config {@link ConnectorClusterConfig}
+     * @return String
+     */
     private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
 
         String db = "";

@@ -82,7 +82,7 @@ public class DeepConnector implements IConnector {
         return new String[] { "DeepConnector" };
     }
 
-    /*
+    /**
     * Init Connection
     * @param  configuration @see{com.stratio.connector.deep.configuration.ConnectionConfiguration}
     */
@@ -93,12 +93,12 @@ public class DeepConnector implements IConnector {
         this.deepContext = ConnectionConfiguration.getDeepContext();
 
     }
-    /*
+    /**
        * Connect with the config expecified associate to a clusterName {ConnectionHandler}
-       * @see{com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}
+       * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}
        *
        * @param  credentials
-       * @param  ConnectorClusterConfig config
+       * @param  config {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}
        */
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
@@ -115,11 +115,11 @@ public class DeepConnector implements IConnector {
 
     }
 
-    /*
+    /**
        * Close connection associate to the clusterName
        * @see{com.stratio.connector.commons.connection.ConnectionHandler.close}
        *
-       * @param  ClusterName name
+       * @param name {@link com.stratio.crossdata.common.data.ClusterName}
        */
     @Override
     public void close(ClusterName name) throws ConnectionException {
@@ -127,7 +127,7 @@ public class DeepConnector implements IConnector {
         connectionHandler.closeConnection(name.getName());
     }
 
-    /*
+    /**
       * Shutdown when all the connections associate to the clusterNames end all the works
       * stop the context
       */
@@ -144,11 +144,13 @@ public class DeepConnector implements IConnector {
         deepContext.stop();
     }
 
-    /*
+    /**
      * Check if the  connection associate to the clusterName is connected
-     * @see{com.stratio.connector.commons.connection.ConnectionHandler.isConnected}
+     * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}
      *
-     * @param  ClusterName name
+     * @param name {@link com.stratio.crossdata.common.data.ClusterName}
+     * @return boolean
+     *
      */
     @Override
     public boolean isConnected(ClusterName name) {
@@ -156,7 +158,7 @@ public class DeepConnector implements IConnector {
         return connectionHandler.isConnected(name.getName());
     }
 
-    /*
+    /**
       * Unsupported method
       * @return IStorageEngine
       *
