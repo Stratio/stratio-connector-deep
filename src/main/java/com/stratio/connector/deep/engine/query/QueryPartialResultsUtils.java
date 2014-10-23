@@ -47,7 +47,7 @@ import com.stratio.deep.core.context.DeepSparkContext;
  */
 public final class QueryPartialResultsUtils {
 
-    private final static int NUMBER_OF_ELEMENTS_IN_QUALIFIED_COLUMN_NAME = 3;
+    private static final int NUMBER_OF_ELEMENTS_IN_QUALIFIED_COLUMN_NAME = 3;
 
     private QueryPartialResultsUtils() {
     }
