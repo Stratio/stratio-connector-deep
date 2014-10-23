@@ -28,7 +28,7 @@ import com.stratio.deep.core.context.DeepSparkContext;
 /**
  * Created by dgomez on 17/09/14.
  */
-public class ConnectionConfiguration implements IConfiguration {
+public final class ConnectionConfiguration implements IConfiguration {
 
     private static final Logger LOG = Logger.getLogger(ConnectionConfiguration.class);
 

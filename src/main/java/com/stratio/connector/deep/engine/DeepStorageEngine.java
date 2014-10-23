@@ -20,9 +20,6 @@ package com.stratio.connector.deep.engine;
 
 import java.util.Collection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.engine.CommonsStorageEngine;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
@@ -38,7 +35,6 @@ import com.stratio.crossdata.common.result.QueryResult;
  * Created by dgomez on 18/09/14.
  */
 public class DeepStorageEngine extends CommonsStorageEngine {
-
 
     public DeepStorageEngine(DeepConnectionHandler connectionHandler) {
 

@@ -43,7 +43,7 @@ public class FilterColumns implements Function<Cells, Cells> {
     }
 
     @Override
-    public Cells call(Cells cells) throws Exception {
+    public Cells call(Cells cells) {
 
         Cells cellsOut = new Cells();
         for (ColumnName columnName : columns) {

@@ -32,7 +32,7 @@ public class KeyRemover implements Function<Tuple2<Cells, Cells>, Cells> {
     private static final long serialVersionUID = 5540221408306143803L;
 
     @Override
-    public Cells call(Tuple2<Cells, Cells> tuple) throws Exception {
+    public Cells call(Tuple2<Cells, Cells> tuple) {
 
         return tuple._2();
     }

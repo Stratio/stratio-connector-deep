@@ -45,7 +45,9 @@ import com.stratio.deep.core.context.DeepSparkContext;
  * @author david
  * 
  */
-public class QueryPartialResultsUtils {
+public final class QueryPartialResultsUtils {
+
+    private final static int NUMBER_OF_ELEMENTS_IN_QUALIFIED_COLUMN_NAME = 3;
 
     private QueryPartialResultsUtils() {
     }
@@ -190,7 +192,7 @@ public class QueryPartialResultsUtils {
         if (qualifiedName != null && !qualifiedName.trim().isEmpty()) {
             String[] arrNames = qualifiedName.split("\\.");
 
-            if (arrNames.length == 3) {
+            if (arrNames.length == NUMBER_OF_ELEMENTS_IN_QUALIFIED_COLUMN_NAME) {
                 return arrNames[2];
             }
         }
