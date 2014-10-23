@@ -125,13 +125,17 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
         if (!(this.clazz.isInstance(obj))) {
             try {
                 if (obj instanceof String) {
-                    return this.getStringValue().equals(obj);
+                    String stringObj = (String) obj;
+                    return this.getStringValue().equals(stringObj);
                 } else if (obj instanceof Float) {
-                    return Float.valueOf(this.getStringValue()).equals(obj);
+                    Float floatObj = (Float) obj;
+                    return Float.valueOf(this.getStringValue()).equals(floatObj);
                 } else if (obj instanceof Integer) {
-                    return Integer.valueOf(this.getStringValue()).equals(obj);
+                    Integer integerObj = (Integer) obj;
+                    return Integer.valueOf(this.getStringValue()).equals(integerObj);
                 } else if (obj instanceof Long) {
-                    return Long.valueOf(this.getStringValue()).equals(obj);
+                    Long longObj = (Long) obj;
+                    return Long.valueOf(this.getStringValue()).equals(longObj);
                 }
             } catch (NumberFormatException e) {
                 LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + obj.getClass());
