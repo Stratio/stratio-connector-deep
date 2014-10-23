@@ -43,7 +43,7 @@ import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
  * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
- *
+ * 
  */
 public class DeepConnector implements IConnector {
 
@@ -82,10 +82,11 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-    * Init Connection.
-    * @param  configuration @see{com.stratio.connector.deep.configuration.ConnectionConfiguration}.
-    */
-
+     * Init Connection.
+     * 
+     * @param configuration
+     * @see{com.stratio.connector.deep.configuration.ConnectionConfiguration.
+     */
     @Override
     public void init(IConfiguration configuration) throws InitializationException {
 
@@ -95,13 +96,13 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-       * Connect with the config expecified associate to a clusterName {ConnectionHandler}.
-       * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
-       *
-       * @param  credentials
-       * @param  config {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}
-       */
-
+     * Connect with the config expecified associate to a clusterName {ConnectionHandler}
+     * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
+     * 
+     * @param credentials
+     * @param config
+     *            {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}.
+     */
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
@@ -118,12 +119,13 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-       * Close connection associate to the clusterName.
-       * {@link com.stratio.connector.commons.connection.ConnectionHandler.close}.
-       *
-       * @param name {@link com.stratio.crossdata.common.data.ClusterName}
-       */
-
+     * Close connection associate to the clusterName.
+     * 
+     * @see{com.stratio.connector.commons.connection.ConnectionHandler.close
+     * 
+     * @param name
+     *            {@link com.stratio.crossdata.common.data.ClusterName}.
+     */
     @Override
     public void close(ClusterName name) throws ConnectionException {
 
@@ -131,10 +133,8 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-      * Shutdown when all the connections associate to the clusterNames end all the works
-      * stop the context.
-      */
-
+     * Shutdown when all the connections associate to the clusterNames end all the works stop the context.
+     */
     @Override
     public void shutdown() throws ExecutionException {
 
@@ -149,11 +149,11 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-     * Check if the  connection associate to the clusterName is connected.
+     * Check if the connection associate to the clusterName is connected
      * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}.
-     *
-     * @param name {@link com.stratio.crossdata.common.data.ClusterName}
-
+     * 
+     * @param name
+     *            {@link com.stratio.crossdata.common.data.ClusterName}.
      * @return boolean
      * 
      */
@@ -164,10 +164,11 @@ public class DeepConnector implements IConnector {
     }
 
     /**
-      * Unsupported method.
-      * @return IStorageEngine
-      *
-      */
+     * Unsupported method.
+     * 
+     * @return IStorageEngine
+     * 
+     */
     @Override
     public IStorageEngine getStorageEngine() throws UnsupportedException {
 
@@ -176,9 +177,9 @@ public class DeepConnector implements IConnector {
     }
 
     /*
-     * Return  the interface to invoke queries from crossdata.
-     * @return DeepQueryEngine.
-     *
+     * Return the interface to invoke queries from crossdata.
+     * 
+     * @return DeepQueryEngine
      */
     @Override
     public IQueryEngine getQueryEngine() throws UnsupportedException {
@@ -187,11 +188,11 @@ public class DeepConnector implements IConnector {
 
     }
 
-   /*
-   * Unsupported method.
-   * @return IMetadataEngine.
-   *
-   */
+    /*
+     * Unsupported method.
+     * 
+     * @return IMetadataEngine
+     */
     @Override
     public IMetadataEngine getMetadataEngine() throws UnsupportedException {
 

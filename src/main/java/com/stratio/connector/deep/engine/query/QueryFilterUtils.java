@@ -76,7 +76,7 @@ public final class QueryFilterUtils {
      * @param rdd
      *            RDD which filter must be applied.
      * @param relation
-     *            {@link com.stratio.crossdata.common.statements.structures.relationships.Relation} to apply
+     *            {@link com.stratio.crossdata.common.statements.structures.relationships.Relation} to apply.
      * @return A new RDD with the result.
      * @throws UnsupportedException
      */
@@ -131,7 +131,7 @@ public final class QueryFilterUtils {
      * Build JavaRDD<Cells> from list of Cells and select Columns.
      * 
      * @param rdd
-     *            Cells RDD
+     *            Cells RDD.
      * @param selectedCols
      *            Set of fields selected in the SelectStatement.
      * @return JavaRDD<Cells>
