@@ -42,7 +42,7 @@ import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
- * Class implements Crossdata Interface to connect {@link com.stratio.crossdata.common.connector.IConnector}
+ * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
  * 
  */
 public class DeepConnector implements IConnector {
@@ -61,7 +61,6 @@ public class DeepConnector implements IConnector {
 
     /**
      * Main uses to asociate the connector to crossdata.
-     * 
      * */
     public static void main(String[] args) {
 
@@ -169,7 +168,6 @@ public class DeepConnector implements IConnector {
      * @return IStorageEngine
      * 
      */
-
     @Override
     public IStorageEngine getStorageEngine() throws UnsupportedException {
 

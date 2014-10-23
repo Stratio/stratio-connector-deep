@@ -39,10 +39,12 @@ public class DeepConnectionHandler extends ConnectionHandler {
      * Use config & Credentials to create Deep native connection.
      * 
      * @param iCredentials
+     *            .
      * @param connectorClusterConfig
+     *            .
      * 
-     * @return DeepConnection
-     * */
+     * @return DeepConnection.
+     **/
     @Override
     protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
             throws CreateNativeConnectionException {
