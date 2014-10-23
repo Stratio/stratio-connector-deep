@@ -19,7 +19,6 @@
 package com.stratio.connector.deep.data;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public class DeepResultSetIterator implements Iterator<com.stratio.crossdata.common.data.Row> {
 
@@ -50,12 +49,12 @@ public class DeepResultSetIterator implements Iterator<com.stratio.crossdata.com
     }
 
     @Override
-    public com.stratio.crossdata.common.data.Row next() throws NoSuchElementException {
+    public com.stratio.crossdata.common.data.Row next() {
         return deepResultSet.getRows().get(current++);
     }
 
     @Override
-    public void remove() throws UnsupportedOperationException, IllegalStateException {
+    public void remove() {
         deepResultSet.remove(current);
     }
 }
