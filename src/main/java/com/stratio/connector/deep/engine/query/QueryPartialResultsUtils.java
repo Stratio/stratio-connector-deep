@@ -36,8 +36,8 @@ import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
-import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
+import com.stratio.crossdata.common.statements.structures.ColumnSelector;
+import com.stratio.crossdata.common.statements.structures.Relation;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 

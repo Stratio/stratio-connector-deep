@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import scala.Tuple2;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
@@ -44,16 +47,14 @@ import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.Operations;
-import com.stratio.crossdata.common.statements.structures.relationships.Operator;
-import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
+import com.stratio.crossdata.common.statements.structures.ColumnSelector;
+import com.stratio.crossdata.common.statements.structures.Operator;
+import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
-
-import scala.Tuple2;
 
 /**
  * DeepQueryEngine testing class
@@ -351,7 +352,10 @@ public class QueryExecutorTest {
         Map<String, ColumnType> columnsTypes = new HashMap<>();
         columnsTypes.put("catalogname.tablename1.column1Name", ColumnType.BIGINT);
 
-        Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes);
+        Map<ColumnName, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
+        typeMapFromColumnName.put(columnName, ColumnType.BIGINT);
+
+        Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
 
         return select;
     }

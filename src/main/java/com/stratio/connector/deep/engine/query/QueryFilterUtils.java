@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 
+import scala.Tuple2;
+
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
@@ -44,18 +46,16 @@ import com.stratio.connector.deep.engine.query.transformation.MapKeyForJoin;
 import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
-import com.stratio.crossdata.common.statements.structures.relationships.Operator;
-import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.statements.structures.selectors.BooleanSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.SelectorType;
-import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
+import com.stratio.crossdata.common.statements.structures.BooleanSelector;
+import com.stratio.crossdata.common.statements.structures.ColumnSelector;
+import com.stratio.crossdata.common.statements.structures.FloatingPointSelector;
+import com.stratio.crossdata.common.statements.structures.IntegerSelector;
+import com.stratio.crossdata.common.statements.structures.Operator;
+import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.SelectorType;
+import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.filter.FilterOperator;
-
-import scala.Tuple2;
 
 /**
  * Utils for the query Filters.

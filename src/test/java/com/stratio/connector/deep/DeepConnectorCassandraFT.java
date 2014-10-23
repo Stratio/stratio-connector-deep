@@ -35,7 +35,7 @@ import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
-import com.stratio.crossdata.common.statements.structures.relationships.Operator;
+import com.stratio.crossdata.common.statements.structures.Operator;
 
 /**
  * Functional tests using Cassandra DB

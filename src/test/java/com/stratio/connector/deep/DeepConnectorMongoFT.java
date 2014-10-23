@@ -5,7 +5,6 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
-import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForMongo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -30,7 +29,7 @@ import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
-import com.stratio.crossdata.common.statements.structures.relationships.Operator;
+import com.stratio.crossdata.common.statements.structures.Operator;
 
 /**
  * Functional tests using MongoDB
@@ -38,10 +37,7 @@ import com.stratio.crossdata.common.statements.structures.relationships.Operator
 
 public class DeepConnectorMongoFT {
 
-
-
     private static final Logger logger = Logger.getLogger(DeepConnectorMongoFT.class);
-
 
     private static final String KEYSPACE = "functionaltest";
 
@@ -59,7 +55,7 @@ public class DeepConnectorMongoFT {
 
     private static final String YEAR_CONSTANT = "year";
 
-    private static final String AGE_CONSTANT  = "age";
+    private static final String AGE_CONSTANT = "age";
 
     private static final String DESCRIPTION_CONSTANT = "description";
 
@@ -80,7 +76,7 @@ public class DeepConnectorMongoFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        //prepareDataForMongo();
+        // prepareDataForMongo();
     }
 
     @Test
@@ -110,14 +106,14 @@ public class DeepConnectorMongoFT {
         assertEquals("Wrong number of rows", 210, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT+"."+AUTHOR_CONSTANT,
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
                 columnsMetadata.get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
 
         // Checking rows
         for (Row row : rowsList) {
-            assertEquals ("Wrong number of columns in the row", 1, row.size());
+            assertEquals("Wrong number of columns in the row", 1, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
@@ -130,14 +126,12 @@ public class DeepConnectorMongoFT {
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
+        for (Operator op : Operator.values()) {
 
-        for (Operator op : Operator.values()){
+            if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
+                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
 
-
-            if(op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
-                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)){
-
-                logger.debug("--------------FILTER TEST FOR OPERATOR "+op+" ------------------------------------");
+                logger.debug("--------------FILTER TEST FOR OPERATOR " + op + " ------------------------------------");
 
                 project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, op, YEAR_EX, false));
 
@@ -166,7 +160,7 @@ public class DeepConnectorMongoFT {
                 assertEquals("Wrong number of rows", resultExpectedFomOp, rowsList.size());
 
                 // Checking metadata
-                assertEquals("Author expected",  KEYSPACE + "." + MYTABLE1_CONSTANT+"."+AUTHOR_CONSTANT,
+                assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
                         columnsMetadata.get(0).getColumnName());
                 assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                         .getTableName());
@@ -182,7 +176,6 @@ public class DeepConnectorMongoFT {
 
     }
 
-
     @Test
     public void testSingleProjectWithOneFilterAndSelectTest() throws UnsupportedException, ExecutionException {
 
@@ -191,46 +184,44 @@ public class DeepConnectorMongoFT {
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX,
+                false));
 
-                project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX,
-                        false));
+        LogicalStep filter = project.getNextStep();
 
-                LogicalStep filter = project.getNextStep();
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
-                filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+        // One single initial step
+        stepList.add(project);
 
-                // One single initial step
-                stepList.add(project);
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
 
-                LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+        // Execution
+        QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
 
-                // Execution
-                QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+        // Assertions
+        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+        List<Row> rowsList = result.getResultSet().getRows();
 
-                // Assertions
-                List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
-                List<Row> rowsList = result.getResultSet().getRows();
+        // Checking results number
 
-                // Checking results number
+        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
 
-                assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
+        assertEquals("Wrong number of rows", 2, rowsList.size());
 
-                assertEquals("Wrong number of rows", 2, rowsList.size());
+        // Checking metadata
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
+                columnsMetadata.get(0).getColumnName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                .getTableName());
 
-                // Checking metadata
-                assertEquals("Author expected",  KEYSPACE + "." + MYTABLE1_CONSTANT+"."+AUTHOR_CONSTANT,
-                        columnsMetadata.get(0).getColumnName());
-                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                        .getTableName());
-
-                // Checking rows
-                for (Row row : rowsList) {
-                    assertEquals("Wrong number of columns in the row", 1, row.size());
-                    assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
-                }
+        // Checking rows
+        for (Row row : rowsList) {
+            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
+        }
     }
-
 
     @Test
     public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException {
@@ -247,10 +238,10 @@ public class DeepConnectorMongoFT {
                 AUTHOR_CONSTANT));
 
         join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                        AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        DESCRIPTION_CONSTANT)),
+                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                DESCRIPTION_CONSTANT)),
                 Arrays.asList(AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
                         AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
@@ -274,7 +265,8 @@ public class DeepConnectorMongoFT {
         assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT+"."+AUTHOR_CONSTANT, columnsMetadata.get(0).getColumnName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                .get(0).getColumnName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getTableName());
 
@@ -284,34 +276,35 @@ public class DeepConnectorMongoFT {
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
-    //Results expected for Comparator Operators by pattersn 2004
+
+    // Results expected for Comparator Operators by pattersn 2004
     private int getResultExpectedFomOp(Operator op) {
 
-        int result =0;
+        int result = 0;
 
-        switch (op){
+        switch (op) {
 
-            case EQ:
-                result=2;
-                break;
-            case LT:
-                result= 183;
-                break;
-            case GT:
-                result= 25;
-                break;
-            case LET:
-                result= 185;
-                break;
-            case GET:
-                result= 27;
-                break;
-            case DISTINCT:
-                result= 208;
-                break;
-            default:
-                result=210;
-                break;
+        case EQ:
+            result = 2;
+            break;
+        case LT:
+            result = 183;
+            break;
+        case GT:
+            result = 25;
+            break;
+        case LET:
+            result = 185;
+            break;
+        case GET:
+            result = 27;
+            break;
+        case DISTINCT:
+            result = 208;
+            break;
+        default:
+            result = 210;
+            break;
 
         }
 

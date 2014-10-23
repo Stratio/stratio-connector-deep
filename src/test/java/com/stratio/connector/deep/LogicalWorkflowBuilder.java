@@ -23,14 +23,14 @@ import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
-import com.stratio.crossdata.common.statements.structures.relationships.Operator;
-import com.stratio.crossdata.common.statements.structures.relationships.Relation;
-import com.stratio.crossdata.common.statements.structures.selectors.BooleanSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.ColumnSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.FloatingPointSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.IntegerSelector;
-import com.stratio.crossdata.common.statements.structures.selectors.Selector;
-import com.stratio.crossdata.common.statements.structures.selectors.StringSelector;
+import com.stratio.crossdata.common.statements.structures.BooleanSelector;
+import com.stratio.crossdata.common.statements.structures.ColumnSelector;
+import com.stratio.crossdata.common.statements.structures.FloatingPointSelector;
+import com.stratio.crossdata.common.statements.structures.IntegerSelector;
+import com.stratio.crossdata.common.statements.structures.Operator;
+import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.Selector;
+import com.stratio.crossdata.common.statements.structures.StringSelector;
 
 /**
  * Builder class to create valid logical steps and workflows
@@ -54,21 +54,19 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Serializable data, boolean indexed) {
 
-
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         Selector rightSelector = null;
         if (data instanceof String) {
             rightSelector = new StringSelector((String) data);
         } else if (data instanceof Integer) {
             rightSelector = new IntegerSelector((Integer) data);
-        }else if (data instanceof Long) {
+        } else if (data instanceof Long) {
             rightSelector = new IntegerSelector(data.toString());
-        }else if (data instanceof Double) {
-            rightSelector = new FloatingPointSelector((Double)data);
-        }else if (data instanceof Float) {
-            rightSelector = new FloatingPointSelector((Float)data);
+        } else if (data instanceof Double) {
+            rightSelector = new FloatingPointSelector((Double) data);
+        } else if (data instanceof Float) {
+            rightSelector = new FloatingPointSelector((Float) data);
         }
-
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
@@ -80,12 +78,12 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Double data, boolean indexed) {
 
-        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         FloatingPointSelector rightSelector = new FloatingPointSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator,indexed), relation);
+        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
 
         return filter;
     }
@@ -93,12 +91,12 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Integer data, boolean indexed) {
 
-        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         IntegerSelector rightSelector = new IntegerSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator,indexed), relation);
+        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
 
         return filter;
     }
@@ -106,12 +104,12 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Float data, boolean indexed) {
 
-        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         FloatingPointSelector rightSelector = new FloatingPointSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator,indexed), relation);
+        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
 
         return filter;
     }
@@ -119,12 +117,12 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Boolean data, boolean indexed) {
 
-        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         BooleanSelector rightSelector = new BooleanSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator,indexed), relation);
+        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
 
         return filter;
     }
@@ -132,15 +130,16 @@ public class LogicalWorkflowBuilder {
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
             Long data, boolean indexed) {
 
-        ColumnSelector leftSelector  = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
+        ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         IntegerSelector rightSelector = new IntegerSelector(data.toString());
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator,indexed), relation);
+        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
 
         return filter;
     }
+
     /**
      * Get the related {@link Operations} to the given {@link Operator}
      * 
@@ -227,15 +226,17 @@ public class LogicalWorkflowBuilder {
 
         Map<ColumnName, String> columnsAliases = new LinkedHashMap<>();
         Map<String, ColumnType> columnsTypes = new LinkedHashMap<>();
+        Map<ColumnName, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
 
         Iterator<String> aliasesIt = aliasNamesList.iterator();
         for (ColumnName column : columnsList) {
             columnsAliases.put(column, aliasesIt.next());
 
             columnsTypes.put(column.getQualifiedName(), ColumnType.TEXT);
+            typeMapFromColumnName.put(column, ColumnType.TEXT);
         }
 
-        Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes);
+        Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
 
         return select;
     }
