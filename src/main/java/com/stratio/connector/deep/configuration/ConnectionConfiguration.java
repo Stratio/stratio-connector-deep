@@ -26,7 +26,9 @@ import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
- * Created by dgomez on 17/09/14.
+ * Configurate and create the DeepSparkContext with the {@link com.stratio.crossdata.common.connector.IConfiguration}
+ *
+ *
  */
 public final class ConnectionConfiguration implements IConfiguration {
 

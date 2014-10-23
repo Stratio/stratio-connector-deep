@@ -35,6 +35,11 @@ import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
 
+/**
+ * .Connection object exist in the ConnectionHandler and contains all the connection info & config.
+ *  {@link com.stratio.connector.commons.connection.Connection}
+ *
+ */
 public class DeepConnection extends Connection {
 
     private final Properties configProperties;
@@ -46,7 +51,7 @@ public class DeepConnection extends Connection {
     private final ExtractorConfig extractorConfig;
 
     /**
-     * Constructor.
+     * Constructor using credentials and cluster config.
      * 
      * @param credentials
      *            the credentials.
@@ -103,6 +108,10 @@ public class DeepConnection extends Connection {
         isConnect = true;
     }
 
+    /**
+    * Change the connection status.
+    *
+    */
     @Override
     public void close() {
         if (deepSparkContext != null) {
@@ -112,6 +121,11 @@ public class DeepConnection extends Connection {
 
     }
 
+    /**
+    * return the connection status.
+     *
+     * @return Boolean
+    */
     @Override
     public boolean isConnect() {
 
@@ -131,6 +145,11 @@ public class DeepConnection extends Connection {
         deepSparkContext.stop();
     }
 
+    /**
+     * return the connection status.
+     * @param config {@link ConnectorClusterConfig}
+     * @return String
+     */
     private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
 
         String db = "";

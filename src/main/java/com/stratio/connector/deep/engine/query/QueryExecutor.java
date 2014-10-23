@@ -30,7 +30,6 @@ import org.apache.spark.api.java.JavaRDD;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.crossdata.common.connector.Operations;
 import com.stratio.crossdata.common.data.Cell;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.ColumnName;
@@ -47,6 +46,7 @@ import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.logicalplan.UnionStep;
 import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.relationships.Operator;
@@ -146,10 +146,12 @@ public class QueryExecutor {
      */
     private LogicalStep arrangeQueryFilters(LogicalStep step) throws ExecutionException {
 
+
         this.indexFilters = new ArrayList<Filter>();
         this.nonIndexFilters = new ArrayList<Filter>();
 
         LogicalStep nextStep = step;
+
         while (nextStep instanceof Filter) {
             switch (nextStep.getOperation()) {
             case FILTER_INDEXED_EQ:

@@ -26,7 +26,8 @@ import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.security.ICredentials;
 
 /**
- * Created by dgomez on 18/09/14.
+ * Class implements native deep connection.
+ *
  */
 public class DeepConnectionHandler extends ConnectionHandler {
 
@@ -34,6 +35,15 @@ public class DeepConnectionHandler extends ConnectionHandler {
         super(configuration);
     }
 
+
+    /**
+    * Use config & Credentials to create Deep native connection
+    *
+    * @param  iCredentials
+    * @param connectorClusterConfig
+    *
+    * @return  DeepConnection
+    * */
     @Override
     protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
             throws CreateNativeConnectionException {

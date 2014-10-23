@@ -26,6 +26,7 @@ import com.stratio.deep.commons.entity.Cells;
 
 /**
  * Spark function that determines if the value in the given field is equals to the provided term.
+ *
  */
 public class DeepEquals implements Function<Cells, Boolean> {
 

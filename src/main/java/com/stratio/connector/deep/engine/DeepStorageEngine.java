@@ -32,7 +32,11 @@ import com.stratio.crossdata.common.metadata.TableMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 
 /**
- * Created by dgomez on 18/09/14.
+ *
+ *  Class use for insert Data table, not implemented for Deep connector
+ *  {@link com.stratio.connector.commons.engine.CommonsMetadataEngine}
+ *
+ * @throw UnsupportedException
  */
 public class DeepStorageEngine extends CommonsStorageEngine {
 

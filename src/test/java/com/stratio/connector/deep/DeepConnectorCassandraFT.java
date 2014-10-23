@@ -439,6 +439,7 @@ public class DeepConnectorCassandraFT {
                 result = 1;
             }
             break;
+
         case LT:
             if (data instanceof String) {
                 result = 0;
