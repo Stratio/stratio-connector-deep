@@ -1,34 +1,25 @@
 package com.stratio.connector.deep.connection;
 
-import com.stratio.connector.commons.connection.Connection;
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-import com.stratio.connector.deep.configuration.ContextProperties;
-import com.stratio.connector.deep.engine.DeepStorageEngine;
-import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
-import com.stratio.crossdata.common.connector.IConfiguration;
-import com.stratio.crossdata.common.exceptions.ConnectionException;
-import com.stratio.crossdata.common.exceptions.ExecutionException;
-import com.stratio.crossdata.common.exceptions.InitializationException;
-import com.stratio.crossdata.common.exceptions.UnsupportedException;
-import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
-import com.stratio.crossdata.common.security.ICredentials;
-import com.stratio.crossdata.common.data.ClusterName;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.connector.IConfiguration;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.security.ICredentials;
 
 /**
  * Created by dgomez on 15/09/14.
@@ -72,7 +63,7 @@ public class DeepContextConnectorTest {
 
         Object recoveredConfiguration = Whitebox.getInternalState(connectionHandler, "configuration");
 
-        assertNotNull("The configuration is not null", recoveredConfiguration);
+        assertNull("The configuration is not null", recoveredConfiguration);
         assertNotNull("The connection handle is not null", connectionHandler);
         //assertEquals ("The configuration is correct" , iconfiguration, recoveredConfiguration);
     }

@@ -42,13 +42,8 @@ import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
-<<<<<<< HEAD
  * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
  *
-=======
- * Class implements Crossdata Interface to connect {@link com.stratio.crossdata.common.connector.IConnector}
- * 
->>>>>>> 9ece1510fe4204e66ef7ef61f814c28957d453ca
  */
 public class DeepConnector implements IConnector {
 
@@ -65,13 +60,8 @@ public class DeepConnector implements IConnector {
     private DeepSparkContext deepContext;
 
     /**
-<<<<<<< HEAD
      * Main uses to asociate the connector to crossdata.
      *
-=======
-     * Main uses to asociate the connector to crossdata
-     * 
->>>>>>> 9ece1510fe4204e66ef7ef61f814c28957d453ca
      * */
     public static void main(String[] args) {
 
