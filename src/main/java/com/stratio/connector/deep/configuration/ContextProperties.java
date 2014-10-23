@@ -18,8 +18,6 @@
 
 package com.stratio.connector.deep.configuration;
 
-import static org.apache.commons.lang.StringUtils.defaultIfEmpty;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -94,8 +92,9 @@ public class ContextProperties {
             prop.load(input);
 
             jar = prop.get("jars") != null ? ((String) prop.get("jars")).split(",") : new String[] {};
-            cluster = defaultIfEmpty((String) prop.get("spark.master"), "local");
-            sparkHome = defaultIfEmpty((String) prop.get("spark.home"), "");
+
+            cluster = prop.get("spark.master") != null ? (String)prop.get("spark.master") : "local";
+            sparkHome =  prop.get("spark.home") != null ? (String)prop.get("spark.home") : "";
             host = !prop.get("host").equals("") ? (String) prop.get("host") : ExtractorConnectConstants.DEFAULT_HOST;
             port = !prop.get("port").equals("") ? Integer.valueOf((String) prop.get("port"))
                     : ExtractorConnectConstants.DEFAULT_PORT;
