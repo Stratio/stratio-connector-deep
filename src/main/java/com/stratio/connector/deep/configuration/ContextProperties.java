@@ -94,7 +94,7 @@ public class ContextProperties {
             prop.load(input);
 
             jar = prop.get("jars") != null ? ((String) prop.get("jars")).split(",") : new String[] {};
-            cluster = defaultIfEmpty((String) prop.get("master"), "local");
+            cluster = defaultIfEmpty((String) prop.get("spark.master"), "local");
             sparkHome = defaultIfEmpty((String) prop.get("spark.home"), "");
             host = !prop.get("host").equals("") ? (String) prop.get("host") : ExtractorConnectConstants.DEFAULT_HOST;
             port = !prop.get("port").equals("") ? Integer.valueOf((String) prop.get("port"))
