@@ -47,6 +47,9 @@ import com.stratio.deep.core.context.DeepSparkContext;
  */
 public class QueryPartialResultsUtils {
 
+    private QueryPartialResultsUtils() {
+    }
+
     /**
      * @param resultSet
      * @return

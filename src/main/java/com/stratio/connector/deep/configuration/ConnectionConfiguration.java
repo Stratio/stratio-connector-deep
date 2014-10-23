@@ -53,6 +53,9 @@ public class ConnectionConfiguration implements IConfiguration {
         LOG.info("-------------End StartUp the SparkContext------------ ");
     }
 
+    private ConnectionConfiguration() {
+    }
+
     public static DeepSparkContext getDeepContext() {
         return deepContext;
     }

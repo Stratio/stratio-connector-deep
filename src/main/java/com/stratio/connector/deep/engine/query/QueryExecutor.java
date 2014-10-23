@@ -144,11 +144,12 @@ public class QueryExecutor {
      * @throws ExecutionException
      *             If the execution of the required steps fails.
      */
-    private LogicalStep arrangeQueryFilters(LogicalStep nextStep) throws ExecutionException {
+    private LogicalStep arrangeQueryFilters(LogicalStep step) throws ExecutionException {
 
         this.indexFilters = new ArrayList<Filter>();
         this.nonIndexFilters = new ArrayList<Filter>();
 
+        LogicalStep nextStep = step;
         while (nextStep instanceof Filter) {
             switch (nextStep.getOperation()) {
             case FILTER_INDEXED_EQ:
@@ -518,14 +519,15 @@ public class QueryExecutor {
      * @throws UnsupportedException
      *             If the required set of operations are not supported by the connector.
      */
-
     private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
             UnsupportedException {
+
+        JavaRDD<Cells> resultRdd;
 
         Relation relation = filterStep.getRelation();
         if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
 
-            rdd = QueryFilterUtils.doWhere(rdd, relation);
+            resultRdd = QueryFilterUtils.doWhere(rdd, relation);
 
         } else {
 
@@ -534,7 +536,7 @@ public class QueryExecutor {
 
         }
 
-        return rdd;
+        return resultRdd;
 
     }
 }
