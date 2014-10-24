@@ -312,7 +312,7 @@ public class QueryExecutor {
         List<Cells> resultCells = resultRdd.collect();
 
         Map<ColumnName, String> columnMap = selectStep.getColumnMap();
-        Map<String, ColumnType> columnType = selectStep.getTypeMap();
+        Map<ColumnName, ColumnType> columnType = selectStep.getTypeMapFromColumnName();
 
         // Adding column metadata information
         List<ColumnMetadata> resultMetadata = new LinkedList<>();
@@ -326,7 +326,7 @@ public class QueryExecutor {
 
             columnMetadata.setColumnAlias(columnAlias);
             // TODO Check if we have to get the alias or the column qualified name
-            columnMetadata.setType(columnType.get(columnName.getQualifiedName()));
+            columnMetadata.setType(columnType.get(columnName));
 
             resultMetadata.add(columnMetadata);
         }
