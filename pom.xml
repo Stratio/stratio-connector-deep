@@ -77,7 +77,7 @@
         <dependency>
             <groupId>com.stratio.crossdata</groupId>
             <artifactId>crossdata-connector</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.1.0</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -114,10 +114,8 @@
         <dependency>
             <groupId>com.stratio.connector</groupId>
             <artifactId>connector-commons-core</artifactId>
-            <version>0.4.0</version>
+            <version>0.1.0</version>
         </dependency>
-
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
