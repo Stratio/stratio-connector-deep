@@ -57,6 +57,7 @@ import com.stratio.crossdata.common.statements.structures.Relation;
 import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.crossdata.common.statements.structures.SelectorType;
 import com.stratio.crossdata.common.statements.structures.StringSelector;
+import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.filter.FilterOperator;
 
@@ -285,37 +286,46 @@ public final class QueryFilterUtils {
      * 
      * @return Grouped {@link JavaRDD}.
      */
-    public static JavaRDD<Cells> groupByFields(JavaRDD<Cells> rdd, List<Selector> ids) {
+    public static JavaRDD<Cells> groupByFields(JavaRDD<Cells> rdd, final List<Selector> selectors) {
 
-        JavaPairRDD<List<Object>, Cells> rddWithKeys = rdd.keyBy(new Function<Cells, List<Object>>() {
+        JavaPairRDD<List<Cell>, Cells> rddWithKeys = rdd.keyBy(new Function<Cells, List<Cell>>() {
 
             private static final long serialVersionUID = 8157822963856298774L;
 
             @Override
-            public List<Object> call(Cells v1) throws Exception {
-                // TODO Auto-generated method stub
-                return null;
+            public List<Cell> call(Cells cells) throws Exception {
+
+                List<Cell> keysList = new ArrayList<>();
+                for (Selector selector : selectors) {
+                    ColumnSelector columnSelector = (ColumnSelector) selector;
+                    Cell cell = cells.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
+                            columnSelector.getName().getName());
+
+                    keysList.add(cell);
+                }
+
+                return keysList;
             }
         });
 
-        JavaPairRDD<List<Object>, Cells> reducedRdd = rddWithKeys.reduceByKey(new Function2<Cells, Cells, Cells>() {
+        JavaPairRDD<List<Cell>, Cells> reducedRdd = rddWithKeys.reduceByKey(new Function2<Cells, Cells, Cells>() {
 
             private static final long serialVersionUID = -2505406515481546086L;
 
             @Override
-            public Cells call(Cells v1, Cells v2) throws Exception {
+            public Cells call(Cells leftCells, Cells rightCells) throws Exception {
 
-                return v1;
+                return leftCells;
             }
         });
 
-        return reducedRdd.map(new Function<Tuple2<List<Object>, Cells>, Cells>() {
+        return reducedRdd.map(new Function<Tuple2<List<Cell>, Cells>, Cells>() {
 
             private static final long serialVersionUID = -4921967044782514288L;
 
             @Override
-            public Cells call(Tuple2<List<Object>, Cells> v1) throws Exception {
-                return v1._2;
+            public Cells call(Tuple2<List<Cell>, Cells> tuple) throws Exception {
+                return tuple._2;
             }
         });
     }
