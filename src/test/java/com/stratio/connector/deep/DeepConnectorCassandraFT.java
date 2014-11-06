@@ -33,7 +33,7 @@ import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.logicalplan.Project;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.Operator;
 
@@ -108,9 +108,9 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 210, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -145,9 +145,9 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -188,9 +188,9 @@ public class DeepConnectorCassandraFT {
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
 
     }
 
@@ -227,18 +227,18 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
         assertEquals("Wrong number of rows", 72, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
-        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getColumnAlias());
-        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getColumnAlias());
-        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getColumnAlias());
+        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getName().getAlias());
+        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
+        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
+        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 4, row.size());
@@ -287,18 +287,18 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 4, columnsMetadata.size());
         assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
-        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getColumnAlias());
-        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(2).getColumnAlias());
-        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(3).getColumnAlias());
+        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getName().getAlias());
+        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
+        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
+        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 4, row.size());
@@ -334,9 +334,9 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 40, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -393,9 +393,9 @@ public class DeepConnectorCassandraFT {
                                 "type ->" + value.getClass() + "  " + getResultExpectedFomOp(op, value));
                         // Checking metadata
                         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
-                                columnsMetadata.get(0).getColumnName());
+                                columnsMetadata.get(0).getName().getQualifiedName());
                         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
-                                .getTableName());
+                                .getName().getTableName().getQualifiedName());
 
                         // Checking rows
                         for (Row row : rowsList) {
@@ -551,9 +551,9 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {

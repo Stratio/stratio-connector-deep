@@ -29,7 +29,7 @@ import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.logicalplan.Project;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 
 /**
@@ -83,20 +83,20 @@ public class JoinResultSetAndCassandraFT {
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         ResultSet resultSet = deepQueryEngine.execute(selectLogicalWorkflow()).getResultSet();
         List<ColumnMetadata> columnMetadata = resultSet.getColumnMetadata();
         List<Row> rows = resultSet.getRows();
 
         Join join = createJoinPartialResults("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT), columnMetadata, rows);
+                createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT), columnMetadata, rows);
 
         join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
-                        ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
+                createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
 
         // One initial steps
@@ -116,14 +116,18 @@ public class JoinResultSetAndCassandraFT {
         assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
-        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getColumnAlias());
-        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getColumnAlias());
-        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getColumnAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getTableName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getTableName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getTableName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getTableName());
+        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getName().getAlias());
+        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
+        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
+        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getName()
+                .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getName()
+                .getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getName()
+                .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -144,12 +148,12 @@ public class JoinResultSetAndCassandraFT {
         List<LogicalStep> stepList = new LinkedList<>();
         // Input data
         Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
 
         projectRight.setNextStep(createSelect(
-                        Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
-                                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT)),
-                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT)));
+                Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT)),
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT)));
 
         // One initial steps
         stepList.add(projectRight);
@@ -166,20 +170,20 @@ public class JoinResultSetAndCassandraFT {
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         ResultSet resultSet = deepQueryEngine.execute(selectLogicalWorkflowWithAlias()).getResultSet();
         List<ColumnMetadata> columnMetadata = resultSet.getColumnMetadata();
         List<Row> rows = resultSet.getRows();
 
         Join join = createJoinPartialResults("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT), columnMetadata, rows);
+                createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT), columnMetadata, rows);
 
         join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
-                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
-                        ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
+                createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
 
         // One initial steps
@@ -199,14 +203,18 @@ public class JoinResultSetAndCassandraFT {
         assertEquals("Wrong number of rows", 72, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getColumnAlias());
-        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getColumnAlias());
-        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getColumnAlias());
-        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getColumnAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getTableName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getTableName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getTableName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getTableName());
+        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getName().getAlias());
+        assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
+        assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
+        assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getName()
+                .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getName()
+                .getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getName()
+                .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -227,12 +235,12 @@ public class JoinResultSetAndCassandraFT {
         List<LogicalStep> stepList = new LinkedList<>();
         // Input data
         Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
 
         projectRight.setNextStep(createSelect(
-                        Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
-                                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT)),
-                        Arrays.asList(ARTIST_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
+                Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT)),
+                Arrays.asList(ARTIST_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
 
         // One initial steps
         stepList.add(projectRight);

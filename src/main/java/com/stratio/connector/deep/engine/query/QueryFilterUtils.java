@@ -26,6 +26,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
 
 import scala.Tuple2;
 
@@ -52,6 +54,7 @@ import com.stratio.crossdata.common.statements.structures.FloatingPointSelector;
 import com.stratio.crossdata.common.statements.structures.IntegerSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
 import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.crossdata.common.statements.structures.SelectorType;
 import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.entity.Cells;
@@ -270,5 +273,50 @@ public final class QueryFilterUtils {
         }
 
         return operatorName;
+    }
+
+    /**
+     * Function that returns a grouped {@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
+     * 
+     * @param rdd
+     *            Initial {@link JavaRDD}.
+     * @param ids
+     *            List of fields to group by.
+     * 
+     * @return Grouped {@link JavaRDD}.
+     */
+    public static JavaRDD<Cells> groupByFields(JavaRDD<Cells> rdd, List<Selector> ids) {
+
+        JavaPairRDD<List<Object>, Cells> rddWithKeys = rdd.keyBy(new Function<Cells, List<Object>>() {
+
+            private static final long serialVersionUID = 8157822963856298774L;
+
+            @Override
+            public List<Object> call(Cells v1) throws Exception {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        });
+
+        JavaPairRDD<List<Object>, Cells> reducedRdd = rddWithKeys.reduceByKey(new Function2<Cells, Cells, Cells>() {
+
+            private static final long serialVersionUID = -2505406515481546086L;
+
+            @Override
+            public Cells call(Cells v1, Cells v2) throws Exception {
+
+                return v1;
+            }
+        });
+
+        return reducedRdd.map(new Function<Tuple2<List<Object>, Cells>, Cells>() {
+
+            private static final long serialVersionUID = -4921967044782514288L;
+
+            @Override
+            public Cells call(Tuple2<List<Object>, Cells> v1) throws Exception {
+                return v1._2;
+            }
+        });
     }
 }

@@ -35,7 +35,7 @@ import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Relation;
 import com.stratio.deep.commons.entity.Cells;
@@ -64,12 +64,12 @@ public final class QueryPartialResultsUtils {
             cellsList = new ArrayList<Cells>(rows.size());
             if (cellsList != null) {
                 List<ColumnMetadata> columnsMetadata = resultSet.getColumnMetadata();
-                String qualifiedName = columnsMetadata.get(0).getTableName();
+                String qualifiedName = columnsMetadata.get(0).getName().getTableName().getQualifiedName();
                 String[] arrNames = qualifiedName.split("\\.");
                 if (arrNames.length != 2) {
                     throw new ExecutionException(
                             "Table name must be a qualified name: [catalog_name.table_name] but is: "
-                                    + columnsMetadata.get(0).getTableName());
+                                    + columnsMetadata.get(0).getName().getTableName().getQualifiedName());
                 }
                 String catalogName = arrNames[0];
                 String tableName = arrNames[1];
@@ -94,8 +94,8 @@ public final class QueryPartialResultsUtils {
         Cells cells = new Cells(catalogName + "." + tableName);
         Map<String, String> aliasMapping = new HashMap<String, String>();
         for (ColumnMetadata colMetadata : columnsMetadata) {
-            aliasMapping.put(colMetadata.getColumnAlias(),
-                    getColumnNameFromQualifiedColumnName(colMetadata.getColumnName()));
+            aliasMapping.put(colMetadata.getName().getAlias(),
+                    getColumnNameFromQualifiedColumnName(colMetadata.getName().getQualifiedName()));
 
         }
 
@@ -171,7 +171,7 @@ public final class QueryPartialResultsUtils {
         for (Relation relation : joinRelations) {
             ColumnSelector colSelector = (ColumnSelector) relation.getLeftTerm();
             String partialResultsQualifiedTableName = partialResults.getResults().getColumnMetadata().get(0)
-                    .getTableName();
+                    .getName().getTableName().getQualifiedName();
             if (colSelector.getName().getTableName().getQualifiedName().equals(partialResultsQualifiedTableName)) {
                 orderedRelations.add(relation);
             } else {

@@ -16,9 +16,9 @@ import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.Operations;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
 import com.stratio.crossdata.common.statements.structures.Relation;
@@ -129,7 +129,8 @@ public class QueryPartialResultsUtilsTest {
      */
     private ColumnMetadata metaMetadata(String catalog, String table, String row, ColumnType i) {
 
-        return new ColumnMetadata(catalog + "." + table, catalog + "." + table + "." + row, i);
+        Object[] params = {};
+        return new ColumnMetadata(new ColumnName(catalog, table, row), params, i);
     }
 
     /**

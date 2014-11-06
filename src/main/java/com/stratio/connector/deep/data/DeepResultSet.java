@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 
 public class DeepResultSet extends ResultSet implements Serializable {
 

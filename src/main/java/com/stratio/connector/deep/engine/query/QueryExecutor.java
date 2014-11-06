@@ -38,6 +38,7 @@ import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Filter;
+import com.stratio.crossdata.common.logicalplan.GroupBy;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
@@ -45,9 +46,9 @@ import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.logicalplan.UnionStep;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.Operations;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
@@ -316,17 +317,13 @@ public class QueryExecutor {
 
         // Adding column metadata information
         List<ColumnMetadata> resultMetadata = new LinkedList<>();
+        Object[] parameters = {};
         for (Entry<ColumnName, String> columnItem : columnMap.entrySet()) {
 
             ColumnName columnName = columnItem.getKey();
             String columnAlias = columnItem.getValue();
 
-            ColumnMetadata columnMetadata = new ColumnMetadata(columnName.getTableName().getQualifiedName(),
-                    columnName.getQualifiedName());
-
-            columnMetadata.setColumnAlias(columnAlias);
-            // TODO Check if we have to get the alias or the column qualified name
-            columnMetadata.setType(columnType.get(columnName));
+            ColumnMetadata columnMetadata = new ColumnMetadata(columnName, parameters, columnType.get(columnName));
 
             resultMetadata.add(columnMetadata);
         }
@@ -396,8 +393,6 @@ public class QueryExecutor {
         while (currentStep != null) {
             if (currentStep instanceof Filter) {
                 resultRdd = executeFilter((Filter) currentStep, resultRdd);
-            } else if (currentStep instanceof Select) {
-                resultRdd = prepareResult((Select) currentStep, resultRdd);
             } else if (currentStep instanceof UnionStep) {
                 UnionStep unionStep = (UnionStep) currentStep;
                 JavaRDD<Cells> joinedRdd = executeUnion(unionStep, resultRdd);
@@ -412,6 +407,10 @@ public class QueryExecutor {
                                 + "]");
                     }
                 }
+            } else if (currentStep instanceof GroupBy) {
+                resultRdd = executeGroupBy((GroupBy) currentStep, resultRdd);
+            } else if (currentStep instanceof Select) {
+                resultRdd = prepareResult((Select) currentStep, resultRdd);
             } else {
                 throw new ExecutionException("Unexpected step found [" + currentStep.getOperation().toString() + "]");
             }
@@ -489,6 +488,21 @@ public class QueryExecutor {
     private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
         return QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations);
+    }
+
+    /**
+     * Groups the result by the given fields.
+     * 
+     * @param groupByStep
+     *            GroupBy step.
+     * @param rdd
+     *            Initial {@link JavaRDD}.
+     * 
+     * @return Grouped {@link JavaRDD}.
+     */
+    private JavaRDD<Cells> executeGroupBy(GroupBy groupByStep, JavaRDD<Cells> rdd) {
+
+        return QueryFilterUtils.groupByFields(rdd, groupByStep.getIds());
     }
 
     /**

@@ -27,7 +27,7 @@ import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.logicalplan.Project;
-import com.stratio.crossdata.common.metadata.structures.ColumnMetadata;
+import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.Operator;
 
@@ -107,9 +107,9 @@ public class DeepConnectorMongoFT {
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -161,9 +161,9 @@ public class DeepConnectorMongoFT {
 
                 // Checking metadata
                 assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                        columnsMetadata.get(0).getColumnName());
+                        columnsMetadata.get(0).getName().getQualifiedName());
                 assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                        .getTableName());
+                        .getName().getTableName().getQualifiedName());
 
                 // Checking rows
                 for (Row row : rowsList) {
@@ -212,9 +212,9 @@ public class DeepConnectorMongoFT {
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getColumnName());
+                columnsMetadata.get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -266,9 +266,9 @@ public class DeepConnectorMongoFT {
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
-                .get(0).getColumnName());
+                .get(0).getName().getQualifiedName());
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getTableName());
+                .getName().getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
