@@ -322,6 +322,7 @@ public class QueryExecutor {
 
             ColumnName columnName = columnItem.getKey();
             String columnAlias = columnItem.getValue();
+            columnName.setAlias(columnAlias);
 
             ColumnMetadata columnMetadata = new ColumnMetadata(columnName, parameters, columnType.get(columnName));
 
