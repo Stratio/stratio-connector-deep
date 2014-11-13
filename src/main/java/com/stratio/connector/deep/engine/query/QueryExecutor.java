@@ -160,7 +160,7 @@ public class QueryExecutor {
             case FILTER_INDEXED_GT:
             case FILTER_INDEXED_LET:
             case FILTER_INDEXED_LT:
-            case FILTER_FULLTEXT:
+            case FILTER_INDEXED_MATCH:
                 indexFilters.add((Filter) nextStep);
                 break;
             case FILTER_PK_EQ:

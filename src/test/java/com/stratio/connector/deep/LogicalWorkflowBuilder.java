@@ -170,7 +170,7 @@ public class LogicalWorkflowBuilder {
             operation = indexed ? Operations.FILTER_INDEXED_DISTINCT : Operations.FILTER_NON_INDEXED_DISTINCT;
             break;
         case MATCH:
-            operation = Operations.FILTER_FULLTEXT;
+            operation = Operations.FILTER_INDEXED_MATCH;
             break;
         default:
             break;
