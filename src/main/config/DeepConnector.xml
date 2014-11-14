@@ -30,7 +30,7 @@
         <operation>FILTER_INDEXED_GET</operation>
         <operation>FILTER_INDEXED_LET</operation>
         <operation>FILTER_INDEXED_DISTINCT</operation>
-        <operation>FILTER_FULLTEXT</operation>
+        <operation>FILTER_INDEXED_MATCH</operation>
         <operation>PARTIAL_RESULTS</operation>
         <operation>SELECT_GROUP_BY</operation>
     </SupportedOperations>
