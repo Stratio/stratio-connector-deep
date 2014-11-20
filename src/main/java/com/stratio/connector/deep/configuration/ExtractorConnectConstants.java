@@ -27,7 +27,7 @@ public class ExtractorConnectConstants extends ExtractorConstants {
 
     public static final String HOSTS = "Hosts";
     public static final String PORTS = "Port";
-    public static final String PORT = "Port";
+    // public static final String PORT = "Port";
     public static final String INNERCLASS = "implClass";
 
     public static final String DB_CASSANDRA = "cassandra";
