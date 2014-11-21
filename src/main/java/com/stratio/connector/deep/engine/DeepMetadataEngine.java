@@ -24,9 +24,8 @@ import com.stratio.connector.commons.engine.CommonsMetadataEngine;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.crossdata.common.data.AlterOptions;
 import com.stratio.crossdata.common.data.CatalogName;
-import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.TableName;
-import com.stratio.crossdata.common.exceptions.ConnectorException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.metadata.CatalogMetadata;
 import com.stratio.crossdata.common.metadata.IndexMetadata;
@@ -85,13 +84,12 @@ public class DeepMetadataEngine extends CommonsMetadataEngine {
      * (non-Javadoc)
      * 
      * @see
-     * com.stratio.crossdata.common.connector.IMetadataEngine#alterTable(com.stratio.crossdata.common.data.ClusterName,
-     * com.stratio.crossdata.common.data.TableName, com.stratio.crossdata.common.data.AlterOptions)
+     * com.stratio.connector.commons.engine.CommonsMetadataEngine#alterTable(com.stratio.crossdata.common.data.TableName
+     * , com.stratio.crossdata.common.data.AlterOptions, com.stratio.connector.commons.connection.Connection)
      */
     @Override
-    public void alterTable(ClusterName targetCluster, TableName name, AlterOptions alterOptions)
-            throws ConnectorException {
-        // TODO Auto-generated method stub
-
+    protected void alterTable(TableName name, AlterOptions alterOptions, Connection connection)
+            throws UnsupportedException, ExecutionException {
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
     }
 }

@@ -37,8 +37,8 @@ import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
  * .Connection object exist in the ConnectionHandler and contains all the connection info & config.
- *  {@link com.stratio.connector.commons.connection.Connection}
- *
+ * {@link com.stratio.connector.commons.connection.Connection}
+ * 
  */
 public class DeepConnection extends Connection {
 
@@ -109,9 +109,9 @@ public class DeepConnection extends Connection {
     }
 
     /**
-    * Change the connection status.
-    *
-    */
+     * Change the connection status.
+     * 
+     */
     @Override
     public void close() {
         if (deepSparkContext != null) {
@@ -122,10 +122,10 @@ public class DeepConnection extends Connection {
     }
 
     /**
-    * return the connection status.
-     *
+     * return the connection status.
+     * 
      * @return Boolean
-    */
+     */
     @Override
     public boolean isConnect() {
 
@@ -147,7 +147,9 @@ public class DeepConnection extends Connection {
 
     /**
      * return the connection status.
-     * @param config {@link ConnectorClusterConfig}
+     * 
+     * @param config
+     *            {@link ConnectorClusterConfig}
      * @return String
      */
     private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
@@ -159,6 +161,8 @@ public class DeepConnection extends Connection {
             db = ExtractorConnectConstants.DB_MONGO;
         } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_ELASTICSEARCH)) {
             db = ExtractorConnectConstants.DB_ELASTICSEARCH;
+        } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_AEROSPIKE)) {
+            db = ExtractorConnectConstants.DB_AEROSPIKE;
         }
 
         return db;

@@ -59,7 +59,7 @@ import com.stratio.crossdata.common.statements.structures.SelectorType;
 import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
-import com.stratio.deep.commons.filter.FilterOperator;
+import com.stratio.deep.commons.filter.FilterType;
 
 /**
  * Utils for the query Filters.
@@ -244,36 +244,36 @@ public final class QueryFilterUtils {
      * @param operator
      * @return String
      */
-    public static String retrieveFilterOperator(Operator operator) {
+    public static FilterType retrieveFilterOperator(Operator operator) {
 
-        String operatorName = null;
+        FilterType filterType = null;
         switch (operator) {
         case EQ:
-            operatorName = FilterOperator.IS;
+            filterType = FilterType.EQ;
             break;
         case DISTINCT:
-            operatorName = FilterOperator.NE;
+            filterType = FilterType.NEQ;
             break;
         case GET:
-            operatorName = FilterOperator.GTE;
+            filterType = FilterType.GTE;
             break;
         case GT:
-            operatorName = FilterOperator.GT;
+            filterType = FilterType.GT;
             break;
         case LET:
-            operatorName = FilterOperator.LTE;
+            filterType = FilterType.LTE;
             break;
         case LT:
-            operatorName = FilterOperator.LT;
+            filterType = FilterType.LT;
             break;
         case MATCH:
-            operatorName = FilterOperator.MATCH;
+            filterType = FilterType.MATCH;
             break;
         default:
             break;
         }
 
-        return operatorName;
+        return filterType;
     }
 
     /**

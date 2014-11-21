@@ -27,13 +27,11 @@ import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.data.TableName;
-import com.stratio.crossdata.common.exceptions.ConnectorException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
-import com.stratio.crossdata.common.logicalplan.Filter;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.metadata.TableMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
-import com.stratio.crossdata.common.statements.structures.Relation;
 
 /**
  * Class use for insert Data table, not implemented for Deep connector
@@ -70,39 +68,41 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     /*
      * (non-Javadoc)
      * 
-     * @see com.stratio.crossdata.common.connector.IStorageEngine#delete(com.stratio.crossdata.common.data.ClusterName,
-     * com.stratio.crossdata.common.data.TableName, java.util.Collection)
+     * @see
+     * com.stratio.connector.commons.engine.CommonsStorageEngine#truncate(com.stratio.crossdata.common.data.TableName,
+     * com.stratio.connector.commons.connection.Connection)
      */
     @Override
-    public void delete(ClusterName targetCluster, TableName tableName, Collection<Filter> whereClauses)
-            throws ConnectorException {
-        // TODO Auto-generated method stub
+    protected void truncate(TableName tableName, Connection connection) throws UnsupportedException, ExecutionException {
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.stratio.crossdata.common.connector.IStorageEngine#update(com.stratio.crossdata.common.data.ClusterName,
-     * com.stratio.crossdata.common.data.TableName, java.util.Collection, java.util.Collection)
-     */
-    @Override
-    public void update(ClusterName targetCluster, TableName tableName, Collection<Relation> assignments,
-            Collection<Filter> whereClauses) throws ConnectorException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
     }
 
     /*
      * (non-Javadoc)
      * 
      * @see
-     * com.stratio.crossdata.common.connector.IStorageEngine#truncate(com.stratio.crossdata.common.data.ClusterName,
-     * com.stratio.crossdata.common.data.TableName)
+     * com.stratio.connector.commons.engine.CommonsStorageEngine#delete(com.stratio.crossdata.common.data.TableName,
+     * java.util.Collection, com.stratio.connector.commons.connection.Connection)
      */
     @Override
-    public void truncate(ClusterName targetCluster, TableName tableName) throws ConnectorException {
-        // TODO Auto-generated method stub
+    protected void delete(TableName tableName, Collection whereClauses, Connection connection)
+            throws UnsupportedException, ExecutionException {
 
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.stratio.connector.commons.engine.CommonsStorageEngine#update(com.stratio.crossdata.common.data.TableName,
+     * java.util.Collection, java.util.Collection, com.stratio.connector.commons.connection.Connection)
+     */
+    @Override
+    protected void update(TableName tableName, Collection assignments, Collection whereClauses, Connection connection)
+            throws UnsupportedException, ExecutionException {
+
+        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
     }
 }
