@@ -22,7 +22,7 @@ import java.util.Collection;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.engine.CommonsStorageEngine;
-import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.Row;
@@ -48,18 +48,18 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow, Connection connection)
             throws UnsupportedException {
 
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     @Override
     protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException
     {
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     @Override
     protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection)
             throws UnsupportedException {
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 }

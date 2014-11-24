@@ -18,23 +18,15 @@
 
 package com.stratio.connector.deep.configuration;
 
-import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-
 /**
  * Config constants.
  */
-public class ExtractorConnectConstants extends ExtractorConstants {
-
-
-    public static final String HOSTS      = "Hosts";
-    public static final String PORTS      = "Port";
-    public static final String PORT       = "Port";
-    public static final String INNERCLASS = "implClass";
-
+public class DeepConnectorConstants {
 
     public static final String DB_CASSANDRA = "cassandra";
     public static final String DB_ELASTICSEARCH = "elasticsearch";
     public static final String DB_MONGO = "mongo";
+    public static final String HDFS = "hdfs";
 
     public static final String DEFAULT_HOST  = "localhost";
     public static final int DEFAULT_RPC_PORT = 9160;
@@ -64,4 +56,6 @@ public class ExtractorConnectConstants extends ExtractorConstants {
     public static final String SPARK_RDD_ID = "spark.rdd.id";
 
     public static final String METHOD_NOT_SUPPORTED = "Not supported";
+    public static final String TYPE = "type";
+
 }

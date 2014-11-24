@@ -3,9 +3,9 @@ package com.stratio.connector.deep;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 
 public class MongoConnectionConfigurationBuilder {
 
@@ -25,9 +25,9 @@ public class MongoConnectionConfigurationBuilder {
     public static ConnectorClusterConfig prepareConfiguration() {
 
         Map<String, String> options = new HashMap<>();
-        options.put(ExtractorConnectConstants.HOST, HOST);
-        options.put(ExtractorConnectConstants.PORT, PORT);
-        options.put(ExtractorConnectConstants.INNERCLASS, MONGO_CELL_CLASS);
+        options.put(ExtractorConstants.HOST, HOST);
+        options.put(ExtractorConstants.PORT, PORT);
+        options.put(ExtractorConstants.INNERCLASS, MONGO_CELL_CLASS);
         ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options);
 
         return configuration;

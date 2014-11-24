@@ -28,11 +28,12 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.connector.commons.util.ConnectorParser;
 import com.stratio.connector.deep.configuration.ClusterProperties;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
-import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
@@ -71,24 +72,35 @@ public class DeepConnection extends Connection {
 
         Map<String, Serializable> values = new HashMap<>();
 
-        if (clusterOptions.get(ExtractorConnectConstants.HOSTS) != null) {
-            values.put(ExtractorConnectConstants.HOSTS, clusterOptions.get(ExtractorConnectConstants.HOSTS));
-            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConnectConstants.HOSTS));
+        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
+            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
+            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
 
-            values.put(ExtractorConnectConstants.HOST, hosts[0]);
+            values.put(ExtractorConstants.HOST, hosts[0]);
         } else {
-            values.put(ExtractorConnectConstants.HOST, clusterOptions.get(ExtractorConnectConstants.HOST));
+            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
         }
 
-        if (clusterOptions.get(ExtractorConnectConstants.PORTS) != null) {
-            values.put(ExtractorConnectConstants.PORTS, clusterOptions.get(ExtractorConnectConstants.PORTS));
-            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConnectConstants.PORTS));
+        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
+            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
 
-            values.put(ExtractorConnectConstants.PORT, ports[0]);
+            values.put(ExtractorConstants.PORT, ports[0]);
         } else {
-            values.put(ExtractorConnectConstants.PORT, clusterOptions.get(ExtractorConnectConstants.PORT));
+            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
         }
 
+        if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
+            values.put(ExtractorConstants.HDFS_SCHEMA,clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
+        }
+
+        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR) != null) {
+            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
+        }
+
+        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH) != null) {
+            values.put(ExtractorConstants.HDFS_FILE_PATH,clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
+        }
         extractorconfig.setValues(values);
 
         ClusterProperties clusterProperties = new ClusterProperties();
@@ -97,7 +109,7 @@ public class DeepConnection extends Connection {
         String dataBase = checkDatabaseFromClusterName(config);
 
         extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBase + "."
-                + ExtractorConnectConstants.INNERCLASS));
+                + ExtractorConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
 
@@ -153,12 +165,14 @@ public class DeepConnection extends Connection {
     private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
 
         String db = "";
-        if (config.getName().getName().contains(ExtractorConnectConstants.DB_CASSANDRA)) {
-            db = ExtractorConnectConstants.DB_CASSANDRA;
-        } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_MONGO)) {
-            db = ExtractorConnectConstants.DB_MONGO;
-        } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_ELASTICSEARCH)) {
-            db = ExtractorConnectConstants.DB_ELASTICSEARCH;
+        if (config.getName().getName().contains(DeepConnectorConstants.DB_CASSANDRA)) {
+            db = DeepConnectorConstants.DB_CASSANDRA;
+        } else if (config.getName().getName().contains(DeepConnectorConstants.DB_MONGO)) {
+            db = DeepConnectorConstants.DB_MONGO;
+        } else if (config.getName().getName().contains(DeepConnectorConstants.DB_ELASTICSEARCH)) {
+            db = DeepConnectorConstants.DB_ELASTICSEARCH;
+        }else if (config.getName().getName().contains(DeepConnectorConstants.HDFS)) {
+            db = DeepConnectorConstants.HDFS;
         }
 
         return db;

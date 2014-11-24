@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.data.Cell;
@@ -56,6 +57,9 @@ import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
+import com.stratio.deep.core.hdfs.utils.SchemaMap;
+import com.stratio.deep.core.hdfs.utils.TableName;
+import com.stratio.deep.core.hdfs.utils.TextFileDataTable;
 
 public class QueryExecutor {
 
@@ -204,7 +208,7 @@ public class QueryExecutor {
      */
     private JavaRDD<Cells> createRdd(Project project, ExtractorConfig<Cells> extractorConfig, List<Filter> filtersList)
             throws ExecutionException {
-
+        JavaRDD<Cells> rdd;
         // Retrieving project information
         List<String> columnsList = new ArrayList<>();
         for (ColumnName columnName : project.getColumnList()) {
@@ -217,9 +221,52 @@ public class QueryExecutor {
 
         extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList));
 
-        JavaRDD<Cells> rdd = deepContext.createJavaRDD(extractorConfig);
+        if(extractorConfig.getExtractorImplClassName().equals(DeepConnectorConstants.HDFS)){
+
+            TextFileDataTable textFileDataTable = formatterFromSchema(extractorConfig,project);
+
+            extractorConfig.putValue(ExtractorConstants.HDFS_FILEDATATABLE, textFileDataTable);
+            extractorConfig.putValue(DeepConnectorConstants.TYPE,ExtractorConstants.HDFS_TYPE);
+
+            rdd = deepContext.createHDFSRDD(extractorConfig);
+
+
+        }else{
+            rdd = deepContext.createJavaRDD(extractorConfig);
+        }
+
 
         return rdd;
+    }
+
+    private TextFileDataTable formatterFromSchema(ExtractorConfig extractorConfig, Project project)
+            throws ExecutionException {
+
+        String schemaStr = (String) extractorConfig.getValues().get(ExtractorConstants.HDFS_SCHEMA);
+        TextFileDataTable textFileDataTable = null;
+        ArrayList<SchemaMap> columnMap = new ArrayList<>();
+
+        try{
+            String [] splits = schemaStr.replaceAll("\\s+", "").replaceAll("\\[", "").replaceAll("]", "").split(",");
+            for(String column : splits){
+                String [] columnData = column.split(":");
+                Class<?> cls = Class.forName(columnData[1]);
+
+                columnMap.add(new SchemaMap(columnData[0],cls));
+            }
+            textFileDataTable = new TextFileDataTable(new TableName( project.getCatalogName(),
+                    project.getTableName().getName()),columnMap);
+
+            textFileDataTable.setLineSeparator((String)extractorConfig.getValues().get(ExtractorConstants
+                    .HDFS_FILE_SEPARATOR));
+
+        } catch (ClassNotFoundException e) {
+            throw new ExecutionException(""+e);
+        }catch (Exception e) {
+            throw new ExecutionException(""+e);
+        }
+
+        return textFileDataTable ;
     }
 
     /**

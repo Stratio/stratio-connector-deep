@@ -86,13 +86,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-core</artifactId>
             <version>0.5.0</version>
             <type>jar</type>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>2.4.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-cassandra</artifactId>
@@ -116,7 +127,6 @@
             <artifactId>connector-commons-core</artifactId>
             <version>0.4.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>junit</groupId>
