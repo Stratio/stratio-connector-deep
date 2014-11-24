@@ -169,7 +169,7 @@ public class QueryFiltersUtilsTest implements Serializable {
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
         relations.add(relation);
 
-        JavaRDD<Cells> outputrdd = QueryFilterUtils.doJoin(leftRdd, rightRdd, relations);
+        JavaRDD<Cells> outputrdd = QueryFilterUtils.doJoin(leftRdd, rightRdd, relations, false);
         if (logger.isDebugEnabled()) {
 
             logger.debug("El resultado es :" + outputrdd.count());

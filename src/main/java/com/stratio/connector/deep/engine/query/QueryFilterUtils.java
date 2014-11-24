@@ -148,12 +148,16 @@ public final class QueryFilterUtils {
         return rdd.map(new FilterColumns(list));
     }
 
-    static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
+    static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations,
+            boolean reversed) {
 
         JavaRDD<Cells> joinedResult = null;
 
-        List<ColumnName> leftTables = new ArrayList<>();
-        List<ColumnName> rightTables = new ArrayList<>();
+        // List<Cells> leftList = leftRdd.collect();
+        // List<Cells> rightList = rightRdd.collect();
+
+        List<ColumnName> firstTables = new ArrayList<>();
+        List<ColumnName> secondTables = new ArrayList<>();
 
         for (Relation relation : joinRelations) {
 
@@ -161,8 +165,8 @@ public final class QueryFilterUtils {
             ColumnSelector selectorLeft = (ColumnSelector) relation.getLeftTerm();
 
             if (relation.getOperator().equals(Operator.EQ)) {
-                leftTables.add(selectorLeft.getName());
-                rightTables.add(selectorRight.getName());
+                firstTables.add(selectorLeft.getName());
+                secondTables.add(selectorRight.getName());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
                             + selectorLeft.getName().getName());
@@ -171,9 +175,11 @@ public final class QueryFilterUtils {
 
         }
 
-        JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(leftTables));
+        JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(reversed ? secondTables
+                : firstTables));
 
-        JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(rightTables));
+        JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(reversed ? firstTables
+                : secondTables));
 
         if (rddLeft != null && rddRight != null) {
             JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
