@@ -30,6 +30,7 @@ import com.stratio.connector.deep.configuration.ClusterProperties;
 import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
@@ -58,7 +59,7 @@ public class DeepConnection extends Connection {
      * @param config
      *            The cluster configuration.
      */
-    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) {
+    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
         if (credentials != null) {
             // TODO check the credentials
@@ -93,11 +94,15 @@ public class DeepConnection extends Connection {
 
         ClusterProperties clusterProperties = new ClusterProperties();
 
-        // TODO Find new field add by meta to recognise the database to associate the CellExtractor config correct
         String dataBaseName = config.getDataStoreName().getName();
+        String extractorImplClassName = clusterProperties.getValue("cluster." + dataBaseName + "."
+                + ExtractorConnectConstants.INNERCLASS);
 
-        extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBaseName + "."
-                + ExtractorConnectConstants.INNERCLASS));
+        if (extractorImplClassName == null) {
+            throw new ConnectionException("Unknown data source, please add it to the configuration.");
+        }
+
+        extractorconfig.setExtractorImplClassName(extractorImplClassName);
 
         extractorConfig = extractorconfig;
 
