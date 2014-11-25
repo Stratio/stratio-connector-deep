@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-core</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -107,19 +107,19 @@
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-cassandra</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-mongodb</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-elasticsearch</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>

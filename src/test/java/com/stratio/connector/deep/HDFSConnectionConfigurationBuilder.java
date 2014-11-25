@@ -6,7 +6,6 @@ import java.util.Map;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.core.hdfs.utils.HDFSConstants;
 
 public class HDFSConnectionConfigurationBuilder {
 
@@ -35,7 +34,7 @@ public class HDFSConnectionConfigurationBuilder {
 
         options.put(ExtractorConstants.HDFS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
                 "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
-        options.put(ExtractorConstants.TYPE,HDFSConstants.HDFS_TYPE);
+        options.put(ExtractorConstants.TYPE,ExtractorConstants.HDFS_TYPE);
         options.put(ExtractorConstants.TABLE,"songs");
         options.put(ExtractorConstants.CATALOG,"test");
 

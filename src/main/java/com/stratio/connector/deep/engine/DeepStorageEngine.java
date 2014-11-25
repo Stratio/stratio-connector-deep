@@ -26,10 +26,14 @@ import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.Row;
+import com.stratio.crossdata.common.data.TableName;
+import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.logicalplan.Filter;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.metadata.TableMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
+import com.stratio.crossdata.common.statements.structures.Relation;
 
 /**
  * Class use for insert Data table, not implemented for Deep connector
@@ -60,6 +64,23 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     @Override
     protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection)
             throws UnsupportedException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override
+    public void delete(ClusterName targetCluster, TableName tableName, Collection<Filter> whereClauses)
+            throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override
+    public void update(ClusterName targetCluster, TableName tableName, Collection<Relation> assignments,
+            Collection<Filter> whereClauses) throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override
+    public void truncate(ClusterName targetCluster, TableName tableName) throws ConnectorException {
         throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 }

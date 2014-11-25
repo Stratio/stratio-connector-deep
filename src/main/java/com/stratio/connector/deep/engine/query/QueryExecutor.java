@@ -226,7 +226,7 @@ public class QueryExecutor {
             TextFileDataTable textFileDataTable = formatterFromSchema(extractorConfig,project);
 
             extractorConfig.putValue(ExtractorConstants.HDFS_FILEDATATABLE, textFileDataTable);
-            extractorConfig.putValue(DeepConnectorConstants.TYPE,ExtractorConstants.HDFS_TYPE);
+            extractorConfig.putValue(ExtractorConstants.TYPE_CONSTANT,ExtractorConstants.HDFS_TYPE);
 
             rdd = deepContext.createHDFSRDD(extractorConfig);
 
