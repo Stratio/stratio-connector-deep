@@ -29,8 +29,6 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 
-import scala.Tuple2;
-
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.connector.deep.engine.query.functions.GreaterEqualThan;
 import com.stratio.connector.deep.engine.query.functions.GreaterThan;
@@ -60,6 +58,8 @@ import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.filter.FilterType;
+
+import scala.Tuple2;
 
 /**
  * Utils for the query Filters.
@@ -325,7 +325,7 @@ public final class QueryFilterUtils {
 
             @Override
             public Cells call(Tuple2<List<Cell>, Cells> tuple) throws Exception {
-                return tuple._2;
+                return tuple._2();
             }
         });
     }

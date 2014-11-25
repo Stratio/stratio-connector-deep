@@ -1,28 +1,31 @@
 package com.stratio.connector.deep.connection;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-import com.stratio.connector.deep.configuration.ConnectionConfiguration;
-import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
-import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
-import com.stratio.crossdata.common.connector.IConfiguration;
-import com.stratio.crossdata.common.security.ICredentials;
-import com.stratio.crossdata.common.data.ClusterName;
-import org.junit.After;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.ConnectionConfiguration;
+import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.connector.IConfiguration;
+import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.data.DataStoreName;
+import com.stratio.crossdata.common.security.ICredentials;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
+import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
  * Created by dgomez on 18/09/14.
@@ -53,10 +56,12 @@ public class ConnectionHandlerTest {
 
         ICredentials credentials = mock(ICredentials.class);
         Map<String, String> options = new HashMap<>();
-        options.put(ExtractorConnectConstants.HOST, "127.0.0.1");
-        options.put(ExtractorConnectConstants.HOSTS, "127.0.0.1 , 127.0.0.2");
-        options.put(ExtractorConnectConstants.PORT, "PORT");
-        ConnectorClusterConfig config = new ConnectorClusterConfig(new ClusterName(CLUSTER_NAME), options);
+        options.put(ExtractorConstants.HOST, "127.0.0.1");
+        options.put(ExtractorConstants.HOSTS, "127.0.0.1 , 127.0.0.2");
+        options.put(ExtractorConstants.PORT, "PORT");
+
+        ConnectorClusterConfig config = new ConnectorClusterConfig(new ClusterName(CLUSTER_NAME), options,options );
+        config.setDataStoreName(new DataStoreName("dataStoreName"));
 
         DeepConnection connection = mock(DeepConnection.class);
         whenNew(DeepConnection.class).withArguments(credentials, config).thenReturn(connection);

@@ -22,16 +22,21 @@ import java.util.Collection;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.engine.CommonsStorageEngine;
-import com.stratio.connector.deep.configuration.ExtractorConnectConstants;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.data.TableName;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
+
+import com.stratio.crossdata.common.exceptions.ConnectorException;
+
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.logicalplan.Filter;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.metadata.TableMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
+import com.stratio.crossdata.common.statements.structures.Relation;
 
 /**
  * Class use for insert Data table, not implemented for Deep connector
@@ -50,19 +55,26 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow, Connection connection)
             throws UnsupportedException {
 
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     @Override
     protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException
     {
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     @Override
     protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection)
             throws UnsupportedException {
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+
+
+    @Override
+    public void truncate(ClusterName targetCluster, TableName tableName) throws UnsupportedException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     /*
@@ -75,7 +87,7 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     @Override
     protected void truncate(TableName tableName, Connection connection) throws UnsupportedException, ExecutionException {
 
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     /*
@@ -85,11 +97,11 @@ public class DeepStorageEngine extends CommonsStorageEngine {
      * com.stratio.connector.commons.engine.CommonsStorageEngine#delete(com.stratio.crossdata.common.data.TableName,
      * java.util.Collection, com.stratio.connector.commons.connection.Connection)
      */
-    @Override
+
     protected void delete(TableName tableName, Collection whereClauses, Connection connection)
             throws UnsupportedException, ExecutionException {
 
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
     /*
@@ -103,6 +115,6 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     protected void update(TableName tableName, Collection assignments, Collection whereClauses, Connection connection)
             throws UnsupportedException, ExecutionException {
 
-        throw new UnsupportedException(ExtractorConnectConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 }
