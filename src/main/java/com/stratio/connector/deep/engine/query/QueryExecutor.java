@@ -456,30 +456,21 @@ public class QueryExecutor {
                 List<Relation> relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
                         joinStep.getJoinRelations());
 
-                joinedRdd = executeJoin(partialResultsRdd, rdd, relations, false);
+                joinedRdd = executeJoin(partialResultsRdd, rdd, relations);
 
             } else {
-                // List<Cells> passedRdd = rdd.collect();
-
                 String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
                 JavaRDD<Cells> partialRdd = partialResultsMap.get(joinLeftTableName);
 
-                boolean reversed = false;
                 if (partialRdd != null) {
-                    // List<Cells> retrievedRdd = partialRdd.collect();
-                    // List<Cells> joinedRddList = joinedRdd.collect();
-                    partialResultsMap.remove(joinLeftTableName);
+                    joinedRdd = executeJoin(partialRdd, rdd, joinStep.getJoinRelations());
                 } else {
-                    reversed = true;
                     String joinRightTableName = joinStep.getSourceIdentifiers().get(1);
                     partialRdd = partialResultsMap.get(joinRightTableName);
                     partialResultsMap.remove(joinRightTableName);
-                }
-
-                if (partialRdd != null) {
-                    joinedRdd = executeJoin(rdd, partialRdd, joinStep.getJoinRelations(), reversed);
-                    // List<Cells> retrievedRdd = partialRdd.collect();
-                    // List<Cells> joinedRddList = joinedRdd.collect();
+                    if (partialRdd != null) {
+                        joinedRdd = executeJoin(rdd, partialRdd, joinStep.getJoinRelations());
+                    }
                 }
             }
         } else {
@@ -501,10 +492,9 @@ public class QueryExecutor {
      * 
      * @return Joined {@link JavaRDD}.
      */
-    private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations,
-            boolean reversed) {
+    private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
-        return QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations, reversed);
+        return QueryFilterUtils.doJoin(leftRdd, rdd, joinRelations);
     }
 
     /**

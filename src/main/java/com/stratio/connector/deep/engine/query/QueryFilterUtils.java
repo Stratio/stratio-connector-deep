@@ -148,13 +148,9 @@ public final class QueryFilterUtils {
         return rdd.map(new FilterColumns(list));
     }
 
-    static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations,
-            boolean reversed) {
+    static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
 
         JavaRDD<Cells> joinedResult = null;
-
-        // List<Cells> leftList = leftRdd.collect();
-        // List<Cells> rightList = rightRdd.collect();
 
         List<ColumnName> firstTables = new ArrayList<>();
         List<ColumnName> secondTables = new ArrayList<>();
@@ -175,11 +171,9 @@ public final class QueryFilterUtils {
 
         }
 
-        JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(reversed ? secondTables
-                : firstTables));
+        JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(firstTables));
 
-        JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(reversed ? firstTables
-                : secondTables));
+        JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(secondTables));
 
         if (rddLeft != null && rddRight != null) {
             JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);

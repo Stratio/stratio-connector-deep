@@ -64,7 +64,7 @@ public class DeepConnection extends Connection {
             // TODO check the credentials
         }
 
-        Map<String, String> clusterOptions = config.getOptions();
+        Map<String, String> clusterOptions = config.getClusterOptions();
 
         // Creating a configuration for the Extractor and initialize it
         ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
@@ -94,9 +94,9 @@ public class DeepConnection extends Connection {
         ClusterProperties clusterProperties = new ClusterProperties();
 
         // TODO Find new field add by meta to recognise the database to associate the CellExtractor config correct
-        String dataBase = checkDatabaseFromClusterName(config);
+        String dataBaseName = config.getDataStoreName().getName();
 
-        extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBase + "."
+        extractorconfig.setExtractorImplClassName(clusterProperties.getValue("cluster." + dataBaseName + "."
                 + ExtractorConnectConstants.INNERCLASS));
 
         extractorConfig = extractorconfig;
@@ -143,29 +143,6 @@ public class DeepConnection extends Connection {
 
     public void forceShutDown() throws HandlerConnectionException {
         deepSparkContext.stop();
-    }
-
-    /**
-     * return the connection status.
-     * 
-     * @param config
-     *            {@link ConnectorClusterConfig}
-     * @return String
-     */
-    private String checkDatabaseFromClusterName(ConnectorClusterConfig config) {
-
-        String db = "";
-        if (config.getName().getName().contains(ExtractorConnectConstants.DB_CASSANDRA)) {
-            db = ExtractorConnectConstants.DB_CASSANDRA;
-        } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_MONGO)) {
-            db = ExtractorConnectConstants.DB_MONGO;
-        } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_ELASTICSEARCH)) {
-            db = ExtractorConnectConstants.DB_ELASTICSEARCH;
-        } else if (config.getName().getName().contains(ExtractorConnectConstants.DB_AEROSPIKE)) {
-            db = ExtractorConnectConstants.DB_AEROSPIKE;
-        }
-
-        return db;
     }
 
     public Properties getConfigProperties() {
