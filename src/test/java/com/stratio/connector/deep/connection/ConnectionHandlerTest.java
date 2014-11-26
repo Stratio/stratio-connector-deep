@@ -60,8 +60,8 @@ public class ConnectionHandlerTest {
         options.put(ExtractorConstants.HOSTS, "127.0.0.1 , 127.0.0.2");
         options.put(ExtractorConstants.PORT, "PORT");
 
-        ConnectorClusterConfig config = new ConnectorClusterConfig(new ClusterName(CLUSTER_NAME), options,options );
-        config.setDataStoreName(new DataStoreName("dataStoreName"));
+        ConnectorClusterConfig config = new ConnectorClusterConfig(new ClusterName(CLUSTER_NAME), options, options);
+        config.setDataStoreName(new DataStoreName("cassandra"));
 
         DeepConnection connection = mock(DeepConnection.class);
         whenNew(DeepConnection.class).withArguments(credentials, config).thenReturn(connection);

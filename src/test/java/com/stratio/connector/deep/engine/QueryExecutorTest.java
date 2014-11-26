@@ -332,6 +332,44 @@ public class QueryExecutorTest {
         queryExecutor.executeWorkFlow(logicalWorkflow);
     }
 
+    /**
+     * Test where the left project is on the right side of the join relation and viceversa.
+     * 
+     * @throws {@Link UnsupportedException}
+     * @throws {@link ExecutionException}
+     */
+    @Test
+    public void twoProjectsJoinedWithUnsortedIdsTest() throws UnsupportedException, ExecutionException {
+
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project projectLeft = createProject(CLUSTERNAME_CONSTANT, TABLE2_CONSTANT);
+        Project projectRight = createProject(CLUSTERNAME_CONSTANT, TABLE1_CONSTANT);
+
+        Join join = createJoin("joinId", TABLE1_CONSTANT, TABLE2_CONSTANT);
+
+        join.setNextStep(createSelect());
+        projectLeft.setNextStep(join);
+        projectRight.setNextStep(join);
+
+        // Two initial steps
+        stepList.add(projectLeft);
+        stepList.add(projectRight);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        queryExecutor.executeWorkFlow(logicalWorkflow);
+
+        // Assertions
+        verify(deepContext, times(2)).createJavaRDD(any(ExtractorConfig.class));
+        verify(singleRdd, times(0)).filter(any(DeepEquals.class));
+        verify(singleRdd, times(2)).mapToPair(any(MapKeyForJoin.class));
+        verify(pairRdd, times(1)).join(pairRdd);
+        verify(joinedRdd, times(1)).map(any(JoinCells.class));
+        verify(singleRdd, times(1)).map(any(Function.class));
+    }
+
     private Project createProject(ClusterName clusterName, TableName tableName) {
 
         List<ColumnName> columns = new ArrayList<>();
