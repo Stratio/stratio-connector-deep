@@ -40,7 +40,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
     private List<Row> rows;
 
     /**
-     * List of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata}.
+     * List of {@link ColumnMetadata}.
      */
     private List<ColumnMetadata> columnMetadata;
 
@@ -77,7 +77,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * Set the list of column metadata.
      * 
      * @param columnMetadata
-     *            A list of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata} in order.
+     *            A list of {@link ColumnMetadata} in order.
      */
     @Override
     public void setColumnMetadata(List<ColumnMetadata> columnMetadata) {
@@ -87,7 +87,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
     /**
      * Get the column metadata in order.
      * 
-     * @return A list of {@link com.stratio.crossdata.common.metadata.structures.ColumnMetadata}.
+     * @return A list of {@link ColumnMetadata}.
      */
     @Override
     public List<ColumnMetadata> getColumnMetadata() {

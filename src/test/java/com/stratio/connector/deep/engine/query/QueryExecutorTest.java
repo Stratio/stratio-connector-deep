@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.stratio.connector.deep.engine;
+package com.stratio.connector.deep.engine.query;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
-import com.stratio.connector.deep.engine.query.QueryExecutor;
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
 import com.stratio.connector.deep.engine.query.transformation.FilterColumns;
 import com.stratio.connector.deep.engine.query.transformation.JoinCells;
@@ -38,6 +38,7 @@ import com.stratio.crossdata.common.data.TableName;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Filter;
+import com.stratio.crossdata.common.logicalplan.GroupBy;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
@@ -48,6 +49,7 @@ import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
 import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cell;
@@ -120,7 +122,10 @@ public class QueryExecutorTest {
         when(singleRdd.filter(any(Function.class))).thenReturn(singleRdd);
         when(singleRdd.map(any(FilterColumns.class))).thenReturn(singleRdd);
         when(singleRdd.mapToPair(any(PairFunction.class))).thenReturn(pairRdd);
+        when(singleRdd.keyBy(any(Function.class))).thenReturn(pairRdd);
         when(pairRdd.join(pairRdd)).thenReturn(joinedRdd);
+        when(pairRdd.reduceByKey(any(Function2.class))).thenReturn(pairRdd);
+        when(pairRdd.map(any(Function.class))).thenReturn(singleRdd);
         when(joinedRdd.map(any(JoinCells.class))).thenReturn(singleRdd);
     }
 
@@ -370,6 +375,42 @@ public class QueryExecutorTest {
         verify(singleRdd, times(1)).map(any(Function.class));
     }
 
+    @Test
+    public void simpleProjectAndSelectWithGroupByQueryTest() throws UnsupportedException, ExecutionException,
+            HandlerConnectionException {
+
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project = createProject(CLUSTERNAME_CONSTANT, TABLE1_CONSTANT);
+
+        GroupBy groupBy = createGroupBy();
+        project.setNextStep(groupBy);
+
+        groupBy.setNextStep(createSelect());
+
+        // One single initial step
+        stepList.add(project);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        queryExecutor.executeWorkFlow(logicalWorkflow);
+
+        // Assertions
+        verify(deepContext, times(1)).createJavaRDD(any(ExtractorConfig.class));
+        verify(singleRdd, times(0)).filter(any(Function.class));
+        verify(singleRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(singleRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(pairRdd, times(0)).join(pairRdd);
+        verify(joinedRdd, times(0)).map(any(JoinCells.class));
+        verify(singleRdd, times(1)).map(any(Function.class));
+        verify(joinedRdd, times(0)).map(any(Function.class));
+        verify(singleRdd, times(1)).keyBy(any(Function.class));
+        verify(pairRdd, times(1)).reduceByKey(any(Function2.class));
+        verify(pairRdd, times(1)).map(any(Function.class));
+
+    }
+
     private Project createProject(ClusterName clusterName, TableName tableName) {
 
         List<ColumnName> columns = new ArrayList<>();
@@ -470,5 +511,16 @@ public class QueryExecutorTest {
 
         return cells;
 
+    }
+
+    private GroupBy createGroupBy() {
+
+        ColumnSelector selector = new ColumnSelector(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
+                COLUMN1_CONSTANT));
+
+        List<Selector> selectorsList = new ArrayList<>();
+        selectorsList.add(selector);
+
+        return new GroupBy(Operations.SELECT_GROUP_BY, selectorsList);
     }
 }
