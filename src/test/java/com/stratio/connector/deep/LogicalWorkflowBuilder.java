@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.data.TableName;
 import com.stratio.crossdata.common.logicalplan.Filter;
+import com.stratio.crossdata.common.logicalplan.GroupBy;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.logicalplan.Project;
@@ -239,5 +241,16 @@ public class LogicalWorkflowBuilder {
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
 
         return select;
+    }
+
+    public static GroupBy createGroupBy(List<ColumnName> columnsList) {
+
+        List<Selector> selectorsList = new LinkedList<>();
+        for (ColumnName column : columnsList) {
+            ColumnSelector selector = new ColumnSelector(column);
+            selectorsList.add(selector);
+        }
+
+        return new GroupBy(Operations.SELECT_GROUP_BY, selectorsList);
     }
 }

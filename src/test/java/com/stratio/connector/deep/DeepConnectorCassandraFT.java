@@ -5,6 +5,7 @@ package com.stratio.connector.deep;
 
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
+import static com.stratio.connector.deep.LogicalWorkflowBuilder.createGroupBy;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
@@ -29,6 +30,7 @@ import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Filter;
+import com.stratio.crossdata.common.logicalplan.GroupBy;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
@@ -460,6 +462,79 @@ public class DeepConnectorCassandraFT {
                     }
                 }
             }
+        }
+    }
+
+    @Test
+    public void singleProjectAndSelectWithGroupByTest() throws UnsupportedException, ExecutionException {
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
+        GroupBy groupBy = createGroupBy(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)));
+        project.setNextStep(groupBy);
+        groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        // One single initial step
+        stepList.add(project);
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+        // Execution
+        QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+        // Assertions
+        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+        List<Row> rowsList = result.getResultSet().getRows();
+        // Checking results number
+        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
+        assertEquals("Wrong number of rows", 170, rowsList.size());
+        // Checking metadata
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
+                columnsMetadata.get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                .getName().getTableName().getQualifiedName());
+        // Checking rows
+        for (Row row : rowsList) {
+            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertNotNull("Expecting artist column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
+        }
+    }
+
+    @Test
+    public void twoProjectsJoinedAndSelectWithGroupByTest() throws UnsupportedException, ExecutionException {
+        // Input data
+        List<LogicalStep> stepList = new LinkedList<>();
+        Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+        Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
+                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                ARTIST_CONSTANT));
+        GroupBy groupBy = createGroupBy(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)));
+        groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)),
+                Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        projectLeft.setNextStep(join);
+        projectRight.setNextStep(join);
+        join.setNextStep(groupBy);
+        // Two initial steps
+        stepList.add(projectLeft);
+        stepList.add(projectRight);
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+        // Execution
+        QueryResult result = deepQueryEngine.execute(logicalWorkflow);
+        // Assertions
+        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+        List<Row> rowsList = result.getResultSet().getRows();
+        // Checking results number
+        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
+        assertEquals("Wrong number of rows", 36, rowsList.size());
+        // Checking metadata
+        assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getName().getAlias());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                .getName().getTableName().getQualifiedName());
+        // Checking rows
+        for (Row row : rowsList) {
+            assertEquals("Wrong number of columns in the row", 1, row.size());
+            assertNotNull("Expecting author column in row", row.getCell(ARTIST_ALIAS_CONSTANT));
         }
     }
 
