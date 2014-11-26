@@ -24,8 +24,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import scala.Tuple2;
-
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
@@ -54,7 +52,10 @@ import com.stratio.crossdata.common.statements.structures.StringSelector;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
+
+import scala.Tuple2;
 
 /**
  * DeepQueryEngine testing class
@@ -114,6 +115,7 @@ public class QueryExecutorTest {
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(extractorConfig.clone()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
+        when(deepContext.createHDFSRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
         when(singleRdd.collect()).thenReturn(generateListOfCells(3));
         when(singleRdd.filter(any(Function.class))).thenReturn(singleRdd);
         when(singleRdd.map(any(FilterColumns.class))).thenReturn(singleRdd);
@@ -148,6 +150,53 @@ public class QueryExecutorTest {
         verify(joinedRdd, times(0)).map(any(JoinCells.class));
         verify(singleRdd, times(1)).map(any(Function.class));
         verify(joinedRdd, times(0)).map(any(Function.class));
+
+    }
+
+
+    @Test
+    public void simpleProjectAndSelectQueryHDFSTest() throws UnsupportedException, ExecutionException,
+            HandlerConnectionException {
+
+        ExtractorConfig<Cells> config = createExtractorForHDFS();
+
+        when(deepConnection.getExtractorConfig()).thenReturn(config);
+
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project = createProject(CLUSTERNAME_CONSTANT, TABLE1_CONSTANT);
+        project.setNextStep(createSelect());
+
+        // One single initial step
+        stepList.add(project);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        queryExecutor.executeWorkFlow(logicalWorkflow);
+
+        // Assertions
+        verify(deepContext, times(0)).createJavaRDD(any(ExtractorConfig.class));
+        verify(deepContext, times(1)).createHDFSRDD(any(ExtractorConfig.class));
+        verify(singleRdd, times(0)).filter(any(Function.class));
+        verify(singleRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(singleRdd, times(0)).mapToPair(any(MapKeyForJoin.class));
+        verify(pairRdd, times(0)).join(pairRdd);
+        verify(joinedRdd, times(0)).map(any(JoinCells.class));
+        verify(singleRdd, times(1)).map(any(Function.class));
+        verify(joinedRdd, times(0)).map(any(Function.class));
+
+    }
+
+    private ExtractorConfig createExtractorForHDFS() {
+
+        ExtractorConfig<Cells> extractorConfigHDFS = new ExtractorConfig<>();
+        extractorConfigHDFS.setExtractorImplClassName("hdfs");
+        extractorConfigHDFS.setValues(extractorConfig.getValues());
+        extractorConfigHDFS.putValue(ExtractorConstants.HDFS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
+                "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
+
+        return extractorConfigHDFS;
 
     }
 
