@@ -84,6 +84,7 @@ public class DeepConnection extends Connection {
 
         if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
             values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+
             String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
 
             values.put(ExtractorConstants.PORT, ports[0]);
@@ -99,10 +100,9 @@ public class DeepConnection extends Connection {
             values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
         }
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_PATH,clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
+        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
+            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
         }
-        extractorconfig.setValues(values);
 
         ClusterProperties clusterProperties = new ClusterProperties();
 
@@ -110,6 +110,12 @@ public class DeepConnection extends Connection {
         String extractorImplClassName = clusterProperties.getValue("cluster." + dataBaseName + "."
                 + DeepConnectorConstants.INNERCLASS);
 
+        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH) != null) {
+            values.put(ExtractorConstants.HDFS_FILE_PATH,clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
+        }else{
+            values.put(ExtractorConstants.HDFS_FILE_PATH,clusterProperties.getValue("hdfs.path"));
+        }
+        extractorconfig.setValues(values);
 
         if (extractorImplClassName == null) {
             throw new ConnectionException("Unknown data source, please add it to the configuration.");

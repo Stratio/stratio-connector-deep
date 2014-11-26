@@ -229,6 +229,9 @@ public class QueryExecutor {
 
             extractorConfig.putValue(ExtractorConstants.HDFS_FILEDATATABLE, textFileDataTable);
             extractorConfig.putValue(ExtractorConstants.TYPE_CONSTANT,ExtractorConstants.HDFS_TYPE);
+            String path = (String)extractorConfig.getValues().get(ExtractorConstants.HDFS_FILE_PATH);
+            extractorConfig.putValue(ExtractorConstants.HDFS_FILE_PATH,path+project.getCatalogName()+"/"+project
+                    .getTableName().getName()+extractorConfig.getValues().get(ExtractorConstants.HDFS_FILE_EXTENSION));
 
             rdd = deepContext.createHDFSRDD(extractorConfig);
 
