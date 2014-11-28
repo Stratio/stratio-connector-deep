@@ -18,14 +18,12 @@ import org.mockito.internal.util.reflection.Whitebox;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
  * Created by dgomez on 18/09/14.
@@ -38,14 +36,12 @@ public class ConnectionHandlerTest {
     private DeepConnectionHandler connectionHandler = null;
     @Mock
     private IConfiguration iConfiguration;
-    DeepSparkContext deepSparkContext;
 
     @Before
     public void before() throws Exception {
 
         iConfiguration = mock(IConfiguration.class);
         connectionHandler = new DeepConnectionHandler(iConfiguration);
-        deepSparkContext = ConnectionConfiguration.getDeepContext();
     }
 
     /**
