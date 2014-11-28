@@ -81,8 +81,9 @@ public class DeepConnectorHDFSFT {
         assertEquals("Wrong number of rows", 210, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ID_CONSTANT,
-                columnsMetadata.get(0).getName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName());
+                columnsMetadata.get(0).getName().toString());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 6, row.size());

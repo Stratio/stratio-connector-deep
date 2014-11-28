@@ -31,14 +31,14 @@ public class HDFSConnectionConfigurationBuilder {
         options.put(ExtractorConstants.INNERCLASS, HDFS);
 
         options.put(ExtractorConstants.HDFS_FILE_SEPARATOR, ",");
-        options.put(ExtractorConstants.HDFS_FILE_PATH, "user/hadoop/test/songs.csv");
+        options.put(ExtractorConstants.HDFS_FILE_PATH, "/user/hadoop/");
 
         options.put(ExtractorConstants.HDFS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
                 "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
         options.put(ExtractorConstants.TYPE,ExtractorConstants.HDFS_TYPE);
         options.put(ExtractorConstants.TABLE,"songs");
         options.put(ExtractorConstants.CATALOG,"test");
-
+        options.put(ExtractorConstants.HDFS_FILE_EXTENSION,".csv");
 
 
         ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options,options);

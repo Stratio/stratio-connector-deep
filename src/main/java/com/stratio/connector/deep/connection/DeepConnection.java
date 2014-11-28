@@ -81,6 +81,7 @@ public class DeepConnection extends Connection<Object> {
 
         if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
             values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+
             String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
 
             values.put(ExtractorConstants.PORT, ports[0]);
@@ -97,10 +98,10 @@ public class DeepConnection extends Connection<Object> {
                     clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
         }
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
+        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
+            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,
+                    clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
         }
-        extractorconfig.setValues(values);
 
         String extractorImplClassName = config.getClusterOptions().get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
         if (extractorImplClassName == null) {
