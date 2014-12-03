@@ -3,8 +3,8 @@
     <ConnectorName>DeepConnector</ConnectorName>
     <DataStores>
         <DataStoreName>Cassandra</DataStoreName>
-        <!-- <DataStoreName>MongoDB</DataStoreName>
-        <DataStoreName>ElasticSearch</DataStoreName> -->
+        <DataStoreName>Mongo</DataStoreName>
+        <DataStoreName>ElasticSearch</DataStoreName>
     </DataStores>
     <Version>0.1.0</Version>
     <SupportedOperations>
