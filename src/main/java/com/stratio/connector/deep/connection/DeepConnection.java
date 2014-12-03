@@ -107,7 +107,7 @@ public class DeepConnection extends Connection<Object> {
         if (extractorImplClassName == null) {
             throw new ConnectionException("Unknown data source, please add it to the configuration.");
         }
-
+        extractorconfig.setValues(values);
         extractorconfig.setExtractorImplClassName(extractorImplClassName);
 
         this.extractorConfig = extractorconfig;
