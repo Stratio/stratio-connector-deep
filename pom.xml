@@ -226,7 +226,7 @@
             <plugin>
                 <artifactId>crossdata-connector-maven-plugin</artifactId>
                 <groupId>com.stratio.crossdata</groupId>
-                <version>0.1.1-SNAPSHOT</version>
+                <version>0.1.1-RC2</version>
                 <configuration>
                     <mainClass>com.stratio.connector.deep.connection.DeepConnector</mainClass>
                     <jmxPort>7189</jmxPort>
