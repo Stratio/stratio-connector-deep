@@ -18,6 +18,7 @@ import org.mockito.internal.util.reflection.Whitebox;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.data.ClusterName;
@@ -55,6 +56,7 @@ public class ConnectionHandlerTest {
         options.put(ExtractorConstants.HOST, "127.0.0.1");
         options.put(ExtractorConstants.HOSTS, "127.0.0.1 , 127.0.0.2");
         options.put(ExtractorConstants.PORT, "PORT");
+        options.put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, "PORT");
 
         ConnectorClusterConfig config = new ConnectorClusterConfig(new ClusterName(CLUSTER_NAME), options, options);
         config.setDataStoreName(new DataStoreName("cassandra"));

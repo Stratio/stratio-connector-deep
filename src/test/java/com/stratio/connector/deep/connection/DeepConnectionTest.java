@@ -14,9 +14,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.stratio.connector.commons.connection.ConnectionHandler;
+import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.security.ICredentials;
 
 /**
@@ -40,8 +44,12 @@ public class DeepConnectionTest {
     @Mock
     private Map<String, String> clusterOptions;
 
+    @Mock
+    private ConnectionHandler connectionHandler;
+
     @Test
-    public void createNewDeepConnectionWithDataSourceNameTest() throws ConnectionException {
+    public void createNewDeepConnectionWithDataSourceNameTest()
+            throws ConnectionException, HandlerConnectionException, InitializationException {
 
         // Set up
         DataStoreName dataStoreName = new DataStoreName(CASSANDRA_CONSTANT);
@@ -49,7 +57,9 @@ public class DeepConnectionTest {
         // Stubbing
         when(config.getClusterOptions()).thenReturn(clusterOptions);
         when(clusterOptions.get(any(String.class))).thenReturn(MOCK_CONSTANT);
+        when(clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS)).thenReturn("com.stratio.deep.cassandra.extractor.CassandraCellExtractor");
         when(config.getDataStoreName()).thenReturn(dataStoreName);
+
 
         // Execution
         DeepConnection connection = new DeepConnection(credentials, config);
@@ -68,6 +78,8 @@ public class DeepConnectionTest {
         // Stubbing
         when(config.getClusterOptions()).thenReturn(clusterOptions);
         when(clusterOptions.get(any(String.class))).thenReturn(MOCK_CONSTANT);
+        when(clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS)).thenReturn(null);
+
         when(config.getDataStoreName()).thenReturn(dataStoreName);
 
         // Execution
