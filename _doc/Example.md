@@ -12,10 +12,12 @@
     mvn exec:java -pl crossdata-shell -Dexec.mainClass="com.stratio.crossdata.sh.Shell"
    ...
 
-2.Add the Manifest info to add the dataStores to crossdata, use the manifest from stratio-native connectors
+2. Add the Manifest info to add the dataStores to crossdata, use the manifest from stratio-native connectors
 
 [Stratio Connector deep](https://github.com/Stratio/stratio-connector-deep) must be installed and started.
+
 [Stratio Connector Mongo](https://github.com/Stratio/stratio-connector-mongodb) must be installed and started.
+
 [Stratio Connector Cassandra](https://github.com/Stratio/stratio-connector-cassandra) must be installed and started.
 
     ...
@@ -29,7 +31,15 @@
     xdsh:user> add connector "/../DeepConnector.xml";      [From Stratio Connector deep]
     ...
 
-3.Attach the clusters to crossdata ( Cassandra & Mongo must be be started )
+    The output must be foreach add:
+
+    ```
+       [INFO|Shell] Response time: 0 seconds
+       [INFO|Shell] OK
+    ```
+
+
+3. Attach the clusters to crossdata ( Cassandra & Mongo must be be started )
 
 ATTACH CLUSTER cassandra_cluster_name ON DATASTORE Cassandra WITH OPTIONS {'Hosts': '[127.0.0.1]', 'Port': 9042  };
 ATTACH CLUSTER mongo_cluster_name     ON DATASTORE Mongo     WITH OPTIONS {'Hosts': '[127.0.0.1]', 'Port': 27017 };
@@ -42,7 +52,7 @@ ATTACH CLUSTER mongo_cluster_name     ON DATASTORE Mongo     WITH OPTIONS {'Host
        > mvn exec:java -Dexec.mainClass="com.stratio.connector.cassandra.CassandraConnector"
     ```
 
-5.Attach the connectors to Crossdata
+5. Attach the connectors to Crossdata
 
  ...
    xdsh:user> ATTACH CONNECTOR DeepConnector TO cassandra_cluster_name WITH OPTIONS {};
