@@ -7,11 +7,11 @@
 
    Start [crossdata-server and then crossdata-shell].
 
-...
+```
    > mvn exec:java -pl crossdata-server -Dexec.mainClass="com.stratio.crossdata.server.CrossdataApplication"
-...   
+
    > mvn exec:java -pl crossdata-shell -Dexec.mainClass="com.stratio.crossdata.sh.Shell"
-...
+```
 
 2. Add the Manifest info to add the dataStores to crossdata, use the manifest from stratio-native connectors
 
@@ -21,7 +21,7 @@
 
 [Stratio Connector Cassandra](https://github.com/Stratio/stratio-connector-cassandra) must be installed and started.
 
-    ...
+```
     xdsh:user> add datastore "/<path_to_manifest_folder>/CassandraDataStore.xml"; [From Stratio Connector Cassandra ]
     xdsh:user> add datastore "/<path_to_manifest_folder>/MongoDataStore.xml";     [From Stratio Connector Mongo ]
 
@@ -30,7 +30,7 @@
     xdsh:user> add connector "/<path_to_manifest_folder>/MongoConnector.xml";     [From Stratio Connector Mongo ]
 
     xdsh:user> add connector "/<path_to_manifest_folder>/DeepConnector.xml";      [From Stratio Connector deep]
-    ...
+```
 
     The output foreach add must be :
 
@@ -42,58 +42,55 @@
 
 3. Attach the clusters to crossdata ( Cassandra & Mongo must be be started )
 
- ...
+```
     xdsh:user> ATTACH CLUSTER cassandraClusterName ON DATASTORE Cassandra WITH OPTIONS {'Hosts': '[Ip1, Ip2,..,Ipn]','Port': '[Port1,Port2,...,Portn]'  };
-    xdsh:user> ATTACH CLUSTER mongoClusterName     ON DATASTORE Mongo     WITH OPTIONS {'Hosts': '[Ip1, Ip2,..,Ipn]',
-  'Port': '[Port1,Port2,...,Portn]' };
- ...
+    xdsh:user> ATTACH CLUSTER mongoClusterName     ON DATASTORE Mongo     WITH OPTIONS {'Hosts': '[Ip1, Ip2,..,Ipn]','Port': '[Port1,Port2,...,Portn]' };
+```
 
 4. Start All the connectors
 
-    ```
-       > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.connection.DeepConnector"
-       > mvn exec:java -Dexec.mainClass="com.stratio.connector.mongodb.core.MongoConnector"
-       > mvn exec:java -Dexec.mainClass="com.stratio.connector.cassandra.CassandraConnector"
-    ```
+```
+    > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.connection.DeepConnector"
+    > mvn exec:java -Dexec.mainClass="com.stratio.connector.mongodb.core.MongoConnector"
+    > mvn exec:java -Dexec.mainClass="com.stratio.connector.cassandra.CassandraConnector"
+```
 
 5. Attach the connectors to Crossdata
 
- ...
+```
    xdsh:user> ATTACH CONNECTOR DeepConnector TO cassandraClusterName WITH OPTIONS {};
    xdsh:user> ATTACH CONNECTOR DeepConnector TO mongoClusterName  WITH OPTIONS {};
    xdsh:user> ATTACH CONNECTOR CassandraConnector TO cassandraClusterName WITH OPTIONS {};
    xdsh:user> ATTACH CONNECTOR MongoConnector TO mongoClusterName  WITH OPTIONS {};
- ...
+```
 
 6. Ready to Play!!
 
 With Cassandra
 
-    ...
-       xdsh:user> CREATE CATALOG catalogTest;
-       xdsh:user> CREATE TABLE catalogTest.tableTest ON CLUSTER cassandra_prod (id int PRIMARY KEY, name text);
-       xdsh:user> INSERT INTO catalogTest.tableTest(id, name) VALUES (1, 'one_stratio');
-       xdsh:user> INSERT INTO catalogTest.tableTest(id, name) VALUES (2, 'two_stratio');
-       xdsh:user> SELECT * FROM catalogTest.tableTest;
+```
+   xdsh:user> CREATE CATALOG catalogTest;
+   xdsh:user> CREATE TABLE catalogTest.tableTest ON CLUSTER cassandra_prod (id int PRIMARY KEY, name text);
+   xdsh:user> INSERT INTO catalogTest.tableTest(id, name) VALUES (1, 'one_stratio');
+   xdsh:user> INSERT INTO catalogTest.tableTest(id, name) VALUES (2, 'two_stratio');
+   xdsh:user> SELECT * FROM catalogTest.tableTest;
 
-       //Join Cassandra
-       xdsh:user> SELECT tableTest.id, tableTest.name, tableTest2.description FROM catalogTest.tableTest
-                  INNER JOIN catalogTest.tableTest2  ON tableTest.id = tableTest2.id;
-    ...
+   //Join Cassandra
+   xdsh:user> SELECT tableTest.id, tableTest.name, tableTest2.description FROM catalogTest.tableTest
+            INNER JOIN catalogTest.tableTest2  ON tableTest.id = tableTest2.id;
+```
 
 With Mongo
 
-    ...
-      xdsh:user> CREATE CATALOG catalogm  ;
-      xdsh:user> CREATE TABLE catalogm.tabletest1 ON CLUSTER mongo_prod (id int PRIMARY KEY, name text);
-      xdsh:user> CREATE TABLE catalogm.tabletest2 ON CLUSTER mongo_prod (id int PRIMARY KEY, description text);
-      xdsh:user> INSERT INTO catalogm.tabletest2(id, description) VALUES (1, 'mongo descr stratio1');
+```
+   xdsh:user> CREATE CATALOG catalogm  ;
+   xdsh:user> CREATE TABLE catalogm.tabletest1 ON CLUSTER mongo_prod (id int PRIMARY KEY, name text);
+   xdsh:user> CREATE TABLE catalogm.tabletest2 ON CLUSTER mongo_prod (id int PRIMARY KEY, description text);          xdsh:user> INSERT INTO catalogm.tabletest2(id, description) VALUES (1, 'mongo descr stratio1');
                 SELECT * FROM catalogm.tabletest2;
-    ...
+```
 
 Try Join Both
 
-     ...
-        xdsh:user> SELECT catalogTest.tableTest.id, catalogTest.tableTest.name, catalogm.tabletest2.description            FROM catalogTest.tableTest
-                  INNER JOIN catalogm.tableTest2  ON catalogTest.tableTest.id = catalogm.tableTest2.id;
-     ...
+```
+  xdsh:user> SELECT catalogTest.tableTest.id, catalogTest.tableTest.name, catalogm.tabletest2.description            FROM catalogTest.tableTest  INNER JOIN catalogm.tableTest2  ON catalogTest.tableTest.id = catalogm.tableTest2.id;
+```
