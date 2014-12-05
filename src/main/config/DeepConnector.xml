@@ -4,7 +4,8 @@
     <DataStores>
         <DataStoreName>Cassandra</DataStoreName>
         <DataStoreName>Mongo</DataStoreName>
-        <DataStoreName>ElasticSearch</DataStoreName>
+        <DataStoreName>elasticsearch</DataStoreName>
+        <DataStoreName>hdfs</DataStoreName>
     </DataStores>
     <Version>0.1.0</Version>
     <SupportedOperations>
