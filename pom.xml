@@ -241,7 +241,6 @@
                 <version>${version.crossdata}</version>
                 <configuration>
                     <mainClass>com.stratio.connector.deep.connection.DeepConnector</mainClass>
-                    <configDirectory>src/main/resources/config/</configDirectory>
                     <jmxPort>7189</jmxPort>
                 </configuration>
             </plugin>
