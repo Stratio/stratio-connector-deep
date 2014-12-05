@@ -18,13 +18,16 @@
 
 package com.stratio.connector.deep.connection;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-import com.stratio.connector.deep.configuration.ConnectionConfiguration;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
@@ -47,7 +50,9 @@ import com.stratio.deep.core.context.DeepSparkContext;
  */
 public class DeepConnector implements IConnector {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(DeepConnector.class);
+
+    private static final String CONFIGURATION_FILE_CONSTANT = "connector-application.conf";
 
     /**
      * The connectionHandler.
@@ -60,8 +65,13 @@ public class DeepConnector implements IConnector {
     private DeepSparkContext deepContext;
 
     /**
+     * Connector configuration from the properties file
+     */
+    private final Properties connectorConfig = new Properties();
+
+    /**
      * Main uses to asociate the connector to crossdata.
-     *
+     * 
      * */
     public static void main(String[] args) {
 
@@ -69,6 +79,23 @@ public class DeepConnector implements IConnector {
 
         ConnectorApp connectorApp = new ConnectorApp();
         connectorApp.startup(deepConnector);
+    }
+
+    public DeepConnector() {
+
+        // Retrieving configuration
+        InputStream input = DeepConnector.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_CONSTANT);
+        if (input == null) {
+            logger.error("Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]");
+            return;
+        }
+
+        try {
+            connectorConfig.load(input);
+        } catch (IOException e) {
+            logger.error("Error loading configuration from: [" + CONFIGURATION_FILE_CONSTANT + "]");
+            return;
+        }
     }
 
     @Override
@@ -91,8 +118,20 @@ public class DeepConnector implements IConnector {
     public void init(IConfiguration configuration) throws InitializationException {
 
         this.connectionHandler = new DeepConnectionHandler(null);
-        this.deepContext = ConnectionConfiguration.getDeepContext();
 
+        logger.info("-------------StartUp the SparkContext------------ ");
+
+        logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
+        logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
+
+        String sparkMaster = connectorConfig.getProperty(DeepConnectorConstants.SPARK_MASTER);
+        String sparkHome = connectorConfig.getProperty(DeepConnectorConstants.SPARK_HOME);
+        String sparkJars = connectorConfig.getProperty(DeepConnectorConstants.SPARK_JARS);
+
+        this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
+                sparkHome, sparkJars);
+
+        logger.info("-------------End StartUp the SparkContext------------ ");
     }
 
     /**
@@ -107,6 +146,12 @@ public class DeepConnector implements IConnector {
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
         try {
+            // Setting the extractor class
+            String dataSourceName = config.getDataStoreName().getName();
+            String extractorImplClassName = connectorConfig.getProperty(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT
+                    + dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
+
+            config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
 
             connectionHandler.createConnection(credentials, config);
 

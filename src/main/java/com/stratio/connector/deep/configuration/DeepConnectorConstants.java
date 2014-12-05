@@ -27,12 +27,6 @@ public class DeepConnectorConstants {
     public static final String HOSTS = "Hosts";
     public static final String PORTS = "Port";
 
-    public static final String DB_CASSANDRA = "cassandra";
-    public static final String DB_ELASTICSEARCH = "elasticsearch";
-    public static final String DB_MONGO = "mongo";
-    public static final String INNERCLASS = "implClass";
-
-    public static final String DB_AEROSPIKE = "aerospike";
     public static final String HDFS = "hdfs";
 
     public static final String DEFAULT_HOST = "localhost";
@@ -65,4 +59,10 @@ public class DeepConnectorConstants {
     public static final String METHOD_NOT_SUPPORTED = "Not supported";
     public static final String TYPE = "type";
 
+    public static final String CLUSTER_PREFIX_CONSTANT = "cluster.";
+    public static final String IMPL_CLASS_SUFIX_CONSTANT = ".implClass";
+
+    public static final String EXTRACTOR_IMPL_CLASS = "extractorImplClass";
+
+    public static final String DEEP_CONNECTOR_JOB_CONSTANT = "DeepConnectorJob";
 }

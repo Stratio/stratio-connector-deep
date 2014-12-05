@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.stratio.connector.deep.connection.DeepConnector;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -83,9 +84,10 @@ public class DeepConnectorCassandraFT {
 
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
-        ConnectionsHandler connectionBuilder = new ConnectionsHandler();
-        connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
-        deepQueryEngine = connectionBuilder.getQueryEngine();
+        DeepConnector connector = new DeepConnector();
+        connector.init(null);
+        connector.connect(null, CassandraConnectionConfigurationBuilder.prepareConfiguration());
+        deepQueryEngine = (DeepQueryEngine) connector.getQueryEngine();
         prepareDataForCassandra();
     }
 

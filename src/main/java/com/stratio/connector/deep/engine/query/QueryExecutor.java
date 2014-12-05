@@ -295,7 +295,7 @@ public class QueryExecutor {
 
         com.stratio.deep.commons.filter.Filter[] resultArray = new com.stratio.deep.commons.filter.Filter[resultList
                 .size()];
-        return resultList.toArray(resultArray);
+        return null;
     }
 
     /**
