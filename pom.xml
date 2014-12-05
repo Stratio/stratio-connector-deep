@@ -24,7 +24,7 @@
     <name>Deep Connector</name>
     <groupId>com.stratio.connector</groupId>
     <artifactId>stratio-connector-deep</artifactId>
-    <version>0.2.0-RC3</version>
+    <version>0.2.0</version>
     <description>Deep connector for multiple data sources</description>
     <url>http://www.stratio.com</url>
     <packaging>jar</packaging>
