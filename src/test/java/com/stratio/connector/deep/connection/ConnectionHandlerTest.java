@@ -18,14 +18,13 @@ import org.mockito.internal.util.reflection.Whitebox;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
-import com.stratio.connector.deep.configuration.ConnectionConfiguration;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
  * Created by dgomez on 18/09/14.
@@ -38,14 +37,12 @@ public class ConnectionHandlerTest {
     private DeepConnectionHandler connectionHandler = null;
     @Mock
     private IConfiguration iConfiguration;
-    DeepSparkContext deepSparkContext;
 
     @Before
     public void before() throws Exception {
 
         iConfiguration = mock(IConfiguration.class);
         connectionHandler = new DeepConnectionHandler(iConfiguration);
-        deepSparkContext = ConnectionConfiguration.getDeepContext();
     }
 
     /**
@@ -59,6 +56,7 @@ public class ConnectionHandlerTest {
         options.put(ExtractorConstants.HOST, "127.0.0.1");
         options.put(ExtractorConstants.HOSTS, "127.0.0.1 , 127.0.0.2");
         options.put(ExtractorConstants.PORT, "PORT");
+        options.put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, "PORT");
 
         ConnectorClusterConfig config = new ConnectorClusterConfig(new ClusterName(CLUSTER_NAME), options, options);
         config.setDataStoreName(new DataStoreName("cassandra"));

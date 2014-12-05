@@ -18,6 +18,7 @@ import com.stratio.connector.commons.connection.exceptions.HandlerConnectionExce
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.data.ClusterName;
+import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.security.ICredentials;
 
@@ -82,7 +83,9 @@ public class DeepContextConnectorTest {
         ICredentials iCredentials = mock(ICredentials.class);
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
         Map<String, String> options = new HashMap<>();
-        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options);
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
+        config.setDataStoreName(new DataStoreName(CLUSTER_NAME));
+
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
 
@@ -98,7 +101,8 @@ public class DeepContextConnectorTest {
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
 
         Map<String, String> options = new HashMap<>();
-        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options);
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
+        config.setDataStoreName(new DataStoreName(CLUSTER_NAME));
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
 

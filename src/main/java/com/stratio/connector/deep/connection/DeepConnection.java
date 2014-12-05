@@ -21,13 +21,12 @@ package com.stratio.connector.deep.connection;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.stratio.connector.commons.connection.Connection;
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.commons.util.ConnectorParser;
-import com.stratio.connector.deep.configuration.ClusterProperties;
-import com.stratio.connector.deep.configuration.ConnectionConfiguration;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -35,22 +34,19 @@ import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
-import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
  * .Connection object exist in the ConnectionHandler and contains all the connection info & config.
  * {@link com.stratio.connector.commons.connection.Connection}
  * 
  */
-public class DeepConnection extends Connection {
+public class DeepConnection extends Connection<Object> {
 
-    private final Properties configProperties;
-
-    private final DeepSparkContext deepSparkContext;
+    private static final Logger logger = LoggerFactory.getLogger(DeepConnection.class);
 
     private boolean isConnect = false;
 
-    private final ExtractorConfig extractorConfig;
+    private final ExtractorConfig<Cells> extractorConfig;
 
     /**
      * Constructor using credentials and cluster config.
@@ -60,7 +56,8 @@ public class DeepConnection extends Connection {
      * @param config
      *            The cluster configuration.
      */
-    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
+    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config)
+            throws ConnectionException {
 
         if (credentials != null) {
             // TODO check the credentials
@@ -88,49 +85,46 @@ public class DeepConnection extends Connection {
             String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
 
             values.put(ExtractorConstants.PORT, ports[0]);
+
         } else {
             values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+
         }
 
+
+
         if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
-            values.put(ExtractorConstants.HDFS_SCHEMA,clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
+            values.put(ExtractorConstants.HDFS_SCHEMA, clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
         }
 
         if (clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
+            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,
+                    clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
         }
 
         if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
+            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,
+                    clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
         }
 
-        ClusterProperties clusterProperties = new ClusterProperties();
+        String extractorImplClassName = config.getClusterOptions().get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
 
-        String dataBaseName = config.getDataStoreName().getName();
-        String extractorImplClassName = clusterProperties.getValue("cluster." + dataBaseName + "."
-                + DeepConnectorConstants.INNERCLASS);
-
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_PATH,clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
-        }else{
-            values.put(ExtractorConstants.HDFS_FILE_PATH,clusterProperties.getValue("hdfs.path"));
+        //TODO: Revision of Bug Atach Clusters, Deep only accept the port 9200 for elasticSearch connection
+        // and Native Connector uses 9300
+        if(extractorImplClassName!=null && extractorImplClassName.equals("com.stratio.deep.es.extractor" +
+                ".ESCellExtractor")  && clusterOptions.get(ExtractorConstants.PORT).equals("9300")){
+            values.put(ExtractorConstants.PORT, "9200");
         }
-        extractorconfig.setValues(values);
 
         if (extractorImplClassName == null) {
             throw new ConnectionException("Unknown data source, please add it to the configuration.");
         }
-
+        extractorconfig.setValues(values);
         extractorconfig.setExtractorImplClassName(extractorImplClassName);
 
+        this.extractorConfig = extractorconfig;
 
-        extractorConfig = extractorconfig;
-
-        configProperties = ConnectionConfiguration.getConfigProperties();
-
-        deepSparkContext = ConnectionConfiguration.getDeepContext();
-
-        isConnect = true;
+        this.isConnect = true;
     }
 
     /**
@@ -139,11 +133,7 @@ public class DeepConnection extends Connection {
      */
     @Override
     public void close() {
-        if (deepSparkContext != null) {
-
-            isConnect = false;
-        }
-
+        isConnect = false;
     }
 
     /**
@@ -158,21 +148,11 @@ public class DeepConnection extends Connection {
     }
 
     @Override
-    public DeepSparkContext getNativeConnection() {
-        return deepSparkContext;
+    public Object getNativeConnection() {
+        return null;
     }
 
-    public ExtractorConfig getExtractorConfig() {
+    public ExtractorConfig<Cells> getExtractorConfig() {
         return extractorConfig;
-    }
-
-    public void forceShutDown() throws HandlerConnectionException {
-        deepSparkContext.stop();
-    }
-
-
-
-    public Properties getConfigProperties() {
-        return configProperties;
     }
 }

@@ -42,6 +42,13 @@
         </developer>
     </developers>
 
+    <properties>
+        <version.crossdata>0.1.1</version.crossdata>
+        <version.connector.commons>0.2.0-RC2</version.connector.commons>
+        <version.deep>0.6.1</version.deep>
+        <version.hadoop>2.4.1</version.hadoop>
+    </properties>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -73,7 +80,7 @@
         <dependency>
             <groupId>com.stratio.crossdata</groupId>
             <artifactId>crossdata-connector</artifactId>
-            <version>0.1.1-RC2</version>
+            <version>${version.crossdata}</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -86,18 +93,18 @@
         <dependency>
             <groupId>com.stratio.crossdata</groupId>
             <artifactId>crossdata-common</artifactId>
-            <version>0.1.1-RC2</version>
+            <version>${version.crossdata}</version>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-core</artifactId>
-            <version>0.6.1</version>
+            <version>${version.deep}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
-            <version>2.4.1</version>
+            <version>${version.hadoop}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.protobuf</groupId>
@@ -108,31 +115,31 @@
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-cassandra</artifactId>
-            <version>0.6.1</version>
+            <version>${version.deep}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-mongodb</artifactId>
-            <version>0.6.1</version>
+            <version>${version.deep}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-elasticsearch</artifactId>
-            <version>0.6.1</version>
+            <version>${version.deep}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
             <artifactId>deep-aerospike</artifactId>
-            <version>0.6.1</version>
+            <version>${version.deep}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.stratio.connector</groupId>
             <artifactId>connector-commons-core</artifactId>
-            <version>0.2.0-RC1</version>
+            <version>${version.connector.commons}</version>
         </dependency>
 
         <dependency>
@@ -166,6 +173,11 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/config</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -226,9 +238,10 @@
             <plugin>
                 <artifactId>crossdata-connector-maven-plugin</artifactId>
                 <groupId>com.stratio.crossdata</groupId>
-                <version>0.1.1-RC2</version>
+                <version>${version.crossdata}</version>
                 <configuration>
                     <mainClass>com.stratio.connector.deep.connection.DeepConnector</mainClass>
+                    <configDirectory>src/main/resources/config/</configDirectory>
                     <jmxPort>7189</jmxPort>
                 </configuration>
             </plugin>
