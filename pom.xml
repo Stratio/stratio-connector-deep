@@ -44,7 +44,7 @@
 
     <properties>
         <version.crossdata>0.1.1</version.crossdata>
-        <version.connector.commons>0.2.0-RC2</version.connector.commons>
+        <version.connector.commons>0.2.0</version.connector.commons>
         <version.deep>0.6.1</version.deep>
         <version.hadoop>2.4.1</version.hadoop>
     </properties>
