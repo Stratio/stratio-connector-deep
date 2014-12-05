@@ -32,7 +32,9 @@
     xdsh:user> add connector "/<path_to_manifest_folder>/DeepConnector.xml";      [From Stratio Connector deep]
 ```
 
+
 For each row the output must be:
+
 
     ```
        [INFO|Shell] Response time: 0 seconds
@@ -63,14 +65,17 @@ For each row the output must be:
    xdsh:user> ATTACH CONNECTOR CassandraConnector TO cassandraClusterName WITH OPTIONS {};
    xdsh:user> ATTACH CONNECTOR MongoConnector TO mongoClusterName  WITH OPTIONS {};
 ```
+
 For each row the output must be:
 ```
 CONNECTOR attached successfully
 ```   
 
+
 6. Ready to Play!!
 
 With Cassandra
+
 
 ## Create catalog ##
 ```
@@ -151,6 +156,8 @@ the output must be:
   | 2   | two_stratio |  desc_stratio2 | 
   --------------------------------------
 ```
+
+
 With Mongo
 
 ```
@@ -163,6 +170,7 @@ With Mongo
    xdsh:user> INSERT INTO catalogm.tabletest2(id, description) VALUES (1, 'mongo descr stratio1');
    xdsh:user> INSERT INTO catalogm.tabletest2(id, description) VALUES (1, 'mongo descr stratio2');
    xdsh:user> SELECT * FROM catalogm.tabletest2;
+
 ```
 
 Try Join Both
@@ -170,3 +178,4 @@ Try Join Both
 ```
   xdsh:user> SELECT catalogTest.tableTest.id, catalogTest.tableTest.name, catalogm.tabletest2.description            FROM catalogTest.tableTest  INNER JOIN catalogm.tableTest2  ON catalogTest.tableTest.id =    catalogm.tableTest2.id;
 ```
+
