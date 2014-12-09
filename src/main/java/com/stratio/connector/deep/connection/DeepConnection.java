@@ -117,7 +117,7 @@ public class DeepConnection extends Connection<Object> {
         }
 
         if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
+            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
         }
 
         if (extractorImplClassName == null) {
