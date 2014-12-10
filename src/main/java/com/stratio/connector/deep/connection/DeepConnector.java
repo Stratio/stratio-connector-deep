@@ -42,6 +42,7 @@ import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.crossdata.connectors.ConnectorApp;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
 
 /**
@@ -152,6 +153,12 @@ public class DeepConnector implements IConnector {
                     + dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
 
             config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
+
+            if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+                config.getClusterOptions().put(ExtractorConstants.HDFS_FILE_PATH,
+                        connectorConfig.getProperty(ExtractorConstants.HDFS+"."+ExtractorConstants.HDFS_FILE_PATH));
+            }
+
 
             connectionHandler.createConnection(credentials, config);
 
