@@ -112,16 +112,16 @@ public class DeepConnection extends Connection<Object> {
         //TODO: Revision of Bug Atach Clusters, Deep only accept the port 9200 for elasticSearch connection
         // and Native Connector uses 9300
         if(extractorImplClassName!=null && extractorImplClassName.equals("com.stratio.deep.es.extractor" +
-                ".ESCellExtractor")  && clusterOptions.get(DeepConnectorConstants.ES_PORTS)!=null){
-            if (clusterOptions.get(DeepConnectorConstants.ES_PORTS) != null) {
-                values.put(ExtractorConstants.PORTS, clusterOptions.get(DeepConnectorConstants.ES_PORTS));
+                ".ESCellExtractor")  && clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS)!=null){
+            if (clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS) != null) {
+                values.put(ExtractorConstants.PORTS, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
 
-                String[] ports = ConnectorParser.ports(clusterOptions.get(DeepConnectorConstants.ES_PORTS));
+                String[] ports = ConnectorParser.ports(clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
 
                 values.put(ExtractorConstants.PORT, ports[0]);
 
             } else {
-                values.put(ExtractorConstants.PORT, clusterOptions.get(DeepConnectorConstants.ES_PORTS));
+                values.put(ExtractorConstants.PORT, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
 
             }
         }

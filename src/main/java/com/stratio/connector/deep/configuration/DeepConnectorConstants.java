@@ -67,5 +67,5 @@ public class DeepConnectorConstants {
     public static final String DEEP_CONNECTOR_JOB_CONSTANT = "DeepConnectorJob";
 
 
-    public static final String ES_PORTS   ="Restful Ports";
+    public static final String ES_REST_PORTS   ="Restful Ports";
 }
