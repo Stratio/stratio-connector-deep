@@ -126,8 +126,9 @@ public class DeepConnector implements IConnector {
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
         String sparkMaster = connectorConfig.getProperty(DeepConnectorConstants.SPARK_MASTER);
-        String sparkHome = connectorConfig.getProperty(DeepConnectorConstants.SPARK_HOME);
-        String sparkJars = connectorConfig.getProperty(DeepConnectorConstants.SPARK_JARS);
+        sparkMaster=sparkMaster.replaceAll("//:", ":");
+        String sparkHome   = connectorConfig.getProperty(DeepConnectorConstants.SPARK_HOME);
+        String sparkJars   = connectorConfig.getProperty(DeepConnectorConstants.SPARK_JARS);
 
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
                 sparkHome, sparkJars);
