@@ -34,6 +34,7 @@ public class DeepContextConnectorTest {
      */
     private static final String DEFAULT_HOST = "127.0.0.1";
     private static final String CLUSTER_NAME = "CLUSTER_NAME";
+    private static final String DATASTORE_NAME = "mongo";
 
     /**
      *
@@ -84,7 +85,7 @@ public class DeepContextConnectorTest {
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
         Map<String, String> options = new HashMap<>();
         ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
-        config.setDataStoreName(new DataStoreName(CLUSTER_NAME));
+        config.setDataStoreName(new DataStoreName(DATASTORE_NAME));
 
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
@@ -102,7 +103,7 @@ public class DeepContextConnectorTest {
 
         Map<String, String> options = new HashMap<>();
         ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
-        config.setDataStoreName(new DataStoreName(CLUSTER_NAME));
+        config.setDataStoreName(new DataStoreName(DATASTORE_NAME));
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
 
