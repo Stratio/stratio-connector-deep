@@ -59,7 +59,7 @@ public class DeepConnectorConstants {
     public static final String METHOD_NOT_SUPPORTED = "Not supported";
     public static final String TYPE = "type";
 
-    public static final String CLUSTER_PREFIX_CONSTANT = "cluster.";
+    public static final String CLUSTER_PREFIX_CONSTANT = "cluster";
     public static final String IMPL_CLASS_SUFIX_CONSTANT = ".implClass";
 
     public static final String EXTRACTOR_IMPL_CLASS = "extractorImplClass";
@@ -68,4 +68,5 @@ public class DeepConnectorConstants {
 
 
     public static final String ES_REST_PORTS   ="Restful Ports";
+    public static final String SPARK = "spark" ;
 }
