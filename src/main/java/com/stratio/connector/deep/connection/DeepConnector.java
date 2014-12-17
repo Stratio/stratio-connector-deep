@@ -143,8 +143,10 @@ public class DeepConnector implements IConnector {
             jarsArray = new String[sparkJars.size()];
             sparkJars.toArray(jarsArray);
         }
+
         logger.info("---SPARK-Master---->"+sparkMaster);
         logger.info("---SPARK-Home---->"+sparkHome);
+
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
                 sparkHome, jarsArray);
         
