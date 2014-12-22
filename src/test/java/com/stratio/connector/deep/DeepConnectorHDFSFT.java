@@ -46,6 +46,7 @@ public class DeepConnectorHDFSFT {
     private static DeepMetadataEngine deepMetadataEngine;
 
     private static DeepQueryEngine deepQueryEngine;
+
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();

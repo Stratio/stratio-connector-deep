@@ -67,47 +67,68 @@ public class DeepConnection extends Connection<Object> {
 
         // Creating a configuration for the Extractor and initialize it
         ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
+        String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
+
+        if (extractorImplClassName == null) {
+            throw new ConnectionException("Unknown data source, please add it to the configuration.");
+        }
+        extractorconfig.setValues(returnConfig(clusterOptions));
+        extractorconfig.setExtractorImplClassName(extractorImplClassName);
+
+        this.extractorConfig = extractorconfig;
+
+        this.isConnect = true;
+    }
+
+    private Map<String,Serializable> returnConfig(Map<String, String> clusterOptions) {
 
         Map<String, Serializable> values = new HashMap<>();
 
-        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
-            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
-            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
+        for (String key : clusterOptions.keySet()){
 
-            values.put(ExtractorConstants.HOST, hosts[0]);
-        } else {
-            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
-        }
-
-        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
-            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
-
-            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
-
-            values.put(ExtractorConstants.PORT, ports[0]);
-
-        } else {
-            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+            Serializable val = clusterOptions.get(key);
+            values.put(key,val);
 
         }
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
-            values.put(ExtractorConstants.HDFS_SCHEMA, clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
-        }
+//        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
+//            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
+//            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
+//
+//            values.put(ExtractorConstants.HOST, hosts[0]);
+//        } else {
+//            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
+//        }
+//
+//        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
+//            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+//
+//            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
+//
+//            values.put(ExtractorConstants.PORT, ports[0]);
+//
+//        } else {
+//            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+//
+//        }
+//
+//        if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
+//            values.put(ExtractorConstants.HDFS_SCHEMA, clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
+//        }
+//
+//        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR) != null) {
+//            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,
+//                    clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
+//        }
+//
+//        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
+//            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,
+//                    clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
+//        }
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,
-                    clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
-        }
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,
-                    clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
-        }
+        String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
 
-
-
-        String extractorImplClassName = config.getClusterOptions().get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
 
         //TODO: Revision of Bug Atach Clusters, Deep only accept the port 9200 for elasticSearch connection
         // and Native Connector uses 9300
@@ -126,19 +147,12 @@ public class DeepConnection extends Connection<Object> {
             }
         }
 
-        if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
-        }
+//        if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+//            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
+//        }
 
-        if (extractorImplClassName == null) {
-            throw new ConnectionException("Unknown data source, please add it to the configuration.");
-        }
-        extractorconfig.setValues(values);
-        extractorconfig.setExtractorImplClassName(extractorImplClassName);
+        return values;
 
-        this.extractorConfig = extractorconfig;
-
-        this.isConnect = true;
     }
 
     /**

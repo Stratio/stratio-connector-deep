@@ -7,7 +7,7 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static com.stratio.connector.deep.PrepareFunctionalTest.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -31,11 +32,7 @@ import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.Operator;
 
-/**
- * Functional tests using MongoDB
- */
-
-public class DeepConnectorMongoFT {
+public class DeepConnectorElasticSearchFT {
 
     private static final Logger logger = Logger.getLogger(DeepConnectorMongoFT.class);
 
@@ -59,8 +56,6 @@ public class DeepConnectorMongoFT {
 
     private static final String DESCRIPTION_CONSTANT = "description";
 
-    private static final String DESCRIPTION_CONSTANT2 = "description2";
-
     private static final String TITLE_EX = "Hey Jude";
 
     private static final String YEAR_EX = "2004";
@@ -69,16 +64,19 @@ public class DeepConnectorMongoFT {
 
     private static final String AGE_ALIAS_CONSTANT = "ageAlias";
 
-    private static final String MONGO_CLUSTERNAME_CONSTANT = "mongodb";
+    private static final String ES_CLUSTERNAME_CONSTANT = "elasticsearch";
+
+    private static DeepMetadataEngine deepMetadataEngine;
 
     private static DeepQueryEngine deepQueryEngine;
 
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
-        connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
-        deepQueryEngine = connectionBuilder.getQueryEngine();
-        prepareDataForMongo();
+        connectionBuilder.connect(ESConnectionConfigurationBuilder.prepareConfiguration());
+
+        deepQueryEngine    = connectionBuilder.getQueryEngine();
+        //prepareDataForES();
     }
 
     @Test
@@ -86,11 +84,10 @@ public class DeepConnectorMongoFT {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
-        Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT,DESCRIPTION_CONSTANT2));
+        Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT));
         project.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT),createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT2)), Arrays.asList(AUTHOR_ALIAS_CONSTANT,DESCRIPTION_CONSTANT2)));
+                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -105,7 +102,7 @@ public class DeepConnectorMongoFT {
         List<Row> rowsList = result.getResultSet().getRows();
 
         // Checking results number
-        assertEquals("Wrong number of rows metadata", 2, columnsMetadata.size());
+        assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 210, rowsList.size());
 
         // Checking metadata
@@ -116,7 +113,7 @@ public class DeepConnectorMongoFT {
 
         // Checking rows
         for (Row row : rowsList) {
-            assertEquals("Wrong number of columns in the row", 2, row.size());
+            assertEquals("Wrong number of columns in the row", 1, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
     }
@@ -126,7 +123,7 @@ public class DeepConnectorMongoFT {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
-        Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+        Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         for (Operator op : Operator.values()) {
@@ -184,7 +181,7 @@ public class DeepConnectorMongoFT {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
-        Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+        Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX,
@@ -231,9 +228,9 @@ public class DeepConnectorMongoFT {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
-        Project projectLeft = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+        Project projectLeft = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
-        Project projectRight = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
+        Project projectRight = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
                 Arrays.asList(AUTHOR_CONSTANT, AGE_CONSTANT));
 
         Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
@@ -241,10 +238,10 @@ public class DeepConnectorMongoFT {
                 AUTHOR_CONSTANT));
 
         join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT)),
+                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
+                        AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                        DESCRIPTION_CONSTANT)),
                 Arrays.asList(AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
                         AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
@@ -313,5 +310,6 @@ public class DeepConnectorMongoFT {
 
         return result;
     }
+
 
 }

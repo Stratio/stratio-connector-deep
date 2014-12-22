@@ -37,7 +37,7 @@ public class DeepEquals implements Function<Cells, Boolean> {
      */
     private final Term<?> term;
 
-    
+
     /**
      * Column cell to compare to.
      */

@@ -132,6 +132,7 @@ public class DeepConnector implements IConnector {
         String sparkHome   = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
         List<String> sparkJars   = null;
         String[] jarsArray = new String[0];
+
         try{
             sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants
                     .SPARK_JARS);
@@ -143,8 +144,10 @@ public class DeepConnector implements IConnector {
             jarsArray = new String[sparkJars.size()];
             sparkJars.toArray(jarsArray);
         }
+
         logger.info("---SPARK-Master---->"+sparkMaster);
         logger.info("---SPARK-Home---->"+sparkHome);
+
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
                 sparkHome, jarsArray);
         

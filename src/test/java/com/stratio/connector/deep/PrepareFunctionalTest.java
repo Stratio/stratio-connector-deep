@@ -1,6 +1,7 @@
 package com.stratio.connector.deep;
 
 import static com.stratio.deep.commons.utils.Utils.quote;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +11,11 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.node.Node;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
@@ -19,19 +25,45 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 
+
 public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     private static final Logger logger = Logger.getLogger(PrepareFunctionalTest.class);
 
     public static final String HOST = "127.0.0.1";
+    public static final Integer PORT = 9300;
     public static final String KEYSPACE = "functionaltest";
     public static final String TABLE_1 = "songs";
     public static final String TABLE_2 = "artists";
     public static Cluster cluster1 = Cluster.builder().addContactPoints(HOST).build();
 
     public static Session session;
+    /**
+     * The Mongo client.
+     */
     public static MongoClient mongoClient;
+    /**
+     * The Elasticsearch client.
+     */
+    public static Client elasticClient;
+    /**
+     * The elasticsearch node connection.
+     */
+    public static Node node;
 
+
+    public static void prepareDataForES(){
+
+        //NodeBuilder nodeBuilder = nodeBuilder();
+        node = nodeBuilder().node();
+
+        elasticClient = new TransportClient()
+                .addTransportAddress(new InetSocketTransportAddress(HOST, PORT));
+
+        buildTestESDataInsertBatch( TABLE_1, TABLE_2);
+
+        clearDataFromES();
+    }
     public static void prepareDataForMongo() {
 
         // To directly connect to a single MongoDB server (note that this will not auto-discover the primary even
@@ -50,6 +82,10 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
             e.printStackTrace();
         }
 
+    }
+    public static void clearDataFromES() {
+        node.close();
+        elasticClient.close();
     }
 
     public static void clearDataFromMongo() {
@@ -143,8 +179,8 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
                 while ((line = br.readLine()) != null) {
                     String[] fields = (line).split(",");
                     BasicDBObject doc = origin.equals(TABLE_1) ? new BasicDBObject("artist",
-                            fields[1]).append("title", fields[2]).append("year", fields[3]).append("length", fields[4])
-                            .append("description", fields[5]) :
+                            fields[1]).append("title", fields[2]).append("year", fields[3]).append("length",
+                            fields[4]).append("description", fields[5]).append("description2", new BasicDBObject("foo", "bar")) :
                             new BasicDBObject("artist",
                                     fields[1]).append("age", fields[2]).append("rate", fields[3]).append("active",
                                     fields[4]);
@@ -157,6 +193,43 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
         }
 
         return true;
+    }
+
+    protected static Boolean buildTestESDataInsertBatch( String... csvOrigin) {
+
+
+        for (String origin : csvOrigin) {
+
+            URL testData = Resources.getResource(origin + ".csv");
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    new File(testData.toURI()))))) {
+                String line;
+
+
+                while ((line = br.readLine()) != null) {
+                    String[] fields = (line).split(",");
+                    BasicDBObject doc = origin.equals(TABLE_1) ? new BasicDBObject("artist",
+                            fields[1]).append("title", fields[2]).append("year", fields[3]).append("length", fields[4])
+                            .append("description", fields[5]) :
+                            new BasicDBObject("artist",
+                                    fields[1]).append("age", fields[2]).append("rate", fields[3]).append("active",
+                                    fields[4]);
+
+                    IndexResponse response = elasticClient.prepareIndex(KEYSPACE,
+                            origin.equals(TABLE_1) ? TABLE_1:TABLE_2)
+                            .setSource(doc.toString())
+                            .execute()
+                            .actionGet();
+                    response.getHeaders();
+                }
+            } catch (Exception e) {
+                logger.error("Error", e);
+            }
+        }
+
+        return true;
+
     }
 
     protected static Boolean buildTestDataInsertBatch(Session session, String... csvOrigin) {
