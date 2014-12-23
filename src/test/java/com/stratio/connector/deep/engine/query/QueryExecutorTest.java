@@ -19,6 +19,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
+import org.apache.spark.rdd.RDD;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,6 +98,8 @@ public class QueryExecutorTest {
     private JavaRDD<Cells> singleRdd;
 
     @Mock
+    private RDD<Cells> rdd;
+    @Mock
     private JavaPairRDD<List<Object>, Cells> pairRdd;
 
     @Mock
@@ -117,7 +120,7 @@ public class QueryExecutorTest {
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(extractorConfig.clone()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
-        when(deepContext.createHDFSRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
+        when(deepContext.createHDFSRDD(any(ExtractorConfig.class))).thenReturn(rdd);
         when(singleRdd.collect()).thenReturn(generateListOfCells(3));
         when(singleRdd.filter(any(Function.class))).thenReturn(singleRdd);
         when(singleRdd.map(any(FilterColumns.class))).thenReturn(singleRdd);
@@ -198,7 +201,7 @@ public class QueryExecutorTest {
         ExtractorConfig<Cells> extractorConfigHDFS = new ExtractorConfig<>();
         extractorConfigHDFS.setExtractorImplClassName("hdfs");
         extractorConfigHDFS.setValues(extractorConfig.getValues());
-        extractorConfigHDFS.putValue(ExtractorConstants.HDFS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
+        extractorConfigHDFS.putValue(ExtractorConstants.FS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
                 "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
 
         return extractorConfigHDFS;

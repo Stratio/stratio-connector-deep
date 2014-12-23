@@ -58,9 +58,9 @@ import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.stratio.deep.core.hdfs.utils.SchemaMap;
-import com.stratio.deep.core.hdfs.utils.TableName;
-import com.stratio.deep.core.hdfs.utils.TextFileDataTable;
+import com.stratio.deep.core.fs.utils.SchemaMap;
+import com.stratio.deep.core.fs.utils.TableName;
+import com.stratio.deep.core.fs.utils.TextFileDataTable;
 
 public class QueryExecutor {
 
@@ -227,13 +227,13 @@ public class QueryExecutor {
 
             TextFileDataTable textFileDataTable = formatterFromSchema(extractorConfig,project);
 
-            extractorConfig.putValue(ExtractorConstants.HDFS_FILEDATATABLE, textFileDataTable);
+            extractorConfig.putValue(ExtractorConstants.FS_FILEDATATABLE, textFileDataTable);
             extractorConfig.putValue(ExtractorConstants.TYPE_CONSTANT,ExtractorConstants.HDFS_TYPE);
-            String path = (String)extractorConfig.getValues().get(ExtractorConstants.HDFS_FILE_PATH);
-            extractorConfig.putValue(ExtractorConstants.HDFS_FILE_PATH,path+project.getCatalogName()+"/"+project
+            String path = (String)extractorConfig.getValues().get(ExtractorConstants.FS_FILE_PATH);
+            extractorConfig.putValue(ExtractorConstants.FS_FILE_PATH,path+project.getCatalogName()+"/"+project
                     .getTableName().getName()+extractorConfig.getValues().get(ExtractorConstants.HDFS_FILE_EXTENSION));
 
-            rdd = deepContext.createHDFSRDD(extractorConfig);
+            rdd = deepContext.createHDFSRDD(extractorConfig).toJavaRDD();
 
 
         }else{
@@ -247,30 +247,30 @@ public class QueryExecutor {
     private TextFileDataTable formatterFromSchema(ExtractorConfig extractorConfig, Project project)
             throws ExecutionException {
 
-        String schemaStr = (String) extractorConfig.getValues().get(ExtractorConstants.HDFS_SCHEMA);
+        String schemaStr = (String) extractorConfig.getValues().get(ExtractorConstants.FS_SCHEMA);
         TextFileDataTable textFileDataTable = null;
         ArrayList<SchemaMap> columnMap = new ArrayList<>();
+        if(schemaStr!=null) {
+            try {
+                String[] splits = schemaStr.replaceAll("\\s+", "").replaceAll("\\[", "").replaceAll("]", "").split(",");
+                for (String column : splits) {
+                    String[] columnData = column.split(":");
+                    Class<?> cls = Class.forName(columnData[1]);
 
-        try{
-            String [] splits = schemaStr.replaceAll("\\s+", "").replaceAll("\\[", "").replaceAll("]", "").split(",");
-            for(String column : splits){
-                String [] columnData = column.split(":");
-                Class<?> cls = Class.forName(columnData[1]);
+                    columnMap.add(new SchemaMap(columnData[0], cls));
+                }
+                textFileDataTable = new TextFileDataTable(new TableName(project.getCatalogName(),
+                        project.getTableName().getName()), columnMap);
 
-                columnMap.add(new SchemaMap(columnData[0],cls));
+                textFileDataTable.setLineSeparator((String) extractorConfig.getValues().get(ExtractorConstants
+                        .FS_FILE_SEPARATOR));
+
+            } catch (ClassNotFoundException e) {
+                throw new ExecutionException("" + e);
+            } catch (Exception e) {
+                throw new ExecutionException("" + e);
             }
-            textFileDataTable = new TextFileDataTable(new TableName( project.getCatalogName(),
-                    project.getTableName().getName()),columnMap);
-
-            textFileDataTable.setLineSeparator((String)extractorConfig.getValues().get(ExtractorConstants
-                    .HDFS_FILE_SEPARATOR));
-
-        } catch (ClassNotFoundException e) {
-            throw new ExecutionException(""+e);
-        }catch (Exception e) {
-            throw new ExecutionException(""+e);
         }
-
         return textFileDataTable ;
     }
 

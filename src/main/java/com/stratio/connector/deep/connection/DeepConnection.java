@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stratio.connector.commons.connection.Connection;
-import com.stratio.connector.commons.util.ConnectorParser;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -38,7 +37,7 @@ import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 /**
  * .Connection object exist in the ConnectionHandler and contains all the connection info & config.
  * {@link com.stratio.connector.commons.connection.Connection}
- * 
+ *
  */
 public class DeepConnection extends Connection<Object> {
 
@@ -50,7 +49,7 @@ public class DeepConnection extends Connection<Object> {
 
     /**
      * Constructor using credentials and cluster config.
-     * 
+     *
      * @param credentials
      *            the credentials.
      * @param config
@@ -85,71 +84,17 @@ public class DeepConnection extends Connection<Object> {
         Map<String, Serializable> values = new HashMap<>();
 
         for (String key : clusterOptions.keySet()){
-
             Serializable val = clusterOptions.get(key);
-            values.put(key,val);
-
-        }
-
-//        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
-//            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
-//            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
-//
-//            values.put(ExtractorConstants.HOST, hosts[0]);
-//        } else {
-//            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
-//        }
-//
-//        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
-//            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
-//
-//            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
-//
-//            values.put(ExtractorConstants.PORT, ports[0]);
-//
-//        } else {
-//            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
-//
-//        }
-//
-//        if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
-//            values.put(ExtractorConstants.HDFS_SCHEMA, clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
-//        }
-//
-//        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR) != null) {
-//            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,
-//                    clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
-//        }
-//
-//        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
-//            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,
-//                    clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
-//        }
-
-
-        String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
-
-
-        //TODO: Revision of Bug Atach Clusters, Deep only accept the port 9200 for elasticSearch connection
-        // and Native Connector uses 9300
-        if(extractorImplClassName!=null && extractorImplClassName.equals("com.stratio.deep.es.extractor" +
-                ".ESCellExtractor")  && clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS)!=null){
-            if (clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS) != null) {
-                values.put(ExtractorConstants.PORTS, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
-
-                String[] ports = ConnectorParser.ports(clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
-
-                values.put(ExtractorConstants.PORT, ports[0]);
-
-            } else {
-                values.put(ExtractorConstants.PORT, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
-
+            if (key.equals(ExtractorConstants.HOSTS) ||key.equals(ExtractorConstants.HOST) || key.equals
+                    (ExtractorConstants.PORTS) || key.equals(ExtractorConstants.ES_REST_PORTS)){
+                String formatArray = clusterOptions.get(key).replaceAll("\\s+", "").replaceAll("\\[",
+                        "").replaceAll("]", "");
+                values.put(key,formatArray);
+            }else{
+                values.put(key,val);
             }
-        }
 
-//        if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-//            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
-//        }
+        }
 
         return values;
 
@@ -157,7 +102,7 @@ public class DeepConnection extends Connection<Object> {
 
     /**
      * Change the connection status.
-     * 
+     *
      */
     @Override
     public void close() {
@@ -166,7 +111,7 @@ public class DeepConnection extends Connection<Object> {
 
     /**
      * return the connection status.
-     * 
+     *
      * @return Boolean
      */
     @Override

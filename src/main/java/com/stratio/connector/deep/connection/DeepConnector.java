@@ -175,8 +175,8 @@ public class DeepConnector implements IConnector {
             config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
 
             if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-                config.getClusterOptions().put(ExtractorConstants.HDFS_FILE_PATH,
-                        connectorConfig.getConfig(ExtractorConstants.HDFS).getString(ExtractorConstants.HDFS_FILE_PATH));
+                config.getClusterOptions().put(ExtractorConstants.FS_FILE_PATH,
+                        connectorConfig.getConfig(ExtractorConstants.HDFS).getString(ExtractorConstants.FS_FILE_PATH));
             }
 
 

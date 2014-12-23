@@ -14,7 +14,7 @@ public class ESConnectionConfigurationBuilder {
 
     private static final String ES_CELL_CLASS = "com.stratio.deep.es.extractor.ESCellExtractor";
 
-    private static final String HOST = "localhost";
+    private static final String HOST = "[localhost]";
 
     private static final String PORT = "9200";
 
@@ -28,6 +28,7 @@ public class ESConnectionConfigurationBuilder {
         Map<String, String> options = new HashMap<>();
         options.put(ExtractorConstants.HOST, HOST);
         options.put(ExtractorConstants.PORT, PORT);
+
         options.put(ExtractorConstants.INNERCLASS, ES_CELL_CLASS);
         ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options,options);
         configuration.setDataStoreName(new DataStoreName("elasticsearch"));
