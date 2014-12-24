@@ -56,6 +56,7 @@
         </license>
     </licenses>
 
+
     <scm>
         <connection>scm:git:git@github.com:Stratio/stratio-connector-deep.git</connection>
         <developerConnection>scm:git:git@github.com:Stratio/stratio-connector-deep.git</developerConnection>
