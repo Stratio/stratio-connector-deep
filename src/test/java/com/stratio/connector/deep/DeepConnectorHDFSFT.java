@@ -28,6 +28,11 @@ import com.stratio.crossdata.common.result.QueryResult;
 
 /**
  * Functional tests using HDFS
+ * ¡¡¡WARNING!!!
+ * Create fileSystem under the hdfs path (connector-application.conf) {hdfs.path}/KEYSPACE with
+ *          metaFile.csv
+ *          songs.csv
+ * files in test resources
  */
 
 public class DeepConnectorHDFSFT {
@@ -51,7 +56,6 @@ public class DeepConnectorHDFSFT {
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(HDFSConnectionConfigurationBuilder.prepareConfiguration());
-        //deepMetadataEngine = connectionBuilder.getMetadataEngine();
         deepQueryEngine    = connectionBuilder.getQueryEngine();
     }
 
