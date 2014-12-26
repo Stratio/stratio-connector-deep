@@ -121,6 +121,7 @@ public class QueryExecutorTest {
         when(extractorConfig.clone()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
         when(deepContext.createHDFSRDD(any(ExtractorConfig.class))).thenReturn(rdd);
+        when(rdd.toJavaRDD()).thenReturn(singleRdd);
         when(singleRdd.collect()).thenReturn(generateListOfCells(3));
         when(singleRdd.filter(any(Function.class))).thenReturn(singleRdd);
         when(singleRdd.map(any(FilterColumns.class))).thenReturn(singleRdd);
@@ -130,6 +131,8 @@ public class QueryExecutorTest {
         when(pairRdd.reduceByKey(any(Function2.class))).thenReturn(pairRdd);
         when(pairRdd.map(any(Function.class))).thenReturn(singleRdd);
         when(joinedRdd.map(any(JoinCells.class))).thenReturn(singleRdd);
+
+
     }
 
     @Test

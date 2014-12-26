@@ -42,7 +42,7 @@
     </developers>
 
     <properties>
-        <version.crossdata>0.1.1</version.crossdata>
+        <version.crossdata>0.2.0-SNAPSHOT</version.crossdata>
         <version.connector.commons>0.2.0</version.connector.commons>
         <version.deep>0.7.0-SNAPSHOT</version.deep>
         <version.hadoop>2.4.1</version.hadoop>
@@ -81,10 +81,15 @@
             <artifactId>crossdata-connector</artifactId>
             <version>${version.crossdata}</version>
             <type>jar</type>
+
             <exclusions>
                 <exclusion>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-remote_2.10</artifactId>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-compiler</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -93,6 +98,16 @@
             <groupId>com.stratio.crossdata</groupId>
             <artifactId>crossdata-common</artifactId>
             <version>${version.crossdata}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
