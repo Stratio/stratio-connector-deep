@@ -43,6 +43,7 @@ import com.stratio.crossdata.common.logicalplan.GroupBy;
 import com.stratio.crossdata.common.logicalplan.Join;
 import com.stratio.crossdata.common.logicalplan.LogicalStep;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
+import com.stratio.crossdata.common.logicalplan.OrderBy;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
@@ -54,6 +55,7 @@ import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
 import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
@@ -363,15 +365,15 @@ public class QueryExecutor {
 
         List<Cells> resultCells = resultRdd.collect();
 
-        Map<ColumnName, String> columnMap = selectStep.getColumnMap();
-        Map<ColumnName, ColumnType> columnType = selectStep.getTypeMapFromColumnName();
+        Map<Selector, String> columnMap = selectStep.getColumnMap();
+        Map<Selector, ColumnType> columnType = selectStep.getTypeMapFromColumnName();
 
         // Adding column metadata information
         List<ColumnMetadata> resultMetadata = new LinkedList<>();
         Object[] parameters = {};
-        for (Entry<ColumnName, String> columnItem : columnMap.entrySet()) {
+        for (Entry<Selector, String> columnItem : columnMap.entrySet()) {
 
-            ColumnName columnName = columnItem.getKey();
+            ColumnName columnName = columnItem.getKey().getColumnName();
             String columnAlias = columnItem.getValue();
             columnName.setAlias(columnAlias);
 
@@ -403,11 +405,11 @@ public class QueryExecutor {
      * 
      * @return A {@link Row} containing the information in the related database row.
      */
-    private Row buildRowFromCells(Cells cells, Map<ColumnName, String> columnMap) {
+    private Row buildRowFromCells(Cells cells, Map<Selector, String> columnMap) {
 
         Row row = new Row();
-        for (Entry<ColumnName, String> columnItem : columnMap.entrySet()) {
-            ColumnName columnName = columnItem.getKey();
+        for (Entry<Selector, String> columnItem : columnMap.entrySet()) {
+            ColumnName columnName = columnItem.getKey().getColumnName();
 
             // Retrieving the cell to create a new meta cell with its value
             com.stratio.deep.commons.entity.Cell cellsCell = cells.getCellByName(columnName.getTableName()
@@ -461,6 +463,9 @@ public class QueryExecutor {
                 }
             } else if (currentStep instanceof GroupBy) {
                 resultRdd = executeGroupBy((GroupBy) currentStep, resultRdd);
+            } else if (currentStep instanceof OrderBy) {
+                List<Cells> cellsList = executeOrderBy((OrderBy) currentStep, resultRdd);
+                resultRdd = deepContext.parallelize(cellsList);
             } else if (currentStep instanceof Select) {
                 resultRdd = prepareResult((Select) currentStep, resultRdd);
             } else {
@@ -561,6 +566,22 @@ public class QueryExecutor {
     private JavaRDD<Cells> executeGroupBy(GroupBy groupByStep, JavaRDD<Cells> rdd) {
 
         return QueryFilterUtils.groupByFields(rdd, groupByStep.getIds());
+    }
+
+
+    /**
+     * Order the result by the given fields.
+     *
+     * @param groupByStep
+     *            GroupBy step.
+     * @param rdd
+     *            Initial {@link JavaRDD}.
+     *
+     * @return Grouped {@link JavaRDD}.
+     */
+    private List<Cells> executeOrderBy(OrderBy orderByStep, JavaRDD<Cells> rdd) {
+
+        return QueryFilterUtils.orderByFields(rdd, orderByStep.getIds());
     }
 
     /**

@@ -19,6 +19,7 @@ import com.stratio.crossdata.common.data.TableName;
 import com.stratio.crossdata.common.logicalplan.Filter;
 import com.stratio.crossdata.common.logicalplan.GroupBy;
 import com.stratio.crossdata.common.logicalplan.Join;
+import com.stratio.crossdata.common.logicalplan.OrderBy;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
@@ -30,6 +31,8 @@ import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.FloatingPointSelector;
 import com.stratio.crossdata.common.statements.structures.IntegerSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
+import com.stratio.crossdata.common.statements.structures.OrderByClause;
+import com.stratio.crossdata.common.statements.structures.OrderDirection;
 import com.stratio.crossdata.common.statements.structures.Relation;
 import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.crossdata.common.statements.structures.StringSelector;
@@ -226,16 +229,17 @@ public class LogicalWorkflowBuilder {
 
     public static Select createSelect(List<ColumnName> columnsList, List<String> aliasNamesList) {
 
-        Map<ColumnName, String> columnsAliases = new LinkedHashMap<>();
+        Map<Selector, String> columnsAliases = new LinkedHashMap<>();
         Map<String, ColumnType> columnsTypes = new LinkedHashMap<>();
-        Map<ColumnName, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
+        Map<Selector, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
 
         Iterator<String> aliasesIt = aliasNamesList.iterator();
         for (ColumnName column : columnsList) {
-            columnsAliases.put(column, aliasesIt.next());
+            ColumnSelector columnSelector = new ColumnSelector(column);
+            columnsAliases.put(columnSelector, aliasesIt.next());
 
             columnsTypes.put(column.getQualifiedName(), ColumnType.TEXT);
-            typeMapFromColumnName.put(column, ColumnType.TEXT);
+            typeMapFromColumnName.put(columnSelector, ColumnType.TEXT);
         }
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
@@ -253,4 +257,23 @@ public class LogicalWorkflowBuilder {
 
         return new GroupBy(Operations.SELECT_GROUP_BY, selectorsList);
     }
+
+    public static  OrderBy createOrderBy(String keyspace, String table, LinkedHashMap<String,
+            OrderDirection> orderByFields) {
+
+        OrderBy  orderBy = new OrderBy(Operations.SELECT_ORDER_BY, new LinkedList<OrderByClause>());
+
+        List<OrderByClause> previousList = orderBy.getIds();
+
+        for(String field :orderByFields.keySet()){
+            OrderDirection direction = orderByFields.get(field);
+            previousList.add(new OrderByClause(direction, new ColumnSelector(new ColumnName(keyspace, table,
+                    field))));
+        }
+
+        orderBy.setIds(previousList);
+
+        return orderBy;
+    }
+
 }

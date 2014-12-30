@@ -655,7 +655,7 @@ public class DeepConnectorCassandraFT {
             e.printStackTrace();
         }
 
-        // Input data
+        // Input datacreateColumn
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
                 Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));

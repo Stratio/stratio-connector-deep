@@ -72,7 +72,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
             mongoClient = new MongoClient(HOST, 27017);
 
-            mongoClient.dropDatabase(KEYSPACE);
+            clearDataFromMongo();
 
             DB db = mongoClient.getDB(KEYSPACE);
 

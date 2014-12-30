@@ -18,6 +18,7 @@
 
 package com.stratio.connector.deep.engine;
 
+import java.util.List;
 import java.util.Map;
 
 import com.stratio.connector.commons.connection.Connection;
@@ -103,6 +104,23 @@ public class DeepMetadataEngine extends CommonsMetadataEngine {
 
     public void alterCatalog(ClusterName targetCluster, CatalogName catalogName,
             Map<Selector, Selector> options) throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override
+    public List<CatalogMetadata> provideMetadata(ClusterName clusterName) throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override
+    public CatalogMetadata provideCatalogMetadata(ClusterName clusterName, CatalogName catalogName)
+            throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override
+    public TableMetadata provideTableMetadata(ClusterName clusterName, TableName tableName)
+            throws ConnectorException {
         throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 }

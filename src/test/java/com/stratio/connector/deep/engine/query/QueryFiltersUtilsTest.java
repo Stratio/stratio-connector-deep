@@ -22,8 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import scala.Tuple2;
-
 import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
@@ -39,9 +37,12 @@ import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.IntegerSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
 import com.stratio.crossdata.common.statements.structures.Relation;
+import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.deep.commons.config.ExtractorConfig;
 import com.stratio.deep.commons.entity.Cells;
 import com.stratio.deep.core.context.DeepSparkContext;
+
+import scala.Tuple2;
 
 /**
  * Created by dgomez on 30/09/14.
@@ -143,10 +144,12 @@ public class QueryFiltersUtilsTest implements Serializable {
 
     @Test
     public void filterSelectedColumns() {
-        Map<ColumnName, String> columnsAliases = new HashMap<>();
+        Map<Selector, String> columnsAliases = new HashMap<>();
 
-        columnsAliases.put(new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
-                COLUMN1_CONSTANT), "nameAlias");
+        ColumnName columnName = (new ColumnName(CATALOG_CONSTANT, TABLE1_CONSTANT.getName(),
+                COLUMN1_CONSTANT));
+        ColumnSelector columnSelector = new ColumnSelector(columnName);
+        columnSelector.setAlias("nameAlias");
 
         JavaRDD<Cells> rdd = QueryFilterUtils.filterSelectedColumns(leftRdd, columnsAliases.keySet());
         if (logger.isDebugEnabled()) {

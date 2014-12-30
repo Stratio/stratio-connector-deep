@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.spark.api.java.function.Function;
 
-import com.stratio.crossdata.common.data.ColumnName;
+import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 
@@ -36,9 +36,9 @@ public class FilterColumns implements Function<Cells, Cells> {
     /*
      * Columns to be kept
      */
-    private final List<ColumnName> columns;
+    private final List<Selector> columns;
 
-    public FilterColumns(List<ColumnName> columns) {
+    public FilterColumns(List<Selector> columns) {
         this.columns = columns;
     }
 
@@ -46,9 +46,10 @@ public class FilterColumns implements Function<Cells, Cells> {
     public Cells call(Cells cells) {
 
         Cells cellsOut = new Cells();
-        for (ColumnName columnName : columns) {
-            Cell cell = cells.getCellByName(columnName.getTableName().getQualifiedName(), columnName.getName());
-            cellsOut.add(columnName.getTableName().getQualifiedName(), cell);
+        for (Selector columnName : columns) {
+            Cell cell = cells.getCellByName(columnName.getColumnName().getTableName().getQualifiedName(),
+                    columnName.getColumnName().getName());
+            cellsOut.add(columnName.getColumnName().getTableName().getQualifiedName(), cell);
         }
 
         return cellsOut;

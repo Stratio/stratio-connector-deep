@@ -35,6 +35,7 @@ import com.stratio.connector.deep.engine.query.functions.GreaterThan;
 import com.stratio.connector.deep.engine.query.functions.LessEqualThan;
 import com.stratio.connector.deep.engine.query.functions.LessThan;
 import com.stratio.connector.deep.engine.query.functions.NotEquals;
+import com.stratio.connector.deep.engine.query.functions.OrderByComparator;
 import com.stratio.connector.deep.engine.query.structures.BooleanTerm;
 import com.stratio.connector.deep.engine.query.structures.DoubleTerm;
 import com.stratio.connector.deep.engine.query.structures.LongTerm;
@@ -51,6 +52,7 @@ import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.FloatingPointSelector;
 import com.stratio.crossdata.common.statements.structures.IntegerSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
+import com.stratio.crossdata.common.statements.structures.OrderByClause;
 import com.stratio.crossdata.common.statements.structures.Relation;
 import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.crossdata.common.statements.structures.SelectorType;
@@ -141,9 +143,9 @@ public final class QueryFilterUtils {
      * @return JavaRDD<Cells>
      */
 
-    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<ColumnName> selectedCols) {
+    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<Selector> selectedCols) {
 
-        List<ColumnName> list = new ArrayList<>(selectedCols);
+        List<Selector> list = new ArrayList<>(selectedCols);
 
         return rdd.map(new FilterColumns(list));
     }
@@ -329,4 +331,24 @@ public final class QueryFilterUtils {
             }
         });
     }
+
+    /**
+     * Function that returns a ordered {@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
+     *
+     * @param rdd
+     *            Initial {@link JavaRDD}.
+     * @param ids
+     *            List of fields to order by.
+     *
+     * @return Grouped {@link JavaRDD}.
+     */
+    public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses) {
+
+        List<Cells> rddOrdered = rdd.takeOrdered((int) rdd.count(), new OrderByComparator(orderByClauses));
+
+        return rddOrdered;
+
+    }
+
+
 }

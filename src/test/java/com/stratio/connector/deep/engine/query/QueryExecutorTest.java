@@ -479,15 +479,17 @@ public class QueryExecutorTest {
     private Select createSelect() {
 
         ColumnName columnName = new ColumnName("catalogname", "tablename1", "column1Name");
-
-        Map<ColumnName, String> columnsAliases = new HashMap<>();
-        columnsAliases.put(columnName, "nameAlias");
+        ColumnSelector columnSelector = new ColumnSelector(columnName);
+        columnSelector.setAlias("nameAlias");
+        Map<Selector, String> columnsAliases = new HashMap<>();
+        columnsAliases.put(columnSelector, "nameAlias");
 
         Map<String, ColumnType> columnsTypes = new HashMap<>();
         columnsTypes.put("catalogname.tablename1.column1Name", ColumnType.BIGINT);
 
-        Map<ColumnName, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
-        typeMapFromColumnName.put(columnName, ColumnType.BIGINT);
+        Map<Selector, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
+
+        typeMapFromColumnName.put(columnSelector, ColumnType.BIGINT);
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
 
