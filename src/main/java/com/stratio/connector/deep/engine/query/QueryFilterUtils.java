@@ -73,6 +73,13 @@ public final class QueryFilterUtils {
      */
     private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
 
+
+    /**
+     * Default result size.
+     */
+    public static final int DEFAULT_RESULT_SIZE = 100000;
+
+
     private QueryFilterUtils() {
     }
 
