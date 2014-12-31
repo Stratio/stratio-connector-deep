@@ -12,9 +12,6 @@ import com.stratio.deep.commons.entity.Cells;
 
 public class OrderByComparator implements Comparator<Cells>,Serializable {
 
-    private final Integer WEIGHT = 100000000;
-    private final Integer WEIGHT_DIV = 100;
-
     private static final long serialVersionUID = 432384912608139416L;
 
     /**
@@ -31,7 +28,6 @@ public class OrderByComparator implements Comparator<Cells>,Serializable {
     public int compare(Cells o1, Cells o2) {
 
         int result = 0;
-        int weight = WEIGHT;
 
         for (OrderByClause orderByClause : orderByClauses) {
 
@@ -42,16 +38,18 @@ public class OrderByComparator implements Comparator<Cells>,Serializable {
 
             Cell cell2 = o2.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
                     columnSelector.getName().getName());
+
             OrderDirection order = orderByClause.getDirection();
 
-
             if(order == OrderDirection.ASC){
-                result = result +(weight * cell1.getCellValue().toString().compareTo(cell2.getValue().toString()));
+                result = ((Comparable) cell1.getCellValue()).compareTo(cell2.getValue());
             }else{
-                result = result +(weight * cell2.getCellValue().toString().compareTo(cell1.getValue().toString()));
+                result = ((Comparable) cell2.getCellValue()).compareTo(cell1.getValue());
+            }
+            if(result!=0){
+                break;
             }
 
-            weight = weight/WEIGHT_DIV;
         }
 
         return result;

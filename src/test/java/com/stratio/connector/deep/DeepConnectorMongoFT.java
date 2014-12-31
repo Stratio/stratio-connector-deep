@@ -370,8 +370,8 @@ public class DeepConnectorMongoFT {
                 Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         LinkedHashMap<String,OrderDirection> orderMap = new LinkedHashMap<>();
-        orderMap.put(YEAR_CONSTANT, OrderDirection.DESC);
-        orderMap.put(AUTHOR_CONSTANT , OrderDirection.ASC);
+        orderMap.put(YEAR_CONSTANT, OrderDirection.ASC);
+        orderMap.put(AUTHOR_CONSTANT , OrderDirection.DESC);
 
         project.setNextStep(createOrderBy(KEYSPACE, MYTABLE1_CONSTANT, orderMap));
 
@@ -406,7 +406,7 @@ public class DeepConnectorMongoFT {
             ageList2.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
 
         }
-        Collections.sort(rowsList,new RowComparator());
+        Collections.sort(ageList2);
 
         assertEquals("ORDER BY expected",ageList2, ageList1 );
 

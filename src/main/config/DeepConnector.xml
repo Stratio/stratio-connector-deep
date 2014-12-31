@@ -34,5 +34,6 @@
         <operation>FILTER_INDEXED_MATCH</operation>
         <operation>PARTIAL_RESULTS</operation>
         <operation>SELECT_GROUP_BY</operation>
+        <operation>SELECT_ORDER_BY</operation>
     </SupportedOperations>
 </Connector>
