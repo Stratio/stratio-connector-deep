@@ -39,6 +39,7 @@ import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
+import com.stratio.crossdata.common.metadata.IMetadata;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
@@ -271,4 +272,19 @@ public class DeepConnector implements IConnector {
         throw new UnsupportedException("Not yet supported");
 
     }
+
+    /**
+     * Updates the connector's metadata.
+     *
+     * @return true if everything is correct; false otherwise
+     */
+
+    public boolean UpdateMetadata(IMetadata metadata) {
+
+       return false;
+
+
+    }
+
+
 }

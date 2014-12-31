@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stratio.connector.commons.connection.Connection;
+import com.stratio.connector.commons.util.ConnectorParser;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -82,6 +83,27 @@ public class DeepConnection extends Connection<Object> {
     private Map<String,Serializable> returnConfig(Map<String, String> clusterOptions) {
 
         Map<String, Serializable> values = new HashMap<>();
+
+        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
+            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
+            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
+
+            values.put(ExtractorConstants.HOST, hosts[0]);
+        } else {
+            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
+        }
+
+        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
+            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+
+            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
+
+            values.put(ExtractorConstants.PORT, ports[0]);
+
+        } else {
+            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+
+        }
 
         for (String key : clusterOptions.keySet()){
             Serializable val = clusterOptions.get(key);

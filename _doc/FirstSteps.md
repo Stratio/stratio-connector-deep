@@ -314,6 +314,24 @@ Now we execute a set of queries and we will show the expected results.
   -------
   
 ```
+
+### Select with orderby
+
+```
+  >  SELECT age FROM students GROUP BY age ORDER BY age ASC;
+
+  Partial result: true
+    -------
+    | age |
+    -------
+    | 16  |
+    | 17  |
+    | 18  |
+    | 20  |
+    | 21  |
+  -------
+
+```
 ###Select Inner JOIN
 
 ...
