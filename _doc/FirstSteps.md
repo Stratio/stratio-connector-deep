@@ -37,7 +37,7 @@ Prerequisites
 -   First of all [Stratio Crossdata 0.1.1](https://github.com/Stratio/crossdata) is needed and must be installed. The 
 server and the shell must be running.
 -   An installation of [MongoDB](http://docs.mongodb.org/manual/installation/).
--   An installation of [Cassandra].
+-   An installation of [Cassandra](http://wiki.apache.org/cassandra/GettingStarted).
 -   Build an MongoConnector executable and run it following this [guide](https://github.com/Stratio/stratio-connector-mongodb#build-an-executable-connector-mongo). 
 -   Build an CassandraConnector executable and run it following this [guide](https://github.com/Stratio/stratio-connector-cassandra/blob/master/README.md).
 
@@ -48,8 +48,8 @@ Configuration
 In the Crossdata Shell we need to add the Datastore Manifest.
 
 ```
-   >  add datastore "/<path_to_manifest_folder>/CassandraDataStore.xml"; [From Stratio Connector Cassandra ]
-   >  add datastore "/<path_to_manifest_folder>/MongoDataStore.xml";     [From Stratio Connector Mongo ]
+   >  add datastore "/<path_to_manifest_folder>/CassandraDataStore.xml";
+   >  add datastore "/<path_to_manifest_folder>/MongoDataStore.xml";
 
 ```
 
@@ -82,8 +82,8 @@ datastore cluster.
 ```
 > ATTACH CLUSTER mongoCluster ON DATASTORE Mongo WITH OPTIONS {'Hosts': '[Ip1, Ip2,..,Ipn]', 
 'Port': '[Port1,Port2,...,Portn]'};
-> ATTACH CLUSTER cassandraCluster ON DATASTORE Cassandra WITH OPTIONS {'Hosts': '[Ip1, Ip2,..,Ipn]','Port':
-'[Port1,Port2,...,Portn]'  };
+> ATTACH CLUSTER cassandraCluster ON DATASTORE Cassandra WITH OPTIONS {'Hosts': '[Ip1,..,Ipn]','Port':
+'[Port1,...,Portn]'  };
 ```
 
 The output must be similar to:
@@ -314,9 +314,10 @@ Now we execute a set of queries and we will show the expected results.
   -------
   
 ```
+###Select Inner JOIN
 
-
-
+...
+...
 
 Where to go from here
 =====================
