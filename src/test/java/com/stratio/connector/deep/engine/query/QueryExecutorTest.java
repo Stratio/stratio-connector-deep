@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
@@ -111,7 +111,7 @@ public class QueryExecutorTest {
     private QueryExecutor queryExecutor;
 
     @Before
-    public void before() throws Exception, HandlerConnectionException {
+    public void before() throws Exception {
 
         queryExecutor = new QueryExecutor(deepContext, deepConnectionHandler);
 
@@ -136,8 +136,7 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectQueryTest() throws UnsupportedException, ExecutionException         {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -166,8 +165,8 @@ public class QueryExecutorTest {
 
 
     @Test
-    public void simpleProjectAndSelectQueryHDFSTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectQueryHDFSTest() throws UnsupportedException, ExecutionException
+             {
 
         ExtractorConfig<Cells> config = createExtractorForHDFS();
 
@@ -212,8 +211,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectWithOneFilterQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectWithOneFilterQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -244,8 +243,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectWithThreeFiltersQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectWithThreeFiltersQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -280,8 +279,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void twoProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void twoProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -382,8 +381,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectWithGroupByQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectWithGroupByQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();

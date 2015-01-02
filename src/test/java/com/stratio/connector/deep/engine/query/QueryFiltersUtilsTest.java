@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
@@ -100,7 +99,7 @@ public class QueryFiltersUtilsTest implements Serializable {
     JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD;
 
     @Before
-    public void before() throws Exception, HandlerConnectionException {
+    public void before() throws Exception {
         String job = "java:creatingCellRDD";
 
         when(deepConnectionHandler.getConnection(CLUSTERNAME_CONSTANT.getName())).thenReturn(deepConnection);
@@ -112,7 +111,7 @@ public class QueryFiltersUtilsTest implements Serializable {
     }
 
     @After
-    public void after() throws Exception, HandlerConnectionException {
+    public void after() throws Exception {
 
         // deepContext.stop();
         // ExtractorServer.close();

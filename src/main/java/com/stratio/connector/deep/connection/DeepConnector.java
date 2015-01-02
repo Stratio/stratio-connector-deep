@@ -25,7 +25,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
@@ -166,7 +166,7 @@ public class DeepConnector implements IConnector {
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
-        try {
+
             // Setting the extractor class
             String dataSourceName = config.getDataStoreName().getName();
 
@@ -183,11 +183,7 @@ public class DeepConnector implements IConnector {
 
             connectionHandler.createConnection(credentials, config);
 
-        } catch (HandlerConnectionException e) {
-            String msg = "fail creating the Connection. " + e.getMessage();
-            logger.error(msg);
-            throw new ConnectionException(msg, e);
-        }
+
 
     }
 
@@ -211,13 +207,7 @@ public class DeepConnector implements IConnector {
     @Override
     public void shutdown() throws ExecutionException {
 
-        Iterator it = connectionHandler.getConnections().values().iterator();
-        while (it.hasNext()) {
-            DeepConnection conn = (DeepConnection) it.next();
-            while (conn.isWorkInProgress()) {
-                shutdown();
-            }
-        }
+        connectionHandler.closeAllConnections();
         deepContext.stop();
     }
 

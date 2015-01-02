@@ -14,12 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.security.ICredentials;
 
 /**
@@ -79,7 +79,7 @@ public class DeepContextConnectorTest {
      */
 
     @Test
-    public void testConnect() throws Exception, HandlerConnectionException {
+    public void testConnect() throws Exception {
 
         ICredentials iCredentials = mock(ICredentials.class);
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
@@ -96,7 +96,7 @@ public class DeepContextConnectorTest {
     }
 
     @Test
-    public void testClose() throws ConnectionException, HandlerConnectionException {
+    public void testClose() throws ConnectionException, ExecutionException {
 
         ICredentials iCredentials = mock(ICredentials.class);
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);

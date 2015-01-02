@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
@@ -334,12 +333,9 @@ public class QueryExecutor {
     private ExtractorConfig<Cells> retrieveConfiguration(ClusterName clusterName) throws ExecutionException {
 
         DeepConnection deepConnection = null;
-        try {
-            deepConnection = (DeepConnection) deepConnectionHandler.getConnection(clusterName.getName());
-        } catch (HandlerConnectionException ex) {
-            throw new ExecutionException("Error retrieving the cluster connection information ["
-                    + clusterName.toString() + "]", ex);
-        }
+
+        deepConnection = (DeepConnection) deepConnectionHandler.getConnection(clusterName.getName());
+
 
         ExtractorConfig<Cells> extractorConfig = null;
         if (deepConnection != null) {
