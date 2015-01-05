@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
@@ -130,28 +129,28 @@ public class DeepConnector implements IConnector {
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
         String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
-        String sparkHome   = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
-        List<String> sparkJars   = null;
+        String sparkHome = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
+        List<String> sparkJars = null;
         String[] jarsArray = new String[0];
 
-        try{
+        try {
             sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants
                     .SPARK_JARS);
 
-        }catch (ConfigException e){
+        } catch (ConfigException e) {
             logger.info("--No spark Jars added--");
         }
-        if(sparkJars!=null) {
+        if (sparkJars != null) {
             jarsArray = new String[sparkJars.size()];
             sparkJars.toArray(jarsArray);
         }
 
-        logger.info("---SPARK-Master---->"+sparkMaster);
-        logger.info("---SPARK-Home---->"+sparkHome);
+        logger.info("---SPARK-Master---->" + sparkMaster);
+        logger.info("---SPARK-Home---->" + sparkHome);
 
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
                 sparkHome, jarsArray);
-        
+
         logger.info("-------------End StartUp the SparkContext------------ ");
     }
 
@@ -166,24 +165,20 @@ public class DeepConnector implements IConnector {
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
+        // Setting the extractor class
+        String dataSourceName = config.getDataStoreName().getName();
 
-            // Setting the extractor class
-            String dataSourceName = config.getDataStoreName().getName();
+        String extractorImplClassName = connectorConfig.getConfig(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT)
+                .getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
 
-            String extractorImplClassName = connectorConfig.getConfig(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT)
-                    .getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
+        config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
 
-            config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
+        if (extractorImplClassName != null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+            config.getClusterOptions().put(ExtractorConstants.FS_FILE_PATH,
+                    connectorConfig.getConfig(ExtractorConstants.HDFS).getString(ExtractorConstants.FS_FILE_PATH));
+        }
 
-            if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-                config.getClusterOptions().put(ExtractorConstants.FS_FILE_PATH,
-                        connectorConfig.getConfig(ExtractorConstants.HDFS).getString(ExtractorConstants.FS_FILE_PATH));
-            }
-
-
-            connectionHandler.createConnection(credentials, config);
-
-
+        connectionHandler.createConnection(credentials, config);
 
     }
 
@@ -265,16 +260,14 @@ public class DeepConnector implements IConnector {
 
     /**
      * Updates the connector's metadata.
-     *
+     * 
      * @return true if everything is correct; false otherwise
      */
+    @Override
+    public boolean updateMetadata(IMetadata metadata) {
 
-    public boolean UpdateMetadata(IMetadata metadata) {
-
-       return false;
-
+        return false;
 
     }
-
 
 }
