@@ -151,6 +151,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>com.stratio.deep</groupId>
+            <artifactId>deep-jdbc</artifactId>
+            <version>${version.deep}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>com.stratio.connector</groupId>
             <artifactId>stratio-connector-commons</artifactId>
             <version>${version.connector.commons}</version>
