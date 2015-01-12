@@ -19,7 +19,6 @@
 package com.stratio.connector.deep.connection;
 
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -38,7 +37,6 @@ import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
-import com.stratio.crossdata.common.metadata.IMetadata;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
@@ -134,8 +132,8 @@ public class DeepConnector implements IConnector {
         String[] jarsArray = new String[0];
 
         try {
-            sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants
-                    .SPARK_JARS);
+            sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(
+                            DeepConnectorConstants.SPARK_JARS);
 
         } catch (ConfigException e) {
             logger.info("--No spark Jars added--");
@@ -149,7 +147,7 @@ public class DeepConnector implements IConnector {
         logger.info("---SPARK-Home---->" + sparkHome);
 
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
-                sparkHome, jarsArray);
+                        sparkHome, jarsArray);
 
         logger.info("-------------End StartUp the SparkContext------------ ");
     }
@@ -169,13 +167,15 @@ public class DeepConnector implements IConnector {
         String dataSourceName = config.getDataStoreName().getName();
 
         String extractorImplClassName = connectorConfig.getConfig(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT)
-                .getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
+                        .getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
 
         config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
 
         if (extractorImplClassName != null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-            config.getClusterOptions().put(ExtractorConstants.FS_FILE_PATH,
-                    connectorConfig.getConfig(ExtractorConstants.HDFS).getString(ExtractorConstants.FS_FILE_PATH));
+            config.getClusterOptions().put(
+                            ExtractorConstants.FS_FILE_PATH,
+                            connectorConfig.getConfig(ExtractorConstants.HDFS).getString(
+                                            ExtractorConstants.FS_FILE_PATH));
         }
 
         connectionHandler.createConnection(credentials, config);
@@ -255,18 +255,6 @@ public class DeepConnector implements IConnector {
     public IMetadataEngine getMetadataEngine() throws UnsupportedException {
 
         throw new UnsupportedException("Not yet supported");
-
-    }
-
-    /**
-     * Updates the connector's metadata.
-     * 
-     * @return true if everything is correct; false otherwise
-     */
-    @Override
-    public boolean updateMetadata(IMetadata metadata) {
-
-        return false;
 
     }
 
