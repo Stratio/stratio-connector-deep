@@ -231,7 +231,7 @@ public class DeepConnectorMongoFT {
         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
                 .getName().getTableName().getQualifiedName());
 
-        // Checking rows
+        // Checking rowsexpected
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));

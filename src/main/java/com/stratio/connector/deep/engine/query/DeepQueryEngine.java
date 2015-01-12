@@ -19,6 +19,7 @@
 package com.stratio.connector.deep.engine.query;
 
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.connector.IResultHandler;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
@@ -62,7 +63,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
     @Override
     public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
             throws UnsupportedException, ExecutionException {
-        // TODO Auto-generated method stub
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
 
     }
 
@@ -73,7 +74,7 @@ public class DeepQueryEngine extends CommonsQueryEngine {
      */
     @Override
     public void stop(String queryId) throws UnsupportedException, ExecutionException {
-        // TODO Auto-generated method stub
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
 
     }
 }

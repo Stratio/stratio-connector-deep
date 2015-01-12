@@ -20,7 +20,6 @@ package com.stratio.connector.deep.connection;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.ConnectionHandler;
-import com.stratio.connector.commons.connection.exceptions.CreateNativeConnectionException;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -48,15 +47,12 @@ public class DeepConnectionHandler extends ConnectionHandler {
      **/
     @Override
     protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
-            throws CreateNativeConnectionException {
+            throws ConnectionException {
 
         Connection connection;
 
-        try {
-            connection = new DeepConnection(iCredentials, connectorClusterConfig);
-        } catch (ConnectionException e) {
-            throw new CreateNativeConnectionException("Error creating native connection", e);
-        }
+             connection = new DeepConnection(iCredentials, connectorClusterConfig);
+
 
         return connection;
     }

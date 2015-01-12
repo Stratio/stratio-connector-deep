@@ -77,7 +77,7 @@ public final class QueryFilterUtils {
     /**
      * Default result size.
      */
-    public static final int DEFAULT_RESULT_SIZE = 100000;
+    public static final int DEFAULT_RESULT_SIZE = 10000;
 
 
     private QueryFilterUtils() {
@@ -351,7 +351,7 @@ public final class QueryFilterUtils {
      */
     public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses) {
 
-        List<Cells> rddOrdered = rdd.takeOrdered((int) rdd.count(), new OrderByComparator(orderByClauses));
+        List<Cells> rddOrdered = rdd.takeOrdered(DEFAULT_RESULT_SIZE, new OrderByComparator(orderByClauses));
 
         return rddOrdered;
 

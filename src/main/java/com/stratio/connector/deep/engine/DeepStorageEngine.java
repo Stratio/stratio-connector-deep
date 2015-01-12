@@ -27,7 +27,6 @@ import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.data.TableName;
-import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
@@ -73,6 +72,18 @@ public class DeepStorageEngine extends CommonsStorageEngine {
         throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
 
+    @Override protected void insert(TableMetadata tableMetadata, Row row, boolean b, Connection connection)
+            throws UnsupportedException, ExecutionException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+
+    }
+
+    @Override protected void insert(TableMetadata tableMetadata, Collection collection, boolean b,
+            Connection connection) throws UnsupportedException, ExecutionException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -102,26 +113,6 @@ public class DeepStorageEngine extends CommonsStorageEngine {
     }
 
 
-    public void insert(ClusterName targetCluster, TableMetadata targetTable, Row row, boolean isNotExists)
-            throws ConnectorException {
-        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
-    }
 
-    public void insert(ClusterName targetCluster, TableMetadata targetTable, Collection<Row> rows,
-            boolean isNotExists) throws ConnectorException {
-        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
-    }
-
-    @Override
-    protected void insert(TableMetadata tableMetadata, Row row, Connection connection) throws UnsupportedException
-    {
-        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
-    }
-
-    @Override
-    protected void insert(TableMetadata tableMetadata, Collection collection, Connection connection)
-            throws UnsupportedException {
-        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
-    }
 
 }

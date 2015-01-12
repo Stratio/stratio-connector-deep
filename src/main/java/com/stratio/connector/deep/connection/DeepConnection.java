@@ -137,7 +137,7 @@ public class DeepConnection extends Connection<Object> {
      * @return Boolean
      */
     @Override
-    public boolean isConnect() {
+    public boolean isConnected() {
 
         return isConnect;
     }

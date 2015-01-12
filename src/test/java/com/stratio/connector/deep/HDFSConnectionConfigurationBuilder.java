@@ -26,6 +26,7 @@ public class HDFSConnectionConfigurationBuilder {
     public static ConnectorClusterConfig prepareConfiguration() {
 
         Map<String, String> options = new HashMap<>();
+        options.put(ExtractorConstants.HOST, HOST);
         options.put(ExtractorConstants.HOSTS, HOST);
         options.put(ExtractorConstants.PORTS, PORT);
         options.put(ExtractorConstants.INNERCLASS, HDFS);

@@ -24,10 +24,8 @@ import java.util.Map;
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.ConnectionHandler;
 import com.stratio.connector.commons.engine.CommonsMetadataEngine;
-import com.stratio.crossdata.common.data.AlterOptions;
-
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
-
+import com.stratio.crossdata.common.data.AlterOptions;
 import com.stratio.crossdata.common.data.CatalogName;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.TableName;
@@ -37,7 +35,6 @@ import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.metadata.CatalogMetadata;
 import com.stratio.crossdata.common.metadata.IndexMetadata;
 import com.stratio.crossdata.common.metadata.TableMetadata;
-import com.stratio.crossdata.common.statements.structures.Selector;
 
 /**
  * 
@@ -102,10 +99,7 @@ public class DeepMetadataEngine extends CommonsMetadataEngine {
     }
 
 
-    public void alterCatalog(ClusterName targetCluster, CatalogName catalogName,
-            Map<Selector, Selector> options) throws ConnectorException {
-        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
-    }
+
 
     @Override
     public List<CatalogMetadata> provideMetadata(ClusterName clusterName) throws ConnectorException {
@@ -123,4 +117,26 @@ public class DeepMetadataEngine extends CommonsMetadataEngine {
             throws ConnectorException {
         throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
     }
+
+    @Override protected List<CatalogMetadata> provideMetadata(ClusterName clusterName, Connection connection)
+            throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override protected CatalogMetadata provideCatalogMetadata(CatalogName catalogName, ClusterName clusterName,
+            Connection connection) throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override protected TableMetadata provideTableMetadata(TableName tableName, ClusterName clusterName,
+            Connection connection) throws ConnectorException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    }
+
+    @Override protected void alterCatalog(CatalogName catalogName, Map map, Connection connection)
+            throws UnsupportedException, ExecutionException {
+        throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+
+    }
+
 }

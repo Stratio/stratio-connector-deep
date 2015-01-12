@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
@@ -49,7 +48,7 @@ public class ConnectionHandlerTest {
      * Method: createConnection(String clusterName, Connection connection)
      */
     @Test
-    public void testCreateConnection() throws Exception, HandlerConnectionException {
+    public void testCreateConnection() throws Exception {
 
         ICredentials credentials = mock(ICredentials.class);
         Map<String, String> options = new HashMap<>();
@@ -89,9 +88,6 @@ public class ConnectionHandlerTest {
         verify(connection, times(1)).close();
     }
 
-    @Test
-    public void testGetConnection() throws HandlerConnectionException {
 
-    }
 
 }

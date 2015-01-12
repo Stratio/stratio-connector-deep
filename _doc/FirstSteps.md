@@ -291,7 +291,7 @@ Now we execute a set of queries and we will show the expected results.
   -------------------------------
   | age | name  | id | enrolled | 
   -------------------------------
-  | 20  | Eva   | 2  | true     | 
+  | 20  | Eva   | 2  | true     |
   | 20  | Betty | 10 | true     | 
   -------------------------------
 
@@ -335,6 +335,25 @@ Now we execute a set of queries and we will show the expected results.
 ###Select Inner JOIN
 
 ...
+
+    > SELECT students.id, students.age, students2.name FROM catalogTest.students
+            INNER JOIN catalogTest.students2  ON students.id = students2.id;
+
+the output must be:
+
+   Partial result: true
+  --------------------------------------
+  | id  | age   |  name      |
+  --------------------------------------
+  |  1  |       |   Jhon     |
+  |  2  |       |   Eva      |
+  |  3  |       |   Lucie    |
+  |  4  |       |   Cole     |
+  |  5  |       |   Finn     |
+  |  6  |       |   Violet   |
+  |  7  |       |   Beatrice |
+  |  8  |       |   Henry    |
+  --------------------------------------
 ...
 
 Where to go from here
