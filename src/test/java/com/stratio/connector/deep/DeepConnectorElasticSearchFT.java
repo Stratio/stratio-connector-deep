@@ -21,6 +21,7 @@ import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
@@ -75,8 +76,8 @@ public class DeepConnectorElasticSearchFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(ESConnectionConfigurationBuilder.prepareConfiguration());
 
-        deepQueryEngine    = connectionBuilder.getQueryEngine();
-        //prepareDataForES();
+        deepQueryEngine = connectionBuilder.getQueryEngine();
+        // prepareDataForES();
     }
 
     @Test
@@ -85,9 +86,9 @@ public class DeepConnectorElasticSearchFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT));
-        project.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT));
+        project.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)),
+                        Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -106,10 +107,10 @@ public class DeepConnectorElasticSearchFT {
         assertEquals("Wrong number of rows", 210, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -124,12 +125,12 @@ public class DeepConnectorElasticSearchFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         for (Operator op : Operator.values()) {
 
             if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
-                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
+                            && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
 
                 logger.debug("--------------FILTER TEST FOR OPERATOR " + op + " ------------------------------------");
 
@@ -137,8 +138,9 @@ public class DeepConnectorElasticSearchFT {
 
                 LogicalStep filter = project.getNextStep();
 
-                filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+                filter.setNextStep(createSelect(
+                                Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)),
+                                Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
                 // One single initial step
                 stepList.add(project);
@@ -155,15 +157,15 @@ public class DeepConnectorElasticSearchFT {
                 // Checking results number
                 int resultExpectedFomOp = getResultExpectedFomOp(op);
                 assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-                logger.debug("------- RESULT FILTER TEST FOR OPERATOR " + op + " " +
-                        "RESULT ---> " + rowsList.size() + "--EXPECTED ---> " + resultExpectedFomOp);
+                logger.debug("------- RESULT FILTER TEST FOR OPERATOR " + op + " " + "RESULT ---> " + rowsList.size()
+                                + "--EXPECTED ---> " + resultExpectedFomOp);
                 assertEquals("Wrong number of rows", resultExpectedFomOp, rowsList.size());
 
                 // Checking metadata
                 assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                        columnsMetadata.get(0).getName().getQualifiedName());
-                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                        .getName().getTableName().getQualifiedName());
+                                columnsMetadata.get(0).getName().getQualifiedName());
+                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                                .getTableName().getQualifiedName());
 
                 // Checking rows
                 for (Row row : rowsList) {
@@ -182,15 +184,14 @@ public class DeepConnectorElasticSearchFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX,
-                false));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX, false));
 
         LogicalStep filter = project.getNextStep();
 
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)),
+                        Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -211,10 +212,10 @@ public class DeepConnectorElasticSearchFT {
         assertEquals("Wrong number of rows", 2, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -224,26 +225,23 @@ public class DeepConnectorElasticSearchFT {
     }
 
     @Test
-    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException {
+    public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
         Project projectRight = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, AGE_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, AGE_CONSTANT));
 
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AUTHOR_CONSTANT));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AUTHOR_CONSTANT));
 
-        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                        AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                        AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        DESCRIPTION_CONSTANT)),
-                Arrays.asList(AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
-                        AGE_ALIAS_CONSTANT)));
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AUTHOR_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                        AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
@@ -266,9 +264,9 @@ public class DeepConnectorElasticSearchFT {
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
-                .get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -310,6 +308,5 @@ public class DeepConnectorElasticSearchFT {
 
         return result;
     }
-
 
 }
