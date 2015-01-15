@@ -75,6 +75,10 @@ public class QueryExecutor {
 
     private List<Filter> nonIndexFilters;
 
+    private OrderBy orderBy;
+
+    private int DEFAULT_LIMIT = DeepConnectorConstants.DEFAULT_RESULT_SIZE;
+
     public QueryExecutor(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
         this.deepContext = deepContext;
         this.deepConnectionHandler = deepConnectionHandler;
@@ -130,6 +134,7 @@ public class QueryExecutor {
 
         // Filters arrangement determining whether they are executed by the data store or by deep
         nextStep = arrangeQueryFilters(nextStep);
+        nextStep = arrangeOrderBy(nextStep);
 
         JavaRDD<Cells> initialRdd = createRdd(project, extractorConfig, indexFilters);
 
@@ -193,21 +198,41 @@ public class QueryExecutor {
     }
 
     /**
-     * Creates a new {@link JavaRDD} based on the project and the query job configurations. It the filters list is not
-     * empty, the rdd will contain the data filtered by them.
-     * 
-     * @param project
-     *            Query columns needed to be retrieved.
-     * @param extractorConfig
-     *            Query job configuration.
-     * @param filtersList
-     *            List of filters to be applied while retrieving the data.
-     * 
-     * @return A {@link JavaRDD} contained the requested information.
-     * 
+     *
+     *
+     * @param nextStep
+     *            Next {@link LogicalStep} to the project.
      * @throws ExecutionException
      *             If the execution of the required steps fails.
      */
+    private LogicalStep arrangeOrderBy(LogicalStep step) throws ExecutionException {
+        LogicalStep nextStep = step;
+
+        while (nextStep instanceof OrderBy) {
+
+            orderBy = (OrderBy) nextStep;
+
+            nextStep = nextStep.getNextStep();
+        }
+        return nextStep;
+    }
+
+        /**
+         * Creates a new {@link JavaRDD} based on the project and the query job configurations. It the filters list is not
+         * empty, the rdd will contain the data filtered by them.
+         *
+         * @param project
+         *            Query columns needed to be retrieved.
+         * @param extractorConfig
+         *            Query job configuration.
+         * @param filtersList
+         *            List of filters to be applied while retrieving the data.
+         *
+         * @return A {@link JavaRDD} contained the requested information.
+         *
+         * @throws ExecutionException
+         *             If the execution of the required steps fails.
+         */
     private JavaRDD<Cells> createRdd(Project project, ExtractorConfig<Cells> extractorConfig, List<Filter> filtersList)
             throws ExecutionException {
         JavaRDD<Cells> rdd;
@@ -216,6 +241,8 @@ public class QueryExecutor {
         for (ColumnName columnName : project.getColumnList()) {
             columnsList.add(columnName.getName());
         }
+        Integer limit =(Integer)extractorConfig.getValues().get(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT);
+        DEFAULT_LIMIT = limit!=null?limit:DeepConnectorConstants.DEFAULT_RESULT_SIZE;
 
         extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
         extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
@@ -359,7 +386,13 @@ public class QueryExecutor {
      */
     private QueryResult buildQueryResult(JavaRDD<Cells> resultRdd, Select selectStep) {
 
-        List<Cells> resultCells = resultRdd.collect();
+        List<Cells> resultCells;
+
+        if(orderBy!=null){
+            resultCells = executeOrderBy(orderBy,resultRdd,DEFAULT_LIMIT);
+        }else{
+            resultCells = resultRdd.take(DEFAULT_LIMIT);
+        }
 
         Map<Selector, String> columnMap = selectStep.getColumnMap();
         Map<Selector, ColumnType> columnType = selectStep.getTypeMapFromColumnName();
@@ -460,8 +493,7 @@ public class QueryExecutor {
             } else if (currentStep instanceof GroupBy) {
                 resultRdd = executeGroupBy((GroupBy) currentStep, resultRdd);
             } else if (currentStep instanceof OrderBy) {
-                List<Cells> cellsList = executeOrderBy((OrderBy) currentStep, resultRdd);
-                resultRdd = deepContext.parallelize(cellsList);
+                orderBy = ((OrderBy) currentStep);
             } else if (currentStep instanceof Select) {
                 resultRdd = prepareResult((Select) currentStep, resultRdd);
             } else {
@@ -575,9 +607,9 @@ public class QueryExecutor {
      *
      * @return Grouped {@link JavaRDD}.
      */
-    private List<Cells> executeOrderBy(OrderBy orderByStep, JavaRDD<Cells> rdd) {
+    private List<Cells> executeOrderBy(OrderBy orderByStep, JavaRDD<Cells> rdd, int limit) {
 
-        return QueryFilterUtils.orderByFields(rdd, orderByStep.getIds());
+        return QueryFilterUtils.orderByFields(rdd, orderByStep.getIds(), limit);
     }
 
     /**

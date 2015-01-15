@@ -22,6 +22,7 @@ import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
@@ -78,7 +79,7 @@ public class JoinResultSetAndCassandraFT {
     }
 
     @Test
-    public void testPartialResultJoinTest() throws UnsupportedException, ExecutionException {
+    public void testPartialResultJoinTest() throws UnsupportedException, ExecutionException,ConnectorException {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
@@ -165,7 +166,7 @@ public class JoinResultSetAndCassandraFT {
     }
 
     @Test
-    public void testPartialResultJoinTestWithAlias() throws UnsupportedException, ExecutionException {
+    public void testPartialResultJoinTestWithAlias() throws UnsupportedException, ExecutionException, ConnectorException {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();

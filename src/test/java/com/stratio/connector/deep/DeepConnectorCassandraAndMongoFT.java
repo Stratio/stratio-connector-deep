@@ -22,6 +22,7 @@ import org.junit.Test;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
@@ -82,7 +83,8 @@ public class DeepConnectorCassandraAndMongoFT {
     }
 
     @Test
-    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException {
+    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException,
+            ConnectorException {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();

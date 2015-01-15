@@ -69,4 +69,7 @@ public class DeepConnectorConstants {
 
     public static final String ES_REST_PORTS   ="Restful Ports";
     public static final String SPARK = "spark" ;
+
+    public static final int DEFAULT_RESULT_SIZE = 10000;
+    public static final String PROPERTY_DEFAULT_LIMIT = "DefaultLimit";
 }

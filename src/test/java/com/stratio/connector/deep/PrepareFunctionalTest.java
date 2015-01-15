@@ -1,7 +1,6 @@
 package com.stratio.connector.deep;
 
 import static com.stratio.deep.commons.utils.Utils.quote;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,9 +53,6 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     public static void prepareDataForES(){
 
-        //NodeBuilder nodeBuilder = nodeBuilder();
-        node = nodeBuilder().node();
-
         elasticClient = new TransportClient()
                 .addTransportAddress(new InetSocketTransportAddress(HOST, PORT));
 
@@ -83,11 +79,12 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
         }
 
     }
+
+
     public static void clearDataFromES() {
-        node.close();
+        elasticClient.prepareDelete();
         elasticClient.close();
     }
-
     public static void clearDataFromMongo() {
 
         mongoClient.dropDatabase(KEYSPACE);

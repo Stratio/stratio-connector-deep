@@ -3,17 +3,22 @@ package com.stratio.connector.deep;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createFilter;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
+import static com.stratio.connector.deep.LogicalWorkflowBuilder.createOrderBy;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
+import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,6 +26,7 @@ import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
@@ -31,6 +37,7 @@ import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.Operator;
+import com.stratio.crossdata.common.statements.structures.OrderDirection;
 
 public class DeepConnectorElasticSearchFT {
 
@@ -76,9 +83,13 @@ public class DeepConnectorElasticSearchFT {
         connectionBuilder.connect(ESConnectionConfigurationBuilder.prepareConfiguration());
 
         deepQueryEngine    = connectionBuilder.getQueryEngine();
-        //prepareDataForES();
+        prepareDataForES();
     }
+    @AfterClass
+    public static void setDown() throws InitializationException, ConnectionException, UnsupportedException {
 
+        prepareDataForES();
+    }
     @Test
     public void testSingleProjectAndSelectTest() throws UnsupportedException, ExecutionException {
 
@@ -224,7 +235,7 @@ public class DeepConnectorElasticSearchFT {
     }
 
     @Test
-    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException {
+    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException,ConnectorException {
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
@@ -311,5 +322,66 @@ public class DeepConnectorElasticSearchFT {
         return result;
     }
 
+    @Test
+    public void singleProjectAndSelectWithOrderByTest() throws UnsupportedException, ExecutionException {
+
+        // Input data
+        List<LogicalStep> stepList = new ArrayList<>();
+        Project project = createProject(ES_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
+                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+
+        LinkedHashMap<String,OrderDirection> orderMap = new LinkedHashMap<>();
+        orderMap.put(YEAR_CONSTANT, OrderDirection.ASC);
+        orderMap.put(AUTHOR_CONSTANT , OrderDirection.DESC);
+
+        project.setNextStep(createOrderBy(KEYSPACE, MYTABLE1_CONSTANT, orderMap));
+
+        LogicalStep orderBy = project.getNextStep();
+
+        orderBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
+                        AUTHOR_CONSTANT),createColumn(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT)),
+                Arrays.asList(AUTHOR_ALIAS_CONSTANT,YEAR_CONSTANT)));
+
+        // One single initial step
+        stepList.add(project);
+
+        LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
+
+        // Execution
+        QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
+
+        // Assertions
+        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+        List<Row> rowsList = result.getResultSet().getRows();
+
+        // Checking results number
+
+        assertEquals("Wrong number of rows metadata", 2, columnsMetadata.size());
+
+        assertEquals("Wrong number of rows", 210, rowsList.size());
+
+        List<Integer> ageList1 = new ArrayList<>();
+        List<Integer> ageList2 = new ArrayList<>();
+        for(Row row:rowsList){
+            ageList1.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
+            ageList2.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
+
+        }
+        Collections.sort(ageList2);
+
+        assertEquals("ORDER BY expected",ageList2, ageList1 );
+
+        // Checking metadata
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
+                columnsMetadata.get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
+                .getName().getTableName().getQualifiedName());
+
+        // Checking rows
+        for (Row row : rowsList) {
+            assertEquals("Wrong number of columns in the row", 2, row.size());
+            assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
+        }
+    }
 
 }
