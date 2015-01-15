@@ -97,10 +97,11 @@ public class DeepConnectorMongoFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT,DESCRIPTION_CONSTANT2));
-        project.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT),createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT2)), Arrays.asList(AUTHOR_ALIAS_CONSTANT,DESCRIPTION_CONSTANT2)));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, DESCRIPTION_CONSTANT2));
+        project.setNextStep(createSelect(
+                        Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT),
+                                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT2)),
+                        Arrays.asList(AUTHOR_ALIAS_CONSTANT, DESCRIPTION_CONSTANT2)));
 
         // One single initial step
         stepList.add(project);
@@ -119,10 +120,10 @@ public class DeepConnectorMongoFT {
         assertEquals("Wrong number of rows", 210, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -137,12 +138,12 @@ public class DeepConnectorMongoFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         for (Operator op : Operator.values()) {
 
             if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
-                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
+                            && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
 
                 logger.debug("--------------FILTER TEST FOR OPERATOR " + op + " ------------------------------------");
 
@@ -150,8 +151,9 @@ public class DeepConnectorMongoFT {
 
                 LogicalStep filter = project.getNextStep();
 
-                filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+                filter.setNextStep(createSelect(
+                                Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)),
+                                Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
                 // One single initial step
                 stepList.add(project);
@@ -168,15 +170,15 @@ public class DeepConnectorMongoFT {
                 // Checking results number
                 int resultExpectedFomOp = getResultExpectedFomOp(op);
                 assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-                logger.debug("------- RESULT FILTER TEST FOR OPERATOR " + op + " " +
-                        "RESULT ---> " + rowsList.size() + "--EXPECTED ---> " + resultExpectedFomOp);
+                logger.debug("------- RESULT FILTER TEST FOR OPERATOR " + op + " " + "RESULT ---> " + rowsList.size()
+                                + "--EXPECTED ---> " + resultExpectedFomOp);
                 assertEquals("Wrong number of rows", resultExpectedFomOp, rowsList.size());
 
                 // Checking metadata
                 assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                        columnsMetadata.get(0).getName().getQualifiedName());
-                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                        .getName().getTableName().getQualifiedName());
+                                columnsMetadata.get(0).getName().getQualifiedName());
+                assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                                .getTableName().getQualifiedName());
 
                 // Checking rows
                 for (Row row : rowsList) {
@@ -195,18 +197,17 @@ public class DeepConnectorMongoFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX,
-                false));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT, Operator.EQ, YEAR_EX, false));
 
-//        project.setNextStep(createOrderBy(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT,
-//                OrderDirection.ASC));
+        // project.setNextStep(createOrderBy(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT,
+        // OrderDirection.ASC));
 
         LogicalStep filter = project.getNextStep();
 
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)),
+                        Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -227,10 +228,10 @@ public class DeepConnectorMongoFT {
         assertEquals("Wrong number of rows", 2, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rowsexpected
         for (Row row : rowsList) {
@@ -239,29 +240,25 @@ public class DeepConnectorMongoFT {
         }
     }
 
-
     @Test
-    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException,ConnectorException {
+    public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
+
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
         Project projectRight = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, AGE_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, AGE_CONSTANT));
 
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AUTHOR_CONSTANT));
 
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AUTHOR_CONSTANT));
-
-        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AUTHOR_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT)),
-                Arrays.asList(AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
-                        AGE_ALIAS_CONSTANT)));
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AUTHOR_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                        AUTHOR_ALIAS_CONSTANT, AUTHOR_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
@@ -284,9 +281,9 @@ public class DeepConnectorMongoFT {
 
         // Checking metadata
         assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
-                .get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -334,11 +331,11 @@ public class DeepConnectorMongoFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
         GroupBy groupBy = createGroupBy(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)));
         project.setNextStep(groupBy);
-        groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT)), Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
+        groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT)),
+                        Arrays.asList(AUTHOR_ALIAS_CONSTANT)));
         // One single initial step
         stepList.add(project);
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
@@ -351,10 +348,10 @@ public class DeepConnectorMongoFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 170, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -368,19 +365,20 @@ public class DeepConnectorMongoFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(AUTHOR_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        LinkedHashMap<String,OrderDirection> orderMap = new LinkedHashMap<>();
+        LinkedHashMap<String, OrderDirection> orderMap = new LinkedHashMap<>();
         orderMap.put(YEAR_CONSTANT, OrderDirection.ASC);
-        orderMap.put(AUTHOR_CONSTANT , OrderDirection.DESC);
+        orderMap.put(AUTHOR_CONSTANT, OrderDirection.DESC);
 
         project.setNextStep(createOrderBy(KEYSPACE, MYTABLE1_CONSTANT, orderMap));
 
         LogicalStep orderBy = project.getNextStep();
 
-        orderBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                AUTHOR_CONSTANT),createColumn(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT)),
-                Arrays.asList(AUTHOR_ALIAS_CONSTANT,YEAR_CONSTANT)));
+        orderBy.setNextStep(createSelect(
+                        Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, AUTHOR_CONSTANT),
+                                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT)),
+                        Arrays.asList(AUTHOR_ALIAS_CONSTANT, YEAR_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -402,20 +400,20 @@ public class DeepConnectorMongoFT {
 
         List<Integer> ageList1 = new ArrayList<>();
         List<Integer> ageList2 = new ArrayList<>();
-        for(Row row:rowsList){
+        for (Row row : rowsList) {
             ageList1.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
             ageList2.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
 
         }
         Collections.sort(ageList2);
 
-        assertEquals("ORDER BY expected",ageList2, ageList1 );
+        assertEquals("ORDER BY expected", ageList2, ageList1);
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + AUTHOR_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {

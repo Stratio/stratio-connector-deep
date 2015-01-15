@@ -23,7 +23,7 @@ import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.exceptions.ConnectorException;
-import com.stratio.crossdata.common.exceptions.ExecutionException;
+
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Join;
@@ -82,28 +82,25 @@ public class DeepConnectorCassandraAndMongoFT {
 
     }
 
-    @Test
-    public void testTwoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException,
-            ConnectorException {
+
+    public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
+
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
         Project projectRight = createProject(MONGODB_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
 
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT));
 
-        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT)),
-                Arrays.asList(ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
-                        AGE_ALIAS_CONSTANT)));
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                        ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
 
@@ -129,14 +126,14 @@ public class DeepConnectorCassandraAndMongoFT {
         assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
         assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
         assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {

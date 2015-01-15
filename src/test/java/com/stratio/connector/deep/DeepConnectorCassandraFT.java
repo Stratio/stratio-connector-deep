@@ -101,9 +101,9 @@ public class DeepConnectorCassandraFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
-        project.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
+        project.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
         // One single initial step
         stepList.add(project);
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
@@ -116,10 +116,10 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 210, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -128,19 +128,18 @@ public class DeepConnectorCassandraFT {
     }
 
     @Test
-    public void singleProjectWithOneNonIndexStringFilterAndSelectTest() throws UnsupportedException,
-            ExecutionException {
+    public void singleProjectWithOneNonIndexStringFilterAndSelectTest() throws UnsupportedException, ExecutionException {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, TITLE_CONSTANT, Operator.EQ, TITLE_EX, false));
 
         LogicalStep filter = project.getNextStep();
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
         // One single initial step
         stepList.add(project);
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
@@ -153,10 +152,10 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -166,18 +165,18 @@ public class DeepConnectorCassandraFT {
 
     @Test
     public void singleProjectWithOneNonIndexIntegerFilterAndSelectTest() throws UnsupportedException,
-            ExecutionException {
+                    ExecutionException {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
-        Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ID_CONSTANT, ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+        Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT, Arrays.asList(
+                        ID_CONSTANT, ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
         project.setNextStep(createFilter(KEYSPACE, MYTABLE1_CONSTANT, ID_CONSTANT, Operator.LET, ID_EX, false));
 
         LogicalStep filter = project.getNextStep();
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -196,31 +195,29 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 10, rowsList.size());
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
     }
 
     @Test
-    public void twoProjectsJoinedAndSelectTest() throws UnsupportedException, ExecutionException,ConnectorException {
+    public void twoProjectsJoinedAndSelectTest() throws ConnectorException {
+
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
         Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT));
-        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT)),
-                Arrays.asList(ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
-                        AGE_ALIAS_CONSTANT)));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT));
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                        ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
         // Two initial steps
@@ -240,14 +237,14 @@ public class DeepConnectorCassandraFT {
         assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
         assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
         assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 4, row.size());
@@ -259,23 +256,21 @@ public class DeepConnectorCassandraFT {
     }
 
     @Test
-    public void twoProjectsJoinedWithUnsortedJoinIdsAndSelectTest() throws UnsupportedException, ExecutionException, ConnectorException {
+    public void twoProjectsJoinedWithUnsortedJoinIdsAndSelectTest() throws ConnectorException {
+
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
         Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT));
-        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT)),
-                Arrays.asList(ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT,
-                        AGE_ALIAS_CONSTANT)));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT));
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                        ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, DESCRIPTION_ALIAS_CONSTANT, AGE_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
         // Two initial steps
@@ -295,14 +290,14 @@ public class DeepConnectorCassandraFT {
         assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
         assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
         assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 4, row.size());
@@ -314,28 +309,26 @@ public class DeepConnectorCassandraFT {
     }
 
     @Test
-    public void twoProjectsNonIndexFilteredAndJoinedAndSelectTest() throws UnsupportedException, ExecutionException, ConnectorException {
+    public void twoProjectsNonIndexFilteredAndJoinedAndSelectTest() throws ConnectorException {
+
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
         Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
 
         Filter filterLeft = createFilter(KEYSPACE, MYTABLE1_CONSTANT, TITLE_CONSTANT, Operator.EQ, TITLE_EX, false);
 
         projectLeft.setNextStep(filterLeft);
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT));
-        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                AGE_CONSTANT), createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                DESCRIPTION_CONSTANT)),
-                Arrays.asList(ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, AGE_ALIAS_CONSTANT,
-                        DESCRIPTION_ALIAS_CONSTANT)));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT));
+        join.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, AGE_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, DESCRIPTION_CONSTANT)), Arrays.asList(
+                        ARTIST_ALIAS_CONSTANT, ARTIST_ALIAS2_CONSTANT, AGE_ALIAS_CONSTANT, DESCRIPTION_ALIAS_CONSTANT)));
         filterLeft.setNextStep(join);
         projectRight.setNextStep(join);
         // Two initial steps
@@ -355,14 +348,14 @@ public class DeepConnectorCassandraFT {
         assertEquals("Author expected", ARTIST_ALIAS2_CONSTANT, columnsMetadata.get(1).getName().getAlias());
         assertEquals("Author expected", AGE_ALIAS_CONSTANT, columnsMetadata.get(2).getName().getAlias());
         assertEquals("Author expected", DESCRIPTION_ALIAS_CONSTANT, columnsMetadata.get(3).getName().getAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2)
-                .getName().getTableName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(1).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable2 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(2).getName()
+                        .getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(3).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 4, row.size());
@@ -379,12 +372,11 @@ public class DeepConnectorCassandraFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, Operator.LET, RATE_EX,
-                false));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, Operator.LET, RATE_EX, false));
         LogicalStep filter = project.getNextStep();
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
         // One single initial step
         stepList.add(project);
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
@@ -397,10 +389,10 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 40, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
@@ -411,7 +403,7 @@ public class DeepConnectorCassandraFT {
 
     @Test
     public void testSingleProjectWithAllComparatorFiltersAndSelectTest() throws UnsupportedException,
-            ExecutionException {
+                    ExecutionException {
         // Input data
         List<Serializable> rateValues = new ArrayList<>();
         // rateValues.add(RATE_ST_EX);
@@ -422,22 +414,22 @@ public class DeepConnectorCassandraFT {
 
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
 
         for (Operator op : Operator.values()) {
 
             if (op.isInGroup(Operator.Group.COMPARATOR) && !op.equals(Operator.IN) && !op.equals(Operator.BETWEEN)
-                    && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
+                            && !op.equals(Operator.LIKE) && !op.equals(Operator.MATCH)) {
 
                 for (Serializable value : rateValues) {
 
                     if (case1(op, value) || case2(op, value)) {
 
-                        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, op, value,
-                                false));
+                        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, RATE_CONSTANT, op, value, false));
                         LogicalStep filter = project.getNextStep();
-                        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+                        filter.setNextStep(createSelect(
+                                        Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT)),
+                                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
                         // One single initial step
                         stepList.add(project);
                         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
@@ -448,18 +440,16 @@ public class DeepConnectorCassandraFT {
                         List<Row> rowsList = result.getResultSet().getRows();
                         // Checking results number
                         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
-                        assertEquals(
-                                "Wrong number of rows in Operation " + op.name() + " with value " + value + " type ->"
-                                        + value
-                                                .getClass(),
-                                getResultExpectedFomOp(op, value), rowsList.size());
-                        System.out.println("number of rows in Operation " + op.name() + " with value " + value + " " +
-                                "type ->" + value.getClass() + "  " + getResultExpectedFomOp(op, value));
+                        assertEquals("Wrong number of rows in Operation " + op.name() + " with value " + value
+                                        + " type ->" + value.getClass(), getResultExpectedFomOp(op, value),
+                                        rowsList.size());
+                        System.out.println("number of rows in Operation " + op.name() + " with value " + value + " "
+                                        + "type ->" + value.getClass() + "  " + getResultExpectedFomOp(op, value));
                         // Checking metadata
                         assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
-                                columnsMetadata.get(0).getName().getQualifiedName());
+                                        columnsMetadata.get(0).getName().getQualifiedName());
                         assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
-                                .getName().getTableName().getQualifiedName());
+                                        .getName().getTableName().getQualifiedName());
 
                         // Checking rows
                         for (Row row : rowsList) {
@@ -477,11 +467,11 @@ public class DeepConnectorCassandraFT {
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, ID_CONSTANT));
         GroupBy groupBy = createGroupBy(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)));
         project.setNextStep(groupBy);
-        groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
         // One single initial step
         stepList.add(project);
         LogicalWorkflow logicalWorkflow = new LogicalWorkflow(stepList);
@@ -494,10 +484,10 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 170, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -506,19 +496,19 @@ public class DeepConnectorCassandraFT {
     }
 
     @Test
-    public void twoProjectsJoinedAndSelectWithGroupByTest() throws UnsupportedException, ExecutionException , ConnectorException{
+    public void twoProjectsJoinedAndSelectWithGroupByTest() throws ConnectorException {
+
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
         Project projectRight = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
-        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                ARTIST_CONSTANT), createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT));
+        Join join = createJoin("joinId", createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                        createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT));
         GroupBy groupBy = createGroupBy(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)));
         groupBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT)),
-                Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
         projectLeft.setNextStep(join);
         projectRight.setNextStep(join);
         join.setNextStep(groupBy);
@@ -536,8 +526,8 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows", 36, rowsList.size());
         // Checking metadata
         assertEquals("Author expected", ARTIST_ALIAS_CONSTANT, columnsMetadata.get(0).getName().getAlias());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
         // Checking rows
         for (Row row : rowsList) {
             assertEquals("Wrong number of columns in the row", 1, row.size());
@@ -547,9 +537,8 @@ public class DeepConnectorCassandraFT {
 
     private boolean case1(Operator op, Serializable value) {
 
-        return (op.equals(Operator.LT) || op.equals(Operator.LET) || op.equals(Operator.GT) || op.equals
-                (Operator.GET)) && (value.getClass().equals(Float.class) || value.getClass().equals
-                (Double.class));
+        return (op.equals(Operator.LT) || op.equals(Operator.LET) || op.equals(Operator.GT) || op.equals(Operator.GET))
+                        && (value.getClass().equals(Float.class) || value.getClass().equals(Double.class));
     }
 
     private boolean case2(Operator op, Serializable value) {
@@ -663,14 +652,14 @@ public class DeepConnectorCassandraFT {
         // Input datacreateColumn
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE2_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, AGE_CONSTANT, RATE_CONSTANT, ACTIVE_CONSTANT));
 
-        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT, Operator.MATCH,
-                ARTIST_WILDCARD, true));
+        project.setNextStep(createFilter(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT, Operator.MATCH, ARTIST_WILDCARD,
+                        true));
 
         LogicalStep filter = project.getNextStep();
-        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT,
-                ARTIST_CONSTANT)), Arrays.asList(ARTIST_ALIAS_CONSTANT)));
+        filter.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE2_CONSTANT, ARTIST_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -687,10 +676,10 @@ public class DeepConnectorCassandraFT {
         assertEquals("Wrong number of rows metadata", 1, columnsMetadata.size());
         assertEquals("Wrong number of rows", 1, rowsList.size());
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE2_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE2_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {
