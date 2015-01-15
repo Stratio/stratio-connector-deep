@@ -9,12 +9,12 @@
         <DataStoreName>jdbc</DataStoreName>
     </DataStores>
     <Version>0.1.0</Version>
-    <OptionalProperties>
+    <RequiredProperties>
         <Property>
             <PropertyName>DefaultLimit</PropertyName>
             <Description>It is necessary to indicate de default limit for the queries</Description>
         </Property>
-    </OptionalProperties>
+    </RequiredProperties>
     <SupportedOperations>
         <operation>PROJECT</operation>
         <operation>SELECT_OPERATOR</operation>
