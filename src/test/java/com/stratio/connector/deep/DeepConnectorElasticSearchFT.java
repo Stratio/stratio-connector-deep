@@ -65,7 +65,7 @@ public class DeepConnectorElasticSearchFT {
 
     private static final String AGE_ALIAS_CONSTANT = "ageAlias";
 
-    private static final String ES_CLUSTERNAME_CONSTANT = "elasticsearch";
+    private static final String ES_CLUSTERNAME_CONSTANT = "elasticsearch";// TODO review
 
     private static DeepMetadataEngine deepMetadataEngine;
 
@@ -77,7 +77,7 @@ public class DeepConnectorElasticSearchFT {
         connectionBuilder.connect(ESConnectionConfigurationBuilder.prepareConfiguration());
 
         deepQueryEngine = connectionBuilder.getQueryEngine();
-        // prepareDataForES();
+        PrepareFunctionalTest.prepareDataForES();
     }
 
     @Test

@@ -12,11 +12,11 @@ public class HDFSConnectionConfigurationBuilder {
 
     private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("hdfs");
 
-    private static final String HOST = "127.0.0.1";
+    public static final String HOST = "10.200.0.60";
 
-    private static final String PORT = "9000";
+    public static final String PORT = "9000";
 
-    private static final String HDFS ="hdfs";
+    private static final String HDFS = "hdfs";
 
     /**
      * Create the configuration object to config the connector cluster information
@@ -34,15 +34,14 @@ public class HDFSConnectionConfigurationBuilder {
         options.put(ExtractorConstants.FS_FILE_SEPARATOR, ",");
         options.put(ExtractorConstants.FS_FILE_PATH, "/user/hadoop/");
 
-//        options.put(ExtractorConstants.FS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
-//                "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
-        options.put(ExtractorConstants.TYPE,ExtractorConstants.HDFS_TYPE);
-        options.put(ExtractorConstants.TABLE,"songs");
-        options.put(ExtractorConstants.CATALOG,"test");
-        options.put(ExtractorConstants.HDFS_FILE_EXTENSION,".csv");
+        // options.put(ExtractorConstants.FS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
+        // "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
+        options.put(ExtractorConstants.TYPE, ExtractorConstants.HDFS_TYPE);
+        options.put(ExtractorConstants.TABLE, "songs");
+        options.put(ExtractorConstants.CATALOG, "test");
+        options.put(ExtractorConstants.HDFS_FILE_EXTENSION, ".csv");
 
-
-        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options,options);
+        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options, options);
         configuration.setDataStoreName(new DataStoreName("hdfs"));
         return configuration;
     }

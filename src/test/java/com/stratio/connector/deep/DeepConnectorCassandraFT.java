@@ -683,7 +683,7 @@ public class DeepConnectorCassandraFT {
 
     @AfterClass
     public static void setDown() {
-        // clearData();
+        PrepareFunctionalTest.clearDataFromCassandra();
 
     }
 }

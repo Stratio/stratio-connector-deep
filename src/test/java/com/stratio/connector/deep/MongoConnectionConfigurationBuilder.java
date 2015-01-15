@@ -14,9 +14,9 @@ public class MongoConnectionConfigurationBuilder {
 
     private static final String MONGO_CELL_CLASS = "com.stratio.deep.mongodb.extractor.MongoCellExtractor";
 
-    private static final String HOST = "[localhost]";
+    public static final String HOST = "10.200.0.58";
 
-    private static final String PORT = "[27017]";
+    public static final String PORT = "27100";
 
     /**
      * Create the configuration object to config the connector cluster information
@@ -29,7 +29,7 @@ public class MongoConnectionConfigurationBuilder {
         options.put(ExtractorConstants.HOST, HOST);
         options.put(ExtractorConstants.PORT, PORT);
         options.put(ExtractorConstants.INNERCLASS, MONGO_CELL_CLASS);
-        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options,options);
+        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options, options);
         configuration.setDataStoreName(new DataStoreName("mongo"));
         return configuration;
     }

@@ -14,9 +14,9 @@ public class AerospikeConnectionConfigurationBuilder {
 
     private static final String AEROSPIKE_CELL_CLASS = "com.stratio.deep.aerospike.extractor.AerospikeCellExtractor";
 
-    private static final String HOST = "[10.200.0.58]";
+    public static final String HOST = "10.200.0.58";
 
-    private static final String PORT = "[3000]";
+    public static final String PORT = "3000";
 
     /**
      * Create the configuration object to config the connector cluster information
@@ -29,7 +29,7 @@ public class AerospikeConnectionConfigurationBuilder {
         options.put(ExtractorConstants.HOST, HOST);
         options.put(ExtractorConstants.PORT, PORT);
         options.put(ExtractorConstants.INNERCLASS, AEROSPIKE_CELL_CLASS);
-        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options,options);
+        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options, options);
         configuration.setDataStoreName(new DataStoreName("aerospike"));
         return configuration;
     }

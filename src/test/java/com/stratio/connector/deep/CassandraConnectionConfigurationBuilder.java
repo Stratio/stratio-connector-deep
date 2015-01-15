@@ -14,11 +14,11 @@ public class CassandraConnectionConfigurationBuilder {
 
     private static final ClusterName CLUSTERNAME_CONSTANT = new ClusterName("cassandra");
 
-    private static final String CQLPORT = "9042";
+    public static final String CQLPORT = "9042";
 
-    private static final String RPCPORT = "9160";
+    public static final String RPCPORT = "9160";
 
-    private static final String HOST = "127.0.0.1";
+    public static final String HOST = "127.0.0.1";
 
     /**
      * Create the configuration object to config the connector cluster information
@@ -32,7 +32,7 @@ public class CassandraConnectionConfigurationBuilder {
         options.put(ExtractorConstants.PORT, CQLPORT);
         options.put(ExtractorConstants.RPCPORT, RPCPORT);
         options.put(ExtractorConstants.INNERCLASS, CASSANDRA_CELL_CLASS);
-        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options,options);
+        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options, options);
         configuration.setDataStoreName(new DataStoreName("cassandra"));
         return configuration;
     }

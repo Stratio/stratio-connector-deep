@@ -145,7 +145,7 @@ public class DeepConnectorCassandraAndMongoFT {
 
     @AfterClass
     public static void setDown() {
-        // clearData();
+        PrepareFunctionalTest.clearDataFromCassandra();
     }
 
 }
