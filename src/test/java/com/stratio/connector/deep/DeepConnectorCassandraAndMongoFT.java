@@ -23,7 +23,6 @@ import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.exceptions.ConnectorException;
-
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Join;
@@ -82,7 +81,7 @@ public class DeepConnectorCassandraAndMongoFT {
 
     }
 
-
+    @Test
     public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
 
 
