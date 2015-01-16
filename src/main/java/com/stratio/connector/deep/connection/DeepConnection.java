@@ -64,7 +64,7 @@ public class DeepConnection extends Connection<Object> {
         }
 
         Map<String, String> clusterOptions = config.getClusterOptions();
-
+        Map<String, String> connectorOptions = config.getConnectorOptions();
         // Creating a configuration for the Extractor and initialize it
         ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
         String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
@@ -73,6 +73,7 @@ public class DeepConnection extends Connection<Object> {
             throw new ConnectionException("Unknown data source, please add it to the configuration.");
         }
         extractorconfig.setValues(returnConfig(clusterOptions));
+        extractorconfig.setValues(returnConfig(connectorOptions));
         extractorconfig.setExtractorImplClassName(extractorImplClassName);
 
         this.extractorConfig = extractorconfig;
