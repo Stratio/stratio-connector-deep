@@ -241,7 +241,8 @@ public class QueryExecutor {
         for (ColumnName columnName : project.getColumnList()) {
             columnsList.add(columnName.getName());
         }
-        Integer limit =(Integer)extractorConfig.getValues().get(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT);
+        Integer limit =Integer.valueOf((String)extractorConfig.getValues().get(DeepConnectorConstants
+                .PROPERTY_DEFAULT_LIMIT));
         DEFAULT_LIMIT = limit!=null?limit:DeepConnectorConstants.DEFAULT_RESULT_SIZE;
 
         extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
