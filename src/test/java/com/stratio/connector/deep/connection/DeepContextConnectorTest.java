@@ -20,6 +20,7 @@ import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.security.ICredentials;
 
 /**
@@ -42,7 +43,7 @@ public class DeepContextConnectorTest {
     protected static DeepConnector deepConnector;
 
     @Before
-    public void setUp() {
+    public void setUp() throws InitializationException {
         // TODO Start All the DeepSparkContext
         // TODO loadTestData
         // Creating the Deep Context

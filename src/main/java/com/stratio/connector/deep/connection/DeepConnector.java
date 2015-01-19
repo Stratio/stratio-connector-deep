@@ -74,30 +74,43 @@ public class DeepConnector implements IConnector {
      * Main uses to asociate the connector to crossdata.
      * 
      * */
-    public static void main(String[] args) {
+    public static void main(String[] args)  throws InitializationException{
 
         DeepConnector deepConnector = new DeepConnector();
 
         ConnectorApp connectorApp = new ConnectorApp();
         connectorApp.startup(deepConnector);
+        deepConnector.attachShutDownHook();
     }
 
-    public DeepConnector() {
+    /**
+     * Run the shutdown.
+     */
+    public void attachShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    shutdown();
+                } catch (ExecutionException e) {
+                    logger.error("Fail ShutDown");
+                }
+            }
+        });
+    }
+
+    public DeepConnector() throws InitializationException {
 
         // Retrieving configuration
         InputStream input = DeepConnector.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_CONSTANT);
 
         if (input == null) {
-            logger.error("Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]");
-            return;
+            String message = "Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]";
+            logger.error(message);
+            throw new InitializationException(message);
         }
+        connectorConfig = ConfigFactory.load(CONFIGURATION_FILE_CONSTANT);
 
-        try {
-            connectorConfig = ConfigFactory.load(CONFIGURATION_FILE_CONSTANT);
-        } catch (Exception e) {
-            logger.error("Error loading configuration from: [" + CONFIGURATION_FILE_CONSTANT + "]");
-            return;
-        }
     }
 
     @Override
