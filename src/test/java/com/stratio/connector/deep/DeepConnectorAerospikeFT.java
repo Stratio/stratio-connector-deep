@@ -3,6 +3,7 @@ package com.stratio.connector.deep;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
+import static org.jgroups.util.Util.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,10 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Host;
+import com.aerospike.client.Key;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -31,7 +36,7 @@ public class DeepConnectorAerospikeFT {
 
     private static final Logger logger = Logger.getLogger(DeepConnectorAerospikeFT.class);
 
-    private static final String KEYSPACE = "book";
+    private static final String KEYSPACE = "test";
 
     private static final String MYTABLE1_CONSTANT = "input";
 
@@ -44,6 +49,17 @@ public class DeepConnectorAerospikeFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(AerospikeConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
+        Host[] hosts = {   new Host(AerospikeConnectionConfigurationBuilder.HOST,Integer.valueOf
+                (AerospikeConnectionConfigurationBuilder
+                .PORT))};
+        AerospikeClient client =  new AerospikeClient(null, hosts);
+        client.put(null,new Key(KEYSPACE,MYTABLE1_CONSTANT,1),new Bin("id",1),new Bin("cantos","cantos1"),new Bin
+                ("metadata","metadata1"));
+        client.put(null,new Key(KEYSPACE,MYTABLE1_CONSTANT,2),new Bin("id",2),new Bin("cantos","cantos2"),new Bin
+                ("metadata","metadata3"));
+        client.put(null,new Key(KEYSPACE,MYTABLE1_CONSTANT,3),new Bin("id",3),new Bin("cantos","cantos3"),new Bin
+                ("metadata","metadata3"));
+        client.close();
     }
 
     @Test
@@ -65,7 +81,11 @@ public class DeepConnectorAerospikeFT {
         QueryResult result = deepQueryEngine.executeWorkFlow(logicalWorkflow);
 
         // Assertions
-        List<ColumnMetadata> columnsMetadata = result.getResultSet().getColumnMetadata();
+
+
         List<Row> rowsList = result.getResultSet().getRows();
+        assertEquals("We revive the correct row number",3,rowsList.size());
     }
+
+
 }
