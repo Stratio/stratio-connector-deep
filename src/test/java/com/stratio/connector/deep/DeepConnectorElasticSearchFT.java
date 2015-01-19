@@ -6,6 +6,7 @@ import static com.stratio.connector.deep.LogicalWorkflowBuilder.createJoin;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createOrderBy;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
+import static com.stratio.connector.deep.PrepareFunctionalTest.clearDataFromES;
 import static com.stratio.connector.deep.PrepareFunctionalTest.prepareDataForES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -90,7 +91,7 @@ public class DeepConnectorElasticSearchFT {
     @AfterClass
     public static void setDown() throws InitializationException, ConnectionException, UnsupportedException {
 
-        prepareDataForES();
+        clearDataFromES();
     }
 
     @Test

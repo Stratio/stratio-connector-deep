@@ -13,7 +13,6 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -48,8 +47,6 @@ public class DeepConnectorHDFSFT {
     private static final String LENGHT_CONSTANT = "Length";
     private static final String SINGLE_CONSTANT = "Single";
 
-    private static DeepMetadataEngine deepMetadataEngine;
-
     private static DeepQueryEngine deepQueryEngine;
 
     @BeforeClass
@@ -57,6 +54,7 @@ public class DeepConnectorHDFSFT {
         ConnectionsHandler connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(HDFSConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine    = connectionBuilder.getQueryEngine();
+
     }
 
     @Test

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -52,6 +53,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     public static void prepareDataForES() {
 
+
         elasticClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "statioESCluster")
                         .build()).addTransportAddress(new InetSocketTransportAddress("10.200.0.58", ES_NATIVE_PORT))
                         .addTransportAddress(new InetSocketTransportAddress("10.200.0.59", ES_NATIVE_PORT))
@@ -61,9 +63,16 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
         // ClusterStatsResponse actionGet = elasticClient.admin().cluster().prepareClusterStats().execute().actionGet();
         // actionGet.
 
+        deleteESIndex();
+
         buildTestESDataInsertBatch(TABLE_1, TABLE_2);
 
         elasticClient.close();
+    }
+
+    private static void deleteESIndex() {
+        elasticClient.admin().indices().delete(new DeleteIndexRequest(KEYSPACE))
+                .actionGet();
     }
 
     public static void prepareDataForMongo() {
@@ -88,7 +97,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
     }
 
     public static void clearDataFromES() {
-        // TODO not implemented
+        deleteESIndex();
 
     }
 
