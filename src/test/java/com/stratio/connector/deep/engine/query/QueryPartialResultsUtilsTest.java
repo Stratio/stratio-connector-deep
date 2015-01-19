@@ -79,9 +79,9 @@ public class QueryPartialResultsUtilsTest {
         List<Relation> orderedRelations = QueryPartialResultsUtils.getOrderedRelations(partialResults, listRelations);
         assertEquals(listRelations.size(), orderedRelations.size());
         assertEquals(colSelectorLeft.getName().getQualifiedName(), ((ColumnSelector) orderedRelations.get(0)
-                .getLeftTerm()).getName().getQualifiedName());
+                        .getLeftTerm()).getName().getQualifiedName());
         assertEquals(colSelectorLeft.getName().getQualifiedName(), ((ColumnSelector) orderedRelations.get(1)
-                .getLeftTerm()).getName().getQualifiedName());
+                        .getLeftTerm()).getName().getQualifiedName());
 
     }
 
@@ -90,12 +90,12 @@ public class QueryPartialResultsUtilsTest {
 
         ResultSet resultSet = new ResultSet();
         resultSet.setColumnMetadata(Arrays.asList(metaMetadata(CATALOG, TABLE, ROW1, ColumnType.INT),
-                metaMetadata(CATALOG, TABLE, ROW2, ColumnType.VARCHAR)));
+                        metaMetadata(CATALOG, TABLE, ROW2, ColumnType.VARCHAR)));
         resultSet.setRows(Arrays.asList(metaRow(ROW1, CELL1_VALUE1, ROW2, CELL1_VALUE2),
-                metaRow(ROW1, CELL2_VALUE1, ROW2, CELL2_VALUE2)));
+                        metaRow(ROW1, CELL2_VALUE1, ROW2, CELL2_VALUE2)));
 
-        // mockStatic(QueryPartialResultsUtils.class);
-        // when(
+        // PowerMockito.mockStatic(QueryPartialResultsUtils.class);
+        // PowerMockito.when(
         // QueryPartialResultsUtils.buildCellsFromRow(Matchers.any(Row.class), Matchers.anyString(),
         // Matchers.anyString(), Matchers.anyListOf(ColumnMetadata.class))).thenReturn(
         // new Cells(CATALOG + "." + TABLE, Cell.create(ROW1, CELL1_VALUE1), Cell.create(ROW2,
@@ -109,15 +109,15 @@ public class QueryPartialResultsUtilsTest {
         assertEquals(CATALOG + "." + TABLE, cell1.getnameSpace());
         assertEquals(CATALOG + "." + TABLE, cell2.getnameSpace());
         cell1.getCells(cell1.getnameSpace());
-//        boolean cellsOrdered = cell1.getInteger(ROW1).intValue() == CELL1_VALUE1;
-//        if (!cellsOrdered) {
-//            cell2 = cellsFromResultSet.get(0);
-//            cell1 = cellsFromResultSet.get(1);
-//        }
-//        assertEquals(CELL1_VALUE1, cell1.getInteger(ROW1));
-//        assertEquals(CELL1_VALUE2, cell1.getString(ROW2));
-//        assertEquals(CELL2_VALUE1, cell2.getInteger(ROW1));
-//        assertEquals(CELL2_VALUE2, cell2.getString(ROW2));
+        boolean cellsOrdered = ((Integer) cell1.getCellByName(ROW1).getCellValue()).intValue() == CELL1_VALUE1;
+        if (!cellsOrdered) {
+            cell2 = cellsFromResultSet.get(0);
+            cell1 = cellsFromResultSet.get(1);
+        }
+        assertEquals(CELL1_VALUE1, ((Integer) cell1.getCellByName(ROW1).getCellValue()));
+        assertEquals(CELL1_VALUE2, (String) cell1.getCellByName(ROW2).getCellValue());
+        assertEquals(CELL2_VALUE1, ((Integer) cell2.getCellByName(ROW1).getCellValue()));
+        assertEquals(CELL2_VALUE2, (String) cell2.getCellByName(ROW2).getCellValue());
 
     }
 
