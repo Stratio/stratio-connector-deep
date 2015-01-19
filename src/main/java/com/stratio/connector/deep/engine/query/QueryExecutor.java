@@ -18,6 +18,7 @@
 
 package com.stratio.connector.deep.engine.query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -241,8 +242,13 @@ public class QueryExecutor {
         for (ColumnName columnName : project.getColumnList()) {
             columnsList.add(columnName.getName());
         }
-        Integer limit =(Integer)extractorConfig.getValues().get(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT);
-        DEFAULT_LIMIT = limit!=null?limit:DeepConnectorConstants.DEFAULT_RESULT_SIZE;
+        Serializable auxLimit = extractorConfig.getValues().get(DeepConnectorConstants
+                .PROPERTY_DEFAULT_LIMIT);
+        Integer limit=DeepConnectorConstants.DEFAULT_RESULT_SIZE;
+        if (auxLimit!=null) {
+            limit = Integer.valueOf((String) auxLimit);
+        }
+        DEFAULT_LIMIT = limit;
 
         extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
         extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
