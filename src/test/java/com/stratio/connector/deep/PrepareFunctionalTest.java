@@ -89,6 +89,7 @@ public class PrepareFunctionalTest implements CommonsPrepareTestData {
 
     public static void clearDataFromES() {
         // TODO not implemented
+
     }
 
     public static void clearDataFromMongo() {

@@ -102,7 +102,6 @@ public class DeepConnection extends Connection<Object> {
 
         } else {
             values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
-
         }
 
         for (String key : clusterOptions.keySet()){

@@ -74,12 +74,6 @@ public final class QueryFilterUtils {
     private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
 
 
-    /**
-     * Default result size.
-     */
-    public static final int DEFAULT_RESULT_SIZE = 10000;
-
-
     private QueryFilterUtils() {
     }
 
@@ -343,15 +337,13 @@ public final class QueryFilterUtils {
      * Function that returns a ordered {@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
      *
      * @param rdd
-     *            Initial {@link JavaRDD}.
-     * @param ids
-     *            List of fields to order by.
-     *
+     *            Initial {@link org.apache.spark.api.java.JavaRDD}.
+     * @param limit
      * @return Grouped {@link JavaRDD}.
      */
-    public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses) {
+    public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses, int limit) {
 
-        List<Cells> rddOrdered = rdd.takeOrdered(DEFAULT_RESULT_SIZE, new OrderByComparator(orderByClauses));
+        List<Cells> rddOrdered = rdd.takeOrdered(limit, new OrderByComparator(orderByClauses));
 
         return rddOrdered;
 

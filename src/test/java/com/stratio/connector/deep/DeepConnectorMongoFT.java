@@ -243,6 +243,7 @@ public class DeepConnectorMongoFT {
     @Test
     public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
 
+
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(MONGO_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,

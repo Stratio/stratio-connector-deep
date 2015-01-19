@@ -84,6 +84,7 @@ public class DeepConnectorCassandraAndMongoFT {
     @Test
     public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
 
+
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
