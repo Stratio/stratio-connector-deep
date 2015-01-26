@@ -22,6 +22,13 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 
+ * Class that defines a Term extending ValueCell<T> and implementing Comparable<T>
+ *
+ * @param <T>
+ * 				Type that extends Comparable
+ */
 public abstract class Term<T extends Comparable<T>> extends ValueCell<T> implements Comparable<T>,
         Serializable {
 
@@ -34,6 +41,13 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
     protected Class<? extends Comparable<?>> clazz;
     protected T value;
 
+    /**
+     * Basic constructor.
+     * @param clazz
+     * 				Class of the type that extends Comparable
+     * @param value
+     * 				Value of the Term
+     */
     public Term(Class<? extends Comparable<?>> clazz, T value) {
         this.clazz = clazz;
         this.value = value;
@@ -138,7 +152,7 @@ public abstract class Term<T extends Comparable<T>> extends ValueCell<T> impleme
                     return Long.valueOf(this.getStringValue()).equals(longObj);
                 }
             } catch (NumberFormatException e) {
-                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + obj.getClass());
+                LOG.error("Sorry, unable to Cast incompatible types ->" + this.clazz + " & " + obj.getClass(), e);
             }
             return super.equals(obj);
         }

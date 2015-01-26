@@ -27,6 +27,11 @@ import com.stratio.crossdata.common.data.ResultSet;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.metadata.ColumnMetadata;
 
+/**
+ * 
+ * Subclass DeepResultSet that extends ResultSet and implements Serializable.
+ *
+ */
 public class DeepResultSet extends ResultSet implements Serializable {
 
     /**
@@ -56,7 +61,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * Set the list of rows.
      * 
      * @param rows
-     *            The list.
+     *            The list
      */
     @Override
     public void setRows(List<Row> rows) {
@@ -77,7 +82,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
      * Set the list of column metadata.
      * 
      * @param columnMetadata
-     *            A list of {@link ColumnMetadata} in order.
+     *            A list of {@link ColumnMetadata} in order
      */
     @Override
     public void setColumnMetadata(List<ColumnMetadata> columnMetadata) {
@@ -87,7 +92,7 @@ public class DeepResultSet extends ResultSet implements Serializable {
     /**
      * Get the column metadata in order.
      * 
-     * @return A list of {@link ColumnMetadata}.
+     * @return A list of {@link ColumnMetadata}
      */
     @Override
     public List<ColumnMetadata> getColumnMetadata() {
@@ -119,7 +124,8 @@ public class DeepResultSet extends ResultSet implements Serializable {
     /**
      * Get the size of the Result Set.
      * 
-     * @return Size.
+     * @return 
+     * 			The size
      */
     @Override
     public int size() {

@@ -21,9 +21,7 @@ package com.stratio.connector.deep.connection;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map.Entry;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.util.ConnectorParser;
@@ -41,8 +39,6 @@ import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
  *
  */
 public class DeepConnection extends Connection<Object> {
-
-    private static final Logger logger = LoggerFactory.getLogger(DeepConnection.class);
 
     private boolean isConnect = false;
 
@@ -107,20 +103,21 @@ public class DeepConnection extends Connection<Object> {
         } else {
             values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
         }
-
-        for (String key : clusterOptions.keySet()){
-            Serializable val = clusterOptions.get(key);
-            if (key.equals(ExtractorConstants.HOSTS) ||key.equals(ExtractorConstants.HOST) || key.equals
-                    (ExtractorConstants.PORTS) || key.equals(ExtractorConstants.ES_REST_PORTS)){
-                String formatArray = clusterOptions.get(key).replaceAll("\\s+", "").replaceAll("\\[",
+        
+        
+        for (Entry<String, String> entry : clusterOptions.entrySet()){
+            Serializable val = entry.getValue();
+            if (entry.getKey().equals(ExtractorConstants.HOSTS) ||entry.getKey().equals(ExtractorConstants.HOST) || entry.getKey().equals
+                    (ExtractorConstants.PORTS) || entry.getKey().equals(ExtractorConstants.ES_REST_PORTS)){
+                String formatArray = entry.getValue().replaceAll("\\s+", "").replaceAll("\\[",
                         "").replaceAll("]", "");
-                values.put(key,formatArray);
+                values.put(entry.getKey(),formatArray);
             }else{
-                values.put(key,val);
+                values.put(entry.getKey(),val);
             }
 
         }
-
+        
         return values;
 
     }

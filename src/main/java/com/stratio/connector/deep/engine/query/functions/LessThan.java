@@ -25,14 +25,14 @@ import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is less than the provided term.
+ * Class that defines LessThan, Spark function that determines if the value in the given field is less than the provided term.
  */
 public class LessThan implements Function<Cells, Boolean> {
 
     private static final long serialVersionUID = 2675616112608139116L;
 
     /**
-     * Term to compare.
+     * Term to be compared.
      */
     private final Term<?> term;
 
@@ -41,6 +41,14 @@ public class LessThan implements Function<Cells, Boolean> {
      */
     private final ColumnName column;
 
+    /**
+     * Basic constructor for the LessThan function class.
+     * 
+     * @param column
+     * 				Column cell to compare to
+     * @param term
+     * 				Term to be compared
+     */
     public LessThan(ColumnName column, Term term) {
         this.term = term;
         this.column = column;

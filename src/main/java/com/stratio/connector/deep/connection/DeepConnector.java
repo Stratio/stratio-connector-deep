@@ -46,12 +46,12 @@ import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 
 /**
- * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
+ * Class that implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
  * 
  */
 public class DeepConnector implements IConnector {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeepConnector.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeepConnector.class);
 
     private static final String CONFIGURATION_FILE_CONSTANT = "connector-application.conf";
 
@@ -66,14 +66,17 @@ public class DeepConnector implements IConnector {
     private DeepSparkContext deepContext;
 
     /**
-     * Connector configuration from the properties file
+     * Connector configuration from the properties file. 
      */
     private Config connectorConfig;
 
     /**
-     * Main uses to asociate the connector to crossdata.
+     * Main uses to associate the connector to Crossdata.
      * 
-     * */
+     * @param args
+     * 				Args
+     * @throws InitializationException
+     */
     public static void main(String[] args)  throws InitializationException{
 
         DeepConnector deepConnector = new DeepConnector();
@@ -93,7 +96,7 @@ public class DeepConnector implements IConnector {
                 try {
                     shutdown();
                 } catch (ExecutionException e) {
-                    logger.error("Fail ShutDown");
+                    LOGGER.error("Fail ShutDown", e);
                 }
             }
         });
@@ -106,7 +109,7 @@ public class DeepConnector implements IConnector {
 
         if (input == null) {
             String message = "Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]";
-            logger.error(message);
+            LOGGER.error(message);
             throw new InitializationException(message);
         }
         connectorConfig = ConfigFactory.load(CONFIGURATION_FILE_CONSTANT);
@@ -134,10 +137,10 @@ public class DeepConnector implements IConnector {
 
         this.connectionHandler = new DeepConnectionHandler(null);
 
-        logger.info("-------------StartUp the SparkContext------------ ");
+        LOGGER.info("-------------StartUp the SparkContext------------ ");
 
-        logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
-        logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
+        LOGGER.info("spark.serializer: " + System.getProperty("spark.serializer"));
+        LOGGER.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
         String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
         String sparkHome = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
@@ -149,20 +152,20 @@ public class DeepConnector implements IConnector {
                             DeepConnectorConstants.SPARK_JARS);
 
         } catch (ConfigException e) {
-            logger.info("--No spark Jars added--");
+            LOGGER.info("--No spark Jars added--", e);
         }
         if (sparkJars != null) {
             jarsArray = new String[sparkJars.size()];
             sparkJars.toArray(jarsArray);
         }
 
-        logger.info("---SPARK-Master---->" + sparkMaster);
-        logger.info("---SPARK-Home---->" + sparkHome);
+        LOGGER.info("---SPARK-Master---->" + sparkMaster);
+        LOGGER.info("---SPARK-Home---->" + sparkHome);
 
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
                         sparkHome, jarsArray);
 
-        logger.info("-------------End StartUp the SparkContext------------ ");
+        LOGGER.info("-------------End StartUp the SparkContext------------ ");
     }
 
     /**
@@ -171,7 +174,7 @@ public class DeepConnector implements IConnector {
      * 
      * @param credentials
      * @param config
-     *            {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}.
+     *            {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}
      */
     @Override
     public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
@@ -224,7 +227,7 @@ public class DeepConnector implements IConnector {
      * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}.
      * 
      * @param name
-     *            {@link com.stratio.crossdata.common.data.ClusterName}.
+     *            {@link com.stratio.crossdata.common.data.ClusterName}
      * @return boolean
      * 
      */
@@ -247,7 +250,7 @@ public class DeepConnector implements IConnector {
 
     }
 
-    /*
+    /**
      * Return the interface to invoke queries from crossdata.
      * 
      * @return DeepQueryEngine
@@ -259,7 +262,7 @@ public class DeepConnector implements IConnector {
 
     }
 
-    /*
+    /**
      * Unsupported method.
      * 
      * @return IMetadataEngine

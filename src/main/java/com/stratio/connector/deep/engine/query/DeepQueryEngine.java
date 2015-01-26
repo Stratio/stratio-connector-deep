@@ -28,12 +28,25 @@ import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.deep.core.context.DeepSparkContext;
 
+/**
+ * 
+ * Subclass that extends CommonsQueryEngine.
+ *
+ */
 public class DeepQueryEngine extends CommonsQueryEngine {
 
     private final DeepSparkContext deepContext;
 
     private final DeepConnectionHandler deepConnectionHandler;
 
+    /**
+     * Basic constructor.
+     * 
+     * @param deepContext
+     * 						The Deep Context
+     * @param deepConnectionHandler
+     * 								The connection handler
+     */
     public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
         super(deepConnectionHandler);
         this.deepContext = deepContext;

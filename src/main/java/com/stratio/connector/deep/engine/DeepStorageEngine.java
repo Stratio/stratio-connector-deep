@@ -34,19 +34,38 @@ import com.stratio.crossdata.common.metadata.TableMetadata;
 import com.stratio.crossdata.common.result.QueryResult;
 
 /**
- * Class use for insert Data table, not implemented for Deep connector
+ * Class used for inserting Data in the table, not implemented for Deep connector
  * {@link com.stratio.connector.commons.engine.CommonsMetadataEngine}.
  * 
  * @throw UnsupportedException
  */
 public class DeepStorageEngine extends CommonsStorageEngine {
 
+	/**
+	 * Basic constructor.
+	 * 
+	 * @param connectionHandler
+	 * 							The connection handler
+	 */
     public DeepStorageEngine(DeepConnectionHandler connectionHandler) {
 
         super(connectionHandler);
 
     }
 
+    /**
+     * Method responsible for performing a query.
+     * 
+     * @param targetCluster
+     * 						The cluster name
+     * @param workflow
+     * 				The logical workflow
+     * @param connection
+     * 					The connection
+     * @return
+     * 			The Query result
+     * @throws UnsupportedException
+     */
     public QueryResult execute(ClusterName targetCluster, LogicalWorkflow workflow, Connection connection)
             throws UnsupportedException {
 

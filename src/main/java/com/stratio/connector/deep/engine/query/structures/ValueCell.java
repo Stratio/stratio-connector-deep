@@ -18,6 +18,13 @@
 
 package com.stratio.connector.deep.engine.query.structures;
 
+/**
+ * 
+ * Class that defines a ValueCell.
+ *
+ * @param <T>
+ * 				Type that extends Comparable<T>
+ */
 public abstract class ValueCell<T extends Comparable<T>> {
     public static final int TYPE_TERM = 1;
     public static final int TYPE_COLLECTION_LITERAL = 2;
@@ -34,7 +41,7 @@ public abstract class ValueCell<T extends Comparable<T>> {
     /**
      * Get the String value representation.
      * 
-     * @return The String value.
+     * @return The String value
      */
     public abstract String getStringValue();
 

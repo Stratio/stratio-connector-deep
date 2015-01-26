@@ -26,14 +26,14 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is included in the provided list of terms.
+ * Class that defines In, Spark function that determines if the value in the given field is included in the provided list of terms.
  */
 public class In implements Function<Cells, Boolean> {
 
     private static final long serialVersionUID = -6637139616271541577L;
 
     /**
-     * Name of the field of the cell to compare.
+     * Name of the field of the cell to be compared.
      */
     private final String field;
 
@@ -42,6 +42,13 @@ public class In implements Function<Cells, Boolean> {
      */
     private final List<Serializable> terms;
 
+    /**
+     * Basic constructor for the In function class.
+     * @param field
+     * 				Name of the field of the cell to be compared
+     * @param terms
+     * 				IDs in the IN clause
+     */
     public In(String field, List<Serializable> terms) {
         this.field = field;
         this.terms = terms;

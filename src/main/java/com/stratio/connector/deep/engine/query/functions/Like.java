@@ -23,7 +23,7 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field matches the provided regular expression.
+ * Class that defines Like, Spark function that determines if the value in the given field matches the provided regular expression.
  */
 public class Like implements Function<Cells, Boolean> {
 
@@ -39,6 +39,14 @@ public class Like implements Function<Cells, Boolean> {
      */
     private final String regexp;
 
+    /**
+     * Basic constructor for the Like function class.
+     * 
+     * @param field
+     * 				Name of the field of the cell to match
+     * @param regexp
+     * 				Regular expression
+     */
     public Like(String field, String regexp) {
         this.field = field;
         this.regexp = regexp;

@@ -18,14 +18,19 @@
 
 package com.stratio.connector.deep.engine.query.structures;
 
+/**
+ * 
+ * Subclass of the class 'Term' that defines a Boolean Term.
+ *
+ */
 public class BooleanTerm extends Term<Boolean> {
     private static final long serialVersionUID = 2872212148572680680L;
 
     /**
-     * Class constructor.
+     * Constructor from a String representation of a Boolean value.
      * 
      * @param term
-     *            The string representation of a Boolean value.
+     *            The string representation of a Boolean value
      */
     public BooleanTerm(String term) {
         super(Boolean.class, Boolean.valueOf(term));

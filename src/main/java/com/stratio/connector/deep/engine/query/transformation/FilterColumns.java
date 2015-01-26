@@ -27,17 +27,23 @@ import com.stratio.deep.commons.entity.Cell;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that filters requested columns from a given {@link Cells} object.
+ * Class that defines FilterColumns, Spark function that filters requested columns from a given {@link Cells} object.
  */
 public class FilterColumns implements Function<Cells, Cells> {
 
     private static final long serialVersionUID = -6143471789450703044L;
 
-    /*
+    /**
      * Columns to be kept
      */
     private final List<Selector> columns;
 
+    /**
+     * Basic constructor.
+     * 
+     * @param columns
+     * 				The columns
+     */
     public FilterColumns(List<Selector> columns) {
         this.columns = columns;
     }

@@ -64,6 +64,11 @@ import com.stratio.deep.core.fs.utils.SchemaMap;
 import com.stratio.deep.core.fs.utils.TableName;
 import com.stratio.deep.core.fs.utils.TextFileDataTable;
 
+/**
+ * 
+ *  Subclass responsible of the queries execution.
+ *
+ */
 public class QueryExecutor {
 
     private final DeepSparkContext deepContext;
@@ -78,10 +83,18 @@ public class QueryExecutor {
 
     private OrderBy orderBy;
 
-    private int DEFAULT_LIMIT = DeepConnectorConstants.DEFAULT_RESULT_SIZE;
+    private static int limit = DeepConnectorConstants.DEFAULT_RESULT_SIZE;
 
+    /**
+     * Basic constructor.
+     * 
+     * @param deepContext
+     * 					The Deep Context
+     * @param deepConnectionHandler
+     * 								The Connection Handler
+     */
     public QueryExecutor(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
-        this.deepContext = deepContext;
+        this.deepContext = deepContext; 
         this.deepConnectionHandler = deepConnectionHandler;
     }
 
@@ -90,7 +103,8 @@ public class QueryExecutor {
      * 
      * @param workflow
      *            The {@link com.stratio.crossdata.common.logicalplan.LogicalWorkflow} that contains the
-     *            {@link com.stratio.crossdata.common.logicalplan.LogicalStep} to be executed.
+     *            {@link com.stratio.crossdata.c
+     *            ommon.logicalplan.LogicalStep} to be executed.
      * @return A {@link com.stratio.crossdata.common.result.QueryResult}.
      * @throws UnsupportedException
      *             If the required set of operations are not supported by the connector.
@@ -244,11 +258,8 @@ public class QueryExecutor {
         }
         Serializable auxLimit = extractorConfig.getValues().get(DeepConnectorConstants
                 .PROPERTY_DEFAULT_LIMIT);
-        Integer limit=DeepConnectorConstants.DEFAULT_RESULT_SIZE;
-        if (auxLimit!=null) {
-            limit = Integer.valueOf((String) auxLimit);
-        }
-        DEFAULT_LIMIT = limit;
+        
+        limit = (auxLimit != null) ? Integer.valueOf((String) auxLimit): DeepConnectorConstants.DEFAULT_RESULT_SIZE ;
 
         extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
         extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
@@ -395,9 +406,9 @@ public class QueryExecutor {
         List<Cells> resultCells;
 
         if(orderBy!=null){
-            resultCells = executeOrderBy(orderBy,resultRdd,DEFAULT_LIMIT);
+            resultCells = executeOrderBy(orderBy,resultRdd);
         }else{
-            resultCells = resultRdd.take(DEFAULT_LIMIT);
+            resultCells = resultRdd.take(limit);
         }
 
         Map<Selector, String> columnMap = selectStep.getColumnMap();
@@ -613,7 +624,7 @@ public class QueryExecutor {
      *
      * @return Grouped {@link JavaRDD}.
      */
-    private List<Cells> executeOrderBy(OrderBy orderByStep, JavaRDD<Cells> rdd, int limit) {
+    private List<Cells> executeOrderBy(OrderBy orderByStep, JavaRDD<Cells> rdd) {
 
         return QueryFilterUtils.orderByFields(rdd, orderByStep.getIds(), limit);
     }

@@ -22,8 +22,10 @@ package com.stratio.connector.deep.configuration;
  * Config constants.
  */
 
-public class DeepConnectorConstants {
-
+public final class DeepConnectorConstants {
+	private DeepConnectorConstants(){
+		
+	}
     public static final String HOSTS = "Hosts";
     public static final String PORTS = "Port";
 
@@ -72,4 +74,5 @@ public class DeepConnectorConstants {
 
     public static final int DEFAULT_RESULT_SIZE = 10000;
     public static final String PROPERTY_DEFAULT_LIMIT = "DefaultLimit";
+
 }

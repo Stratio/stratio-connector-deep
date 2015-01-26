@@ -25,7 +25,7 @@ import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is equals to the provided term.
+ * Class that defines DeepEquals, Spark function that determines if the value in the given field is equals to the provided term.
  *
  */
 public class DeepEquals implements Function<Cells, Boolean> {
@@ -33,7 +33,7 @@ public class DeepEquals implements Function<Cells, Boolean> {
     private static final long serialVersionUID = -6143471452730703044L;
 
     /**
-     * Term to compare.
+     * Term to be compared.
      */
     private final Term<?> term;
 
@@ -43,6 +43,13 @@ public class DeepEquals implements Function<Cells, Boolean> {
      */
     private final ColumnName column;
 
+    /**
+     * Basic constructor for the DeepEquals function class.
+     * @param column
+     * 				Column cell to compare to
+     * @param term
+     * 				Term to be compared
+     */
     public DeepEquals(ColumnName column, Term<?> term) {
         this.term = term;
         this.column = column;

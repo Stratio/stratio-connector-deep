@@ -20,6 +20,11 @@ package com.stratio.connector.deep.data;
 
 import java.util.Iterator;
 
+/**
+ * 
+ * Class DeepResultSetIterator that implements Iterator.
+ *
+ */
 public class DeepResultSetIterator implements Iterator<com.stratio.crossdata.common.data.Row> {
 
     /**

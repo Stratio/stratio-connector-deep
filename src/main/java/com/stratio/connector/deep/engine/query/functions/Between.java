@@ -25,7 +25,7 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is between the provided lower and uppper bounds.
+ * Spark function that determines if the value in the given field is between the provided lower and upper bounds.
  */
 public class Between implements Function<Cells, Boolean> {
 
@@ -46,6 +46,16 @@ public class Between implements Function<Cells, Boolean> {
      */
     private final Serializable upperBound;
 
+    /**
+     * Basic constructor for the Between function class.
+     * 
+     * @param field
+     * 				Name of the field of the cell to compare
+     * @param lowerBound
+     * 					 The lower bound	
+     * @param upperBound
+     * 					 The upper bound
+     */
     public Between(String field, Serializable lowerBound, Serializable upperBound) {
         this.field = field;
         this.lowerBound = lowerBound;
