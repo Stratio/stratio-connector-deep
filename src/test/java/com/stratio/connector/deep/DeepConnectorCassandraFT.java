@@ -49,7 +49,7 @@ import com.stratio.crossdata.common.statements.structures.OrderDirection;
  * Functional tests using Cassandra DB
  */
 public class DeepConnectorCassandraFT {
-    private static final String KEYSPACE = "functionaltest";
+    private static final String KEYSPACE = CommonsPrepareTestData.KEYSPACE;
     private static final String MYTABLE1_CONSTANT = "songs";
     private static final String MYTABLE2_CONSTANT = "artists";
 
@@ -86,14 +86,22 @@ public class DeepConnectorCassandraFT {
     private static final String YEAR_CONSTANT = "year";
     private static final String CASSANDRA_CLUSTERNAME_CONSTANT = "cassandra";
     private static DeepQueryEngine deepQueryEngine;
+    private static DeepConnector connector;
 
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
-        DeepConnector connector = new DeepConnector();
+        connector = new DeepConnector();
         connector.init(null);
         connector.connect(null, CassandraConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = (DeepQueryEngine) connector.getQueryEngine();
         prepareDataForCassandra();
+    }
+
+    @AfterClass
+    public static void setDown() throws ExecutionException {
+        PrepareFunctionalTest.clearDataFromCassandra();
+        connector.shutdown();
+
     }
 
     @Test
@@ -310,7 +318,6 @@ public class DeepConnectorCassandraFT {
 
     @Test
     public void twoProjectsNonIndexFilteredAndJoinedAndSelectTest() throws ConnectorException {
-
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
@@ -689,31 +696,26 @@ public class DeepConnectorCassandraFT {
 
     }
 
-    @AfterClass
-    public static void setDown() {
-        PrepareFunctionalTest.clearDataFromCassandra();
-
-    }
-
     @Test
     public void singleProjectAndSelectWithOrderByTest() throws UnsupportedException, ExecutionException {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
         Project project = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
-                Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
+                        Arrays.asList(ARTIST_CONSTANT, DESCRIPTION_CONSTANT, TITLE_CONSTANT, YEAR_CONSTANT));
 
-        LinkedHashMap<String,OrderDirection> orderMap = new LinkedHashMap<>();
+        LinkedHashMap<String, OrderDirection> orderMap = new LinkedHashMap<>();
         orderMap.put(YEAR_CONSTANT, OrderDirection.ASC);
-        orderMap.put(ARTIST_CONSTANT , OrderDirection.DESC);
+        orderMap.put(ARTIST_CONSTANT, OrderDirection.DESC);
 
         project.setNextStep(createOrderBy(KEYSPACE, MYTABLE1_CONSTANT, orderMap));
 
         LogicalStep orderBy = project.getNextStep();
 
-        orderBy.setNextStep(createSelect(Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT,
-                        ARTIST_CONSTANT),createColumn(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT)),
-                Arrays.asList(ARTIST_ALIAS_CONSTANT,YEAR_CONSTANT)));
+        orderBy.setNextStep(createSelect(
+                        Arrays.asList(createColumn(KEYSPACE, MYTABLE1_CONSTANT, ARTIST_CONSTANT),
+                                        createColumn(KEYSPACE, MYTABLE1_CONSTANT, YEAR_CONSTANT)),
+                        Arrays.asList(ARTIST_ALIAS_CONSTANT, YEAR_CONSTANT)));
 
         // One single initial step
         stepList.add(project);
@@ -735,20 +737,20 @@ public class DeepConnectorCassandraFT {
 
         List<Integer> ageList1 = new ArrayList<>();
         List<Integer> ageList2 = new ArrayList<>();
-        for(Row row:rowsList){
+        for (Row row : rowsList) {
             ageList1.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
             ageList2.add(Integer.valueOf(row.getCell(YEAR_CONSTANT).getValue().toString()));
 
         }
         Collections.sort(ageList2);
 
-        assertEquals("ORDER BY expected",ageList2, ageList1 );
+        assertEquals("ORDER BY expected", ageList2, ageList1);
 
         // Checking metadata
-        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT,
-                columnsMetadata.get(0).getName().getQualifiedName());
-        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0)
-                .getName().getTableName().getQualifiedName());
+        assertEquals("Author expected", KEYSPACE + "." + MYTABLE1_CONSTANT + "." + ARTIST_CONSTANT, columnsMetadata
+                        .get(0).getName().getQualifiedName());
+        assertEquals("mytable1 expected", KEYSPACE + "." + MYTABLE1_CONSTANT, columnsMetadata.get(0).getName()
+                        .getTableName().getQualifiedName());
 
         // Checking rows
         for (Row row : rowsList) {

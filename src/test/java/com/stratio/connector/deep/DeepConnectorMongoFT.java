@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class DeepConnectorMongoFT {
 
     private static final Logger logger = Logger.getLogger(DeepConnectorMongoFT.class);
 
-    private static final String KEYSPACE = "functionaltest";
+    private static final String KEYSPACE = CommonsPrepareTestData.KEYSPACE;
 
     private static final String MYTABLE1_CONSTANT = "songs";
 
@@ -82,10 +83,11 @@ public class DeepConnectorMongoFT {
     private static final String MONGO_CLUSTERNAME_CONSTANT = "mongodb";
 
     private static DeepQueryEngine deepQueryEngine;
+    private static ConnectionsHandler connectionBuilder;
 
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
-        ConnectionsHandler connectionBuilder = new ConnectionsHandler();
+        connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
         prepareDataForMongo();
@@ -242,7 +244,6 @@ public class DeepConnectorMongoFT {
 
     @Test
     public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
-
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
@@ -420,6 +421,14 @@ public class DeepConnectorMongoFT {
             assertEquals("Wrong number of columns in the row", 2, row.size());
             assertNotNull("Expecting author column in row", row.getCell(AUTHOR_ALIAS_CONSTANT));
         }
+    }
+
+    @AfterClass
+    public static void tearDown() throws ExecutionException {
+
+        PrepareFunctionalTest.clearDataFromMongo();
+        connectionBuilder.shutdown();
+
     }
 
 }

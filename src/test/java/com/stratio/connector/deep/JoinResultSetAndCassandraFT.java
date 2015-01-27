@@ -38,7 +38,7 @@ import com.stratio.crossdata.common.result.QueryResult;
  */
 public class JoinResultSetAndCassandraFT {
 
-    private static final String KEYSPACE = "functionaltest";
+    private static final String KEYSPACE = CommonsPrepareTestData.KEYSPACE;
 
     private static final String MYTABLE1_CONSTANT = "songs";
 
@@ -69,10 +69,11 @@ public class JoinResultSetAndCassandraFT {
     private static final String CASSANDRA_CLUSTERNAME_CONSTANT = "cassandra";
 
     private static DeepQueryEngine deepQueryEngine;
+    private static ConnectionsHandler connectionBuilder;
 
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
-        ConnectionsHandler connectionBuilder = new ConnectionsHandler();
+        connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
         PrepareFunctionalTest.prepareDataForCassandra();
@@ -80,7 +81,6 @@ public class JoinResultSetAndCassandraFT {
 
     @Test
     public void testPartialResultJoinTest() throws ConnectorException {
-
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
@@ -169,7 +169,6 @@ public class JoinResultSetAndCassandraFT {
     @Test
     public void testPartialResultJoinTestWithAlias() throws ConnectorException {
 
-
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
         Project projectLeft = createProject(CASSANDRA_CLUSTERNAME_CONSTANT, KEYSPACE, MYTABLE1_CONSTANT,
@@ -255,8 +254,9 @@ public class JoinResultSetAndCassandraFT {
     }
 
     @AfterClass
-    public static void setDown() {
+    public static void setDown() throws ConnectionException, ExecutionException {
         PrepareFunctionalTest.clearDataFromCassandra();
+        connectionBuilder.close(CassandraConnectionConfigurationBuilder.CLUSTERNAME_CONSTANT);
+        connectionBuilder.shutdown();
     }
-
 }

@@ -3,6 +3,7 @@ package com.stratio.connector.deep;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.DataStoreName;
@@ -32,7 +33,7 @@ public class HDFSConnectionConfigurationBuilder {
         options.put(ExtractorConstants.INNERCLASS, HDFS);
 
         options.put(ExtractorConstants.FS_FILE_SEPARATOR, ",");
-        options.put(ExtractorConstants.FS_FILE_PATH, "/user/hadoop/");
+        options.put(ExtractorConstants.FS_FILE_PATH, "/");
 
         // options.put(ExtractorConstants.FS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
         // "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
@@ -40,8 +41,11 @@ public class HDFSConnectionConfigurationBuilder {
         options.put(ExtractorConstants.TABLE, "songs");
         options.put(ExtractorConstants.CATALOG, "test");
         options.put(ExtractorConstants.HDFS_FILE_EXTENSION, ".csv");
-
-        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, options, options);
+        Map<String, String> connectorOptions = new HashMap<>();
+        connectorOptions.put(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT,
+                        String.valueOf(DeepConnectorConstants.DEFAULT_RESULT_SIZE));
+        ConnectorClusterConfig configuration = new ConnectorClusterConfig(CLUSTERNAME_CONSTANT, connectorOptions,
+                        options);
         configuration.setDataStoreName(new DataStoreName("hdfs"));
         return configuration;
     }

@@ -23,6 +23,7 @@ import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
 import com.stratio.crossdata.common.exceptions.ConnectorException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.Join;
@@ -37,7 +38,7 @@ import com.stratio.crossdata.common.result.QueryResult;
  */
 public class DeepConnectorCassandraAndMongoFT {
 
-    private static final String KEYSPACE = "functionaltest";
+    private static final String KEYSPACE = CommonsPrepareTestData.KEYSPACE;
 
     private static final String MYTABLE1_CONSTANT = "songs";
 
@@ -71,19 +72,21 @@ public class DeepConnectorCassandraAndMongoFT {
 
     private static DeepQueryEngine deepQueryEngine;
 
+    private static ConnectionsHandler connectionBuilder;
+
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
-        ConnectionsHandler connectionBuilder = new ConnectionsHandler();
+        connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(CassandraConnectionConfigurationBuilder.prepareConfiguration());
         connectionBuilder.connect(MongoConnectionConfigurationBuilder.prepareConfiguration());
         deepQueryEngine = connectionBuilder.getQueryEngine();
         prepareDataForCassandra();
+        PrepareFunctionalTest.prepareDataForMongo();
 
     }
 
     @Test
     public void testTwoProjectsJoinedAndSelectTest() throws ConnectorException {
-
 
         // Input data
         List<LogicalStep> stepList = new LinkedList<>();
@@ -145,8 +148,11 @@ public class DeepConnectorCassandraAndMongoFT {
     }
 
     @AfterClass
-    public static void setDown() {
+    public static void setDown() throws ConnectionException, ExecutionException {
         PrepareFunctionalTest.clearDataFromCassandra();
+        PrepareFunctionalTest.clearDataFromMongo();
+        connectionBuilder.close(CassandraConnectionConfigurationBuilder.CLUSTERNAME_CONSTANT);
+        connectionBuilder.close(MongoConnectionConfigurationBuilder.CLUSTERNAME_CONSTANT);
+        connectionBuilder.shutdown();
     }
-
 }

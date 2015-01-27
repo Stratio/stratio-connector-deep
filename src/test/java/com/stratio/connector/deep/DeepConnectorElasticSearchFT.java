@@ -44,7 +44,7 @@ public class DeepConnectorElasticSearchFT {
 
     private static final Logger logger = Logger.getLogger(DeepConnectorMongoFT.class);
 
-    private static final String KEYSPACE = "functionaltest";
+    private static final String KEYSPACE = CommonsPrepareTestData.KEYSPACE;
 
     private static final String MYTABLE1_CONSTANT = "songs";
 
@@ -77,10 +77,11 @@ public class DeepConnectorElasticSearchFT {
     private static DeepMetadataEngine deepMetadataEngine;
 
     private static DeepQueryEngine deepQueryEngine;
+    private static ConnectionsHandler connectionBuilder;
 
     @BeforeClass
     public static void setUp() throws InitializationException, ConnectionException, UnsupportedException {
-        ConnectionsHandler connectionBuilder = new ConnectionsHandler();
+        connectionBuilder = new ConnectionsHandler();
         connectionBuilder.connect(ESConnectionConfigurationBuilder.prepareConfiguration());
 
         deepQueryEngine = connectionBuilder.getQueryEngine();
@@ -89,9 +90,11 @@ public class DeepConnectorElasticSearchFT {
     }
 
     @AfterClass
-    public static void setDown() throws InitializationException, ConnectionException, UnsupportedException {
+    public static void setDown() throws InitializationException, ConnectionException, UnsupportedException,
+                    ExecutionException {
 
         clearDataFromES();
+        connectionBuilder.shutdown();
     }
 
     @Test
