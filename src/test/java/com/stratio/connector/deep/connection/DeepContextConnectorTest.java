@@ -62,13 +62,14 @@ public class DeepContextConnectorTest {
         deepConnector.init(iconfiguration);
 
         DeepConnectionHandler connectionHandler = (DeepConnectionHandler) Whitebox.getInternalState(deepConnector,
-                "connectionHandler");
+                        "connectionHandler");
 
         Object recoveredConfiguration = Whitebox.getInternalState(connectionHandler, "configuration");
 
         assertNull("The configuration is not null", recoveredConfiguration);
         assertNotNull("The connection handle is not null", connectionHandler);
-        //assertEquals ("The configuration is correct" , iconfiguration, recoveredConfiguration);
+        // assertEquals ("The configuration is correct" , iconfiguration, recoveredConfiguration);
+        deepConnector.shutdown();
     }
 
     /**
@@ -85,7 +86,7 @@ public class DeepContextConnectorTest {
         ICredentials iCredentials = mock(ICredentials.class);
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
         Map<String, String> options = new HashMap<>();
-        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options, options);
         config.setDataStoreName(new DataStoreName(DATASTORE_NAME));
 
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
@@ -103,7 +104,7 @@ public class DeepContextConnectorTest {
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
 
         Map<String, String> options = new HashMap<>();
-        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options, options);
         config.setDataStoreName(new DataStoreName(DATASTORE_NAME));
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
