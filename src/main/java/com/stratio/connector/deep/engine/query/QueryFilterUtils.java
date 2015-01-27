@@ -68,286 +68,313 @@ import scala.Tuple2;
  */
 public final class QueryFilterUtils {
 
-    /**
-     * Class logger.
-     */
-    private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
+	/**
+	 * Class logger.
+	 */
+	private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
 
 
-    private QueryFilterUtils() {
-    }
+	private QueryFilterUtils() {
+	}
 
-    /**
-     * Take a RDD and a Relation and apply suitable filter to the RDD. Execute where clause on Deep.
-     * 
-     * @param rdd
-     *            RDD which filter must be applied.
-     * @param relation
-     *            {@link com.stratio.crossdata.common.statements.structures.relationships.Relation} to apply.
-     * @return A new RDD with the result.
-     * @throws UnsupportedException
-     */
-    static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, Relation relation) throws UnsupportedException,
-            ExecutionException {
+	/**
+	 * Take a RDD and a Relation and apply suitable filter to the RDD. Execute where clause on Deep.
+	 * 
+	 * @param rdd
+	 *            RDD which filter must be applied.
+	 * @param relation
+	 *            {@link com.stratio.crossdata.common.statements.structures.relationships.Relation} to apply.
+	 * @return A new RDD with the result.
+	 * @throws UnsupportedException
+	 */
+	static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, Relation relation) throws UnsupportedException,
+	ExecutionException {
 
-        Operator operator = relation.getOperator();
-        JavaRDD<Cells> result = null;
-        ColumnName column = ((ColumnSelector) relation.getLeftTerm()).getName();
-        Term rightTerm = filterFromRightTermWhereRelation(relation);
+		Operator operator = relation.getOperator();
+		JavaRDD<Cells> result = null;
+		ColumnName column = ((ColumnSelector) relation.getLeftTerm()).getName();
+		Term rightTerm = filterFromRightTermWhereRelation(relation);
 
-        try {
-            switch (operator) {
-            case EQ:
-                result = rdd.filter(new DeepEquals(column, rightTerm));
-                break;
-            case DISTINCT:
-                result = rdd.filter(new NotEquals(column, rightTerm));
-                break;
-            case GT:
-                result = rdd.filter(new GreaterThan(column, rightTerm));
-                break;
-            case GET:
-                result = rdd.filter(new GreaterEqualThan(column, rightTerm));
-                break;
-            case LT:
-                result = rdd.filter(new LessThan(column, rightTerm));
-                break;
-            case LET:
-                result = rdd.filter(new LessEqualThan(column, rightTerm));
-                break;
-            case IN:
+		try {
+			switch (operator) {
+			case EQ:
+				result = rdd.filter(new DeepEquals(column, rightTerm));
+				break;
+			case DISTINCT:
+				result = rdd.filter(new NotEquals(column, rightTerm));
+				break;
+			case GT:
+				result = rdd.filter(new GreaterThan(column, rightTerm));
+				break;
+			case GET:
+				result = rdd.filter(new GreaterEqualThan(column, rightTerm));
+				break;
+			case LT:
+				result = rdd.filter(new LessThan(column, rightTerm));
+				break;
+			case LET:
+				result = rdd.filter(new LessEqualThan(column, rightTerm));
+				break;
+			case IN:
 
-                throw new UnsupportedException("IN operator unsupported");
-            case BETWEEN:
+				throw new UnsupportedException("IN operator unsupported");
+			case BETWEEN:
 
-                throw new UnsupportedException("BETWEEN operator unsupported");
-            default:
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Operator not supported: " + operator);
-                }
+				throw new UnsupportedException("BETWEEN operator unsupported");
+			default:
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Operator not supported: " + operator);
+				}
 
-                result = null;
-            }
-        } catch (Exception e) {
-            throw new ExecutionException(" Error when try to comparate fields[ ]" + e);
-        }
-        return result;
-    }
+				result = null;
+			}
+		} catch (Exception e) {
+			throw new ExecutionException(" Error when try to comparate fields[ ]" + e);
+		}
+		return result;
+	}
 
-    /**
-     * Build JavaRDD<Cells> from list of Cells and select Columns.
-     * 
-     * @param rdd
-     *            Cells RDD.
-     * @param selectedCols
-     *            Set of fields selected in the SelectStatement.
-     * @return JavaRDD<Cells>
-     */
+	/**
+	 * Build JavaRDD<Cells> from list of Cells and select Columns.
+	 * 
+	 * @param rdd
+	 *            Cells RDD.
+	 * @param selectedCols
+	 *            Set of fields selected in the SelectStatement.
+	 * @return JavaRDD<Cells>
+	 */
 
-    static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<Selector> selectedCols) {
+	static JavaRDD<Cells> filterSelectedColumns(JavaRDD<Cells> rdd, final Set<Selector> selectedCols) {
 
-        List<Selector> list = new ArrayList<>(selectedCols);
+		List<Selector> list = new ArrayList<>(selectedCols);
 
-        return rdd.map(new FilterColumns(list));
-    }
+		return rdd.map(new FilterColumns(list));
+	}
 
-    static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
+	static JavaRDD<Cells> doJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rightRdd, List<Relation> joinRelations) {
 
-        JavaRDD<Cells> joinedResult = null;
+		JavaRDD<Cells> joinedResult = null;
 
-        List<ColumnName> firstTables = new ArrayList<>();
-        List<ColumnName> secondTables = new ArrayList<>();
+		List<ColumnName> firstTables = new ArrayList<>();
+		List<ColumnName> secondTables = new ArrayList<>();
 
-        for (Relation relation : joinRelations) {
+		for (Relation relation : joinRelations) {
 
-            ColumnSelector selectorRight = (ColumnSelector) relation.getRightTerm();
-            ColumnSelector selectorLeft = (ColumnSelector) relation.getLeftTerm();
+			ColumnSelector selectorRight = (ColumnSelector) relation.getRightTerm();
+			ColumnSelector selectorLeft = (ColumnSelector) relation.getLeftTerm();
 
-            if (relation.getOperator().equals(Operator.EQ)) {
-                firstTables.add(selectorLeft.getName());
-                secondTables.add(selectorRight.getName());
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
-                            + selectorLeft.getName().getName());
-                }
-            }
+			if (relation.getOperator().equals(Operator.EQ)) {
+				firstTables.add(selectorLeft.getName());
+				secondTables.add(selectorRight.getName());
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
+							+ selectorLeft.getName().getName());
+				}
+			}
 
-        }
+		}
 
-        JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(firstTables));
+		JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(firstTables));
 
-        JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(secondTables));
+		JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(secondTables));
 
-        if (rddLeft != null && rddRight != null) {
-            JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
+		if (rddLeft != null && rddRight != null) {
+			JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
 
-            joinedResult = joinRDD.map(new JoinCells());
+			joinedResult = joinRDD.map(new JoinCells());
 
-        }
+		}
 
-        return joinedResult;
+		return joinedResult;
 
-    }
+	}
 
-    public static Term filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
+	/**
+	 * Method that returns the right term in a relation.
+	 * 
+	 * @param relation
+	 * 					The relation
+	 * @return
+	 * 			The right term
+	 * @throws ExecutionException
+	 */
+	public static Term filterFromRightTermWhereRelation(Relation relation) throws ExecutionException {
 
-        SelectorType type = relation.getRightTerm().getType();
-        Term rightField = null;
+		SelectorType type = relation.getRightTerm().getType();
+		Term rightField = null;
 
-        switch (type) {
-        case STRING:
-            rightField = new StringTerm(((StringSelector) relation.getRightTerm()).getValue());
-            break;
-        case BOOLEAN:
-            rightField = new BooleanTerm(((BooleanSelector) relation.getRightTerm()).toString());
-            break;
-        case INTEGER:
-            rightField = new LongTerm(((IntegerSelector) relation.getRightTerm()).toString());
-            break;
-        case FLOATING_POINT:
-            rightField = new DoubleTerm(((FloatingPointSelector) relation.getRightTerm()).toString());
-            break;
+		switch (type) {
+		case STRING:
+			rightField = new StringTerm(((StringSelector) relation.getRightTerm()).getValue());
+			break;
+		case BOOLEAN:
+			rightField = new BooleanTerm(((BooleanSelector) relation.getRightTerm()).toString());
+			break;
+		case INTEGER:
+			rightField = new LongTerm(((IntegerSelector) relation.getRightTerm()).toString());
+			break;
+		case FLOATING_POINT:
+			rightField = new DoubleTerm(((FloatingPointSelector) relation.getRightTerm()).toString());
+			break;
 
-        default:
-            throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
-                    + "]");
+		default:
+			throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
+					+ "]");
 
-        }
-        return rightField;
-    }
+		}
+		return rightField;
+	}
 
-    public static Serializable filterFromRightWhereRelation(Relation relation) throws ExecutionException {
+	/**
+	 * Method that returns the value right term in a relation.
+	 * 
+	 * @param relation
+	 * 					The relation
+	 * @return
+	 * 			THe right term's value
+	 * @throws ExecutionException
+	 */
+	public static Serializable filterFromRightWhereRelation(Relation relation) throws ExecutionException {
 
-        SelectorType type = relation.getRightTerm().getType();
-        Serializable rightField = null;
+		SelectorType type = relation.getRightTerm().getType();
+		Serializable rightField = null;
 
-        switch (type) {
-        case STRING:
-            rightField = String.valueOf(relation.getRightTerm().getStringValue());
-            break;
-        case BOOLEAN:
-            rightField = Boolean.valueOf(((BooleanSelector) relation.getRightTerm()).toString());
-            break;
-        case INTEGER:
-            rightField = Long.valueOf(((IntegerSelector) relation.getRightTerm()).toString());
-            break;
-        case FLOATING_POINT:
-            rightField = Double.valueOf(((FloatingPointSelector) relation.getRightTerm()).toString());
-            break;
+		switch (type) {
+		case STRING:
+			rightField = String.valueOf(relation.getRightTerm().getStringValue());
+			break;
+		case BOOLEAN:
+			rightField = Boolean.valueOf(((BooleanSelector) relation.getRightTerm()).toString());
+			break;
+		case INTEGER:
+			rightField = Long.valueOf(((IntegerSelector) relation.getRightTerm()).toString());
+			break;
+		case FLOATING_POINT:
+			rightField = Double.valueOf(((FloatingPointSelector) relation.getRightTerm()).toString());
+			break;
 
-        default:
-            throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
-                    + "]");
+		default:
+			throw new ExecutionException("Unknown Relation Right Term Where found [" + relation.getLeftTerm().getType()
+					+ "]");
 
-        }
-        return rightField;
-    }
+		}
+		return rightField;
+	}
 
-    /**
-     * @param operator
-     * @return String
-     */
-    public static FilterType retrieveFilterOperator(Operator operator) {
+	/**
+	 * Method that provides an operator's type.
+	 * 
+	 * @param operator
+	 * 					The operator
+	 * @return String
+	 * 					The operator's type
+	 */
+	public static FilterType retrieveFilterOperator(Operator operator) {
 
-        FilterType filterType = null;
-        switch (operator) {
-        case EQ:
-            filterType = FilterType.EQ;
-            break;
-        case DISTINCT:
-            filterType = FilterType.NEQ;
-            break;
-        case GET:
-            filterType = FilterType.GTE;
-            break;
-        case GT:
-            filterType = FilterType.GT;
-            break;
-        case LET:
-            filterType = FilterType.LTE;
-            break;
-        case LT:
-            filterType = FilterType.LT;
-            break;
-        case MATCH:
-            filterType = FilterType.MATCH;
-            break;
-        default:
-            break;
-        }
+		FilterType filterType = null;
+		switch (operator) {
+		case EQ:
+			filterType = FilterType.EQ;
+			break;
+		case DISTINCT:
+			filterType = FilterType.NEQ;
+			break;
+		case GET:
+			filterType = FilterType.GTE;
+			break;
+		case GT:
+			filterType = FilterType.GT;
+			break;
+		case LET:
+			filterType = FilterType.LTE;
+			break;
+		case LT:
+			filterType = FilterType.LT;
+			break;
+		case MATCH:
+			filterType = FilterType.MATCH;
+			break;
+		default:
+			break;
+		}
 
-        return filterType;
-    }
+		return filterType;
+	}
 
-    /**
-     * Function that returns a grouped {@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
-     * 
-     * @param rdd
-     *            Initial {@link JavaRDD}.
-     * @param ids
-     *            List of fields to group by.
-     * 
-     * @return Grouped {@link JavaRDD}.
-     */
-    public static JavaRDD<Cells> groupByFields(JavaRDD<Cells> rdd, final List<Selector> selectors) {
+	/**
+	 * Function that returns a grouped {@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
+	 * 
+	 * @param rdd
+	 *            Initial {@link JavaRDD}.
+	 * @param selectors
+	 *            List of selectors to be grouped by.
+	 * 
+	 * @return Grouped {@link JavaRDD}.
+	 */
+	public static JavaRDD<Cells> groupByFields(JavaRDD<Cells> rdd, final List<Selector> selectors) {
 
-        JavaPairRDD<List<Cell>, Cells> rddWithKeys = rdd.keyBy(new Function<Cells, List<Cell>>() {
+		JavaPairRDD<List<Cell>, Cells> rddWithKeys = rdd.keyBy(new Function<Cells, List<Cell>>() {
 
-            private static final long serialVersionUID = 8157822963856298774L;
+			private static final long serialVersionUID = 8157822963856298774L;
 
-            @Override
-            public List<Cell> call(Cells cells) throws Exception {
+			@Override
+			public List<Cell> call(Cells cells) {
 
-                List<Cell> keysList = new ArrayList<>();
-                for (Selector selector : selectors) {
-                    ColumnSelector columnSelector = (ColumnSelector) selector;
-                    Cell cell = cells.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
-                            columnSelector.getName().getName());
+				List<Cell> keysList = new ArrayList<>();
+				for (Selector selector : selectors) {
+					ColumnSelector columnSelector = (ColumnSelector) selector;
+					Cell cell = cells.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
+							columnSelector.getName().getName());
 
-                    keysList.add(cell);
-                }
+					keysList.add(cell);
+				}
 
-                return keysList;
-            }
-        });
+				return keysList;
+			}
+		});
 
-        JavaPairRDD<List<Cell>, Cells> reducedRdd = rddWithKeys.reduceByKey(new Function2<Cells, Cells, Cells>() {
+		JavaPairRDD<List<Cell>, Cells> reducedRdd = rddWithKeys.reduceByKey(new Function2<Cells, Cells, Cells>() {
 
-            private static final long serialVersionUID = -2505406515481546086L;
+			private static final long serialVersionUID = -2505406515481546086L;
 
-            @Override
-            public Cells call(Cells leftCells, Cells rightCells) throws Exception {
+			@Override
+			public Cells call(Cells leftCells, Cells rightCells) {
 
-                return leftCells;
-            }
-        });
+				return leftCells;
+			}
+		});
 
-        return reducedRdd.map(new Function<Tuple2<List<Cell>, Cells>, Cells>() {
+		return reducedRdd.map(new Function<Tuple2<List<Cell>, Cells>, Cells>() {
 
-            private static final long serialVersionUID = -4921967044782514288L;
+			private static final long serialVersionUID = -4921967044782514288L;
 
-            @Override
-            public Cells call(Tuple2<List<Cell>, Cells> tuple) throws Exception {
-                return tuple._2();
-            }
-        });
-    }
+			@Override
+			public Cells call(Tuple2<List<Cell>, Cells> tuple) {
+				return tuple._2();
+			}
+		});
+	}
 
-    /**
-     * Function that returns a ordered {@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
-     *
-     * @param rdd
-     *            Initial {@link org.apache.spark.api.java.JavaRDD}.
-     * @param limit
-     * @return Grouped {@link JavaRDD}.
-     */
-    public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses, int limit) {
 
-        List<Cells> rddOrdered = rdd.takeOrdered(limit, new OrderByComparator(orderByClauses));
+	/**
+	 * Method that returns an ordered{@link JavaRDD} by a list of fields from an initial {@link JavaRDD}.
+	 * 
+	 * @param rdd
+	 * 				 Initial {@link org.apache.spark.api.java.JavaRDD}
+	 * @param orderByClauses
+	 * 						The orderBy clauses
+	 * @param limit
+	 * 				The limit
+	 * @return
+	 * 			Grouped {@link JavaRDD}
+	 */
+	public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses, int limit) {
 
-        return rddOrdered;
+		List<Cells> rddOrdered = rdd.takeOrdered(limit, new OrderByComparator(orderByClauses));
 
-    }
+		return rddOrdered;
+
+	}
 
 
 }

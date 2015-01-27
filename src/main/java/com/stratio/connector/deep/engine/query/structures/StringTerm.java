@@ -18,35 +18,60 @@
 
 package com.stratio.connector.deep.engine.query.structures;
 
+/**
+ * 
+ * Subclass of the class 'Term' that defines a String Term.
+ *
+ */
 public class StringTerm extends Term<String> {
-    private static final long serialVersionUID = 4470491967411363431L;
-    private boolean quotedLiteral = false;
+	private static final long serialVersionUID = 4470491967411363431L;
+	private boolean quotedLiteral = false;
 
-    public StringTerm(String term, boolean quotedLiteral) {
-        super(String.class, term);
-        this.type = TYPE_TERM;
-        this.quotedLiteral = quotedLiteral;
-    }
+	/**
+	 * Basic constructor.
+	 * @param term
+	 * 				String value
+	 * @param quotedLiteral
+	 * 				Defines whether the String is quoted or not
+	 * 				
+	 */
+	public StringTerm(String term, boolean quotedLiteral) {
+		super(String.class, term);
+		this.type = TYPE_TERM;
+		this.quotedLiteral = quotedLiteral;
+	}
 
-    public StringTerm(String term) {
-        this(term, false);
-    }
+	/**
+	 * Constructor from String type.
+	 * @param term
+	 * 				String value
+	 *	
+	 */
+	public StringTerm(String term) {
+		this(term, false);
+	}
 
-    public StringTerm(Term<String> term) {
-        super(String.class, term.getTermValue().toString());
-    }
+	/**
+	 * Constructor from Term<String>.
+	 * @param term
+	 * 				Term of the type String 
+	 * 						
+	 */
+	public StringTerm(Term<String> term) {
+		super(String.class, term.getTermValue().toString());
+	}
 
-    public boolean isQuotedLiteral() {
-        return quotedLiteral;
-    }
+	public boolean isQuotedLiteral() {
+		return quotedLiteral;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        if (this.isQuotedLiteral()) {
-            return "'" + value + "'";
-        } else {
-            return value;
-        }
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		if (this.isQuotedLiteral()) {
+			return "'" + value + "'";
+		} else {
+			return value;
+		}
+	}
 }

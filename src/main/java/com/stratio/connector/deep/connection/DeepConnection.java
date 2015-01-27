@@ -21,9 +21,7 @@ package com.stratio.connector.deep.connection;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map.Entry;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.util.ConnectorParser;
@@ -42,115 +40,114 @@ import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
  */
 public class DeepConnection extends Connection<Object> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeepConnection.class);
+	private boolean isConnect = false;
 
-    private boolean isConnect = false;
+	private final ExtractorConfig<Cells> extractorConfig;
 
-    private final ExtractorConfig<Cells> extractorConfig;
+	/**
+	 * Constructor using credentials and cluster config.
+	 *
+	 * @param credentials
+	 *            the credentials.
+	 * @param config
+	 *            The cluster configuration.
+	 */
+	public DeepConnection(ICredentials credentials, ConnectorClusterConfig config)
+			throws ConnectionException {
 
-    /**
-     * Constructor using credentials and cluster config.
-     *
-     * @param credentials
-     *            the credentials.
-     * @param config
-     *            The cluster configuration.
-     */
-    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config)
-            throws ConnectionException {
+		if (credentials != null) {
+			// TODO check the credentials
+		}
 
-        if (credentials != null) {
-            // TODO check the credentials
-        }
+		Map<String, String> clusterOptions = config.getClusterOptions();
+		Map<String, String> connectorOptions = config.getConnectorOptions();
+		// Creating a configuration for the Extractor and initialize it
+		ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
+		String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
 
-        Map<String, String> clusterOptions = config.getClusterOptions();
-        Map<String, String> connectorOptions = config.getConnectorOptions();
-        // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
-        String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
+		if (extractorImplClassName == null) {
+			throw new ConnectionException("Unknown data source, please add it to the configuration.");
+		}
+		Map<String,Serializable> values = returnConfig(clusterOptions);
+		values.put(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT,connectorOptions.get(DeepConnectorConstants
+				.PROPERTY_DEFAULT_LIMIT));
+		extractorconfig.setValues(values);
 
-        if (extractorImplClassName == null) {
-            throw new ConnectionException("Unknown data source, please add it to the configuration.");
-        }
-        Map<String,Serializable> values = returnConfig(clusterOptions);
-        values.put(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT,connectorOptions.get(DeepConnectorConstants
-                .PROPERTY_DEFAULT_LIMIT));
-        extractorconfig.setValues(values);
+		extractorconfig.setExtractorImplClassName(extractorImplClassName);
 
-        extractorconfig.setExtractorImplClassName(extractorImplClassName);
+		this.extractorConfig = extractorconfig;
 
-        this.extractorConfig = extractorconfig;
+		this.isConnect = true;
+	}
 
-        this.isConnect = true;
-    }
+	private Map<String,Serializable> returnConfig(Map<String, String> clusterOptions) {
 
-    private Map<String,Serializable> returnConfig(Map<String, String> clusterOptions) {
+		Map<String, Serializable> values = new HashMap<>();
 
-        Map<String, Serializable> values = new HashMap<>();
+		if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
+			values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
+			String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
 
-        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
-            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
-            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
+			values.put(ExtractorConstants.HOST, hosts[0]);
+		} else {
+			values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
+		}
 
-            values.put(ExtractorConstants.HOST, hosts[0]);
-        } else {
-            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
-        }
+		if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
+			values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
 
-        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
-            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+			String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
 
-            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
+			values.put(ExtractorConstants.PORT, ports[0]);
 
-            values.put(ExtractorConstants.PORT, ports[0]);
+		} else {
+			values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+		}
 
-        } else {
-            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
-        }
 
-        for (String key : clusterOptions.keySet()){
-            Serializable val = clusterOptions.get(key);
-            if (key.equals(ExtractorConstants.HOSTS) ||key.equals(ExtractorConstants.HOST) || key.equals
-                    (ExtractorConstants.PORTS) || key.equals(ExtractorConstants.ES_REST_PORTS)){
-                String formatArray = clusterOptions.get(key).replaceAll("\\s+", "").replaceAll("\\[",
-                        "").replaceAll("]", "");
-                values.put(key,formatArray);
-            }else{
-                values.put(key,val);
-            }
+		for (Entry<String, String> entry : clusterOptions.entrySet()){
+			Serializable val = entry.getValue();
+			if (entry.getKey().equals(ExtractorConstants.HOSTS) ||entry.getKey().equals(ExtractorConstants.HOST) || entry.getKey().equals
+					(ExtractorConstants.PORTS) || entry.getKey().equals(ExtractorConstants.ES_REST_PORTS)){
+				String formatArray = entry.getValue().replaceAll("\\s+", "").replaceAll("\\[",
+				                                                                            "").replaceAll("]", "");
+				values.put(entry.getKey(),formatArray);
+			}else{
+				values.put(entry.getKey(),val);
+			}
 
-        }
+		}
 
-        return values;
+		return values;
 
-    }
+	}
 
-    /**
-     * Change the connection status.
-     *
-     */
-    @Override
-    public void close() {
-        isConnect = false;
-    }
+	/**
+	 * Change the connection status.
+	 *
+	 */
+	@Override
+	public void close() {
+		isConnect = false;
+	}
 
-    /**
-     * return the connection status.
-     *
-     * @return Boolean
-     */
-    @Override
-    public boolean isConnected() {
+	/**
+	 * return the connection status.
+	 *
+	 * @return Boolean
+	 */
+	@Override
+	public boolean isConnected() {
 
-        return isConnect;
-    }
+		return isConnect;
+	}
 
-    @Override
-    public Object getNativeConnection() {
-        return null;
-    }
+	@Override
+	public Object getNativeConnection() {
+		return null;
+	}
 
-    public ExtractorConfig<Cells> getExtractorConfig() {
-        return extractorConfig;
-    }
+	public ExtractorConfig<Cells> getExtractorConfig() {
+		return extractorConfig;
+	}
 }
