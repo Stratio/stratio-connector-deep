@@ -35,52 +35,52 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class OrderByComparator implements Comparator<Cells>,Serializable {
 
-    private static final long serialVersionUID = 432384912608139416L;
+	private static final long serialVersionUID = 432384912608139416L;
 
-    /**
-     * Order clauses for the OrderBy function.
-     */
-    private List<OrderByClause> orderByClauses;
+	/**
+	 * Order clauses for the OrderBy function.
+	 */
+	private List<OrderByClause> orderByClauses;
 
-    /**
-     * Basic constructor for the OrderBy function class.
-     * @param orderByClauses
-     * 						Order clauses for the OrderBy function
-     */
-    public OrderByComparator(List<OrderByClause> orderByClauses) {
-        this.orderByClauses = orderByClauses;
-    }
+	/**
+	 * Basic constructor for the OrderBy function class.
+	 * @param orderByClauses
+	 * 						Order clauses for the OrderBy function
+	 */
+	public OrderByComparator(List<OrderByClause> orderByClauses) {
+		this.orderByClauses = orderByClauses;
+	}
 
 
-    @Override
-    public int compare(Cells o1, Cells o2) {
+	@Override
+	public int compare(Cells o1, Cells o2) {
 
-        int result = 0;
+		int result = 0;
 
-        for (OrderByClause orderByClause : orderByClauses) {
+		for (OrderByClause orderByClause : orderByClauses) {
 
-            ColumnSelector columnSelector = (ColumnSelector) orderByClause.getSelector();
+			ColumnSelector columnSelector = (ColumnSelector) orderByClause.getSelector();
 
-            Cell cell1 = o1.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
-                    columnSelector.getName().getName());
+			Cell cell1 = o1.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
+					columnSelector.getName().getName());
 
-            Cell cell2 = o2.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
-                    columnSelector.getName().getName());
+			Cell cell2 = o2.getCellByName(columnSelector.getName().getTableName().getQualifiedName(),
+					columnSelector.getName().getName());
 
-            OrderDirection order = orderByClause.getDirection();
+			OrderDirection order = orderByClause.getDirection();
 
-            if(order == OrderDirection.ASC){
-                result = ((Comparable) cell1.getCellValue()).compareTo(cell2.getValue());
-            }else{
-                result = ((Comparable) cell2.getCellValue()).compareTo(cell1.getValue());
-            }
-            if(result!=0){
-                break;
-            }
+			if(order == OrderDirection.ASC){
+				result = ((Comparable) cell1.getCellValue()).compareTo(cell2.getValue());
+			}else{
+				result = ((Comparable) cell2.getCellValue()).compareTo(cell1.getValue());
+			}
+			if(result!=0){
+				break;
+			}
 
-        }
+		}
 
-        return result;
+		return result;
 
-    }
+	}
 }

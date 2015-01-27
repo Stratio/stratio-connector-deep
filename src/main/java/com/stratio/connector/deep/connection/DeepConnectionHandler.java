@@ -37,30 +37,30 @@ public class DeepConnectionHandler extends ConnectionHandler {
 	 * @param configuration
 	 * 						The configuration
 	 */
-    public DeepConnectionHandler(IConfiguration configuration) {
-        super(configuration);
-    }
+	public DeepConnectionHandler(IConfiguration configuration) {
+		super(configuration);
+	}
 
-    /**
-     * Use config & Credentials to create Deep native connection.
-     * 
-     * @param iCredentials
-     *            			The credentials
-     * @param connectorClusterConfig
-     *            					The connector cluster configuration
-     * 
-     * @return DeepConnection
-     **/
-    @Override
-    protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
-            throws ConnectionException {
+	/**
+	 * Use config & Credentials to create Deep native connection.
+	 * 
+	 * @param iCredentials
+	 *            			The credentials
+	 * @param connectorClusterConfig
+	 *            					The connector cluster configuration
+	 * 
+	 * @return DeepConnection
+	 **/
+	@Override
+	protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
+			throws ConnectionException {
 
-        Connection connection;
+		Connection connection;
 
-             connection = new DeepConnection(iCredentials, connectorClusterConfig);
+		connection = new DeepConnection(iCredentials, connectorClusterConfig);
 
 
-        return connection;
-    }
+		return connection;
+	}
 
 }

@@ -25,23 +25,23 @@ package com.stratio.connector.deep.engine.query.structures;
  */
 public class LongTerm extends Term<Long> {
 
-    private static final long serialVersionUID = 7097178218828822792L;
+	private static final long serialVersionUID = 7097178218828822792L;
 
-    /**
-     * Constructor from a String representation of a Long value.
-     * @param term
-     * 				String representation of a Long value
-     */
-    public LongTerm(String term) {
-        super(Long.class, Long.valueOf(term));
-    }
+	/**
+	 * Constructor from a String representation of a Long value.
+	 * @param term
+	 * 				String representation of a Long value
+	 */
+	public LongTerm(String term) {
+		super(Long.class, Long.valueOf(term));
+	}
 
-    /**
-     * Constructor from Long type.
-     * @param term
-     * 				The Long value
-     */
-    public LongTerm(Long term) {
-        super(Long.class, term);
-    }
+	/**
+	 * Constructor from Long type.
+	 * @param term
+	 * 				The Long value
+	 */
+	public LongTerm(Long term) {
+		super(Long.class, term);
+	}
 }

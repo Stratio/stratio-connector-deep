@@ -27,35 +27,35 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class Like implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = 5642510017426647895L;
+	private static final long serialVersionUID = 5642510017426647895L;
 
-    /**
-     * Name of the field of the cell to match.
-     */
-    private final String field;
+	/**
+	 * Name of the field of the cell to match.
+	 */
+	private final String field;
 
-    /**
-     * Regular expression.
-     */
-    private final String regexp;
+	/**
+	 * Regular expression.
+	 */
+	private final String regexp;
 
-    /**
-     * Basic constructor for the Like function class.
-     * 
-     * @param field
-     * 				Name of the field of the cell to match
-     * @param regexp
-     * 				Regular expression
-     */
-    public Like(String field, String regexp) {
-        this.field = field;
-        this.regexp = regexp;
-    }
+	/**
+	 * Basic constructor for the Like function class.
+	 * 
+	 * @param field
+	 * 				Name of the field of the cell to match
+	 * @param regexp
+	 * 				Regular expression
+	 */
+	public Like(String field, String regexp) {
+		this.field = field;
+		this.regexp = regexp;
+	}
 
-    // TODO Exception Management
-    @Override
-    public Boolean call(Cells cells) {
-        Object currentValue = cells.getCellByName(field).getCellValue();
-        return regexp.matches(String.valueOf(currentValue));
-    }
+	// TODO Exception Management
+	@Override
+	public Boolean call(Cells cells) {
+		Object currentValue = cells.getCellByName(field).getCellValue();
+		return regexp.matches(String.valueOf(currentValue));
+	}
 }

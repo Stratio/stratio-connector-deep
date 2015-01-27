@@ -34,107 +34,107 @@ import com.stratio.crossdata.common.metadata.ColumnMetadata;
  */
 public class DeepResultSet extends ResultSet implements Serializable {
 
-    /**
-     * Serial version UID in order to be Serializable.
-     */
-    private static final long serialVersionUID = 7054678344109801821L;
+	/**
+	 * Serial version UID in order to be Serializable.
+	 */
+	private static final long serialVersionUID = 7054678344109801821L;
 
-    /**
-     * List of {@link com.stratio.crossdata.common.data.Row}.
-     */
-    private List<Row> rows;
+	/**
+	 * List of {@link com.stratio.crossdata.common.data.Row}.
+	 */
+	private List<Row> rows;
 
-    /**
-     * List of {@link ColumnMetadata}.
-     */
-    private List<ColumnMetadata> columnMetadata;
+	/**
+	 * List of {@link ColumnMetadata}.
+	 */
+	private List<ColumnMetadata> columnMetadata;
 
-    /**
-     * CassandraResultSet default constructor.
-     */
-    public DeepResultSet() {
-        rows = new ArrayList<>();
-        columnMetadata = new ArrayList<>();
-    }
+	/**
+	 * CassandraResultSet default constructor.
+	 */
+	public DeepResultSet() {
+		rows = new ArrayList<>();
+		columnMetadata = new ArrayList<>();
+	}
 
-    /**
-     * Set the list of rows.
-     * 
-     * @param rows
-     *            The list
-     */
-    @Override
-    public void setRows(List<Row> rows) {
-        this.rows = rows;
-    }
+	/**
+	 * Set the list of rows.
+	 * 
+	 * @param rows
+	 *            The list
+	 */
+	@Override
+	public void setRows(List<Row> rows) {
+		this.rows = rows;
+	}
 
-    /**
-     * Get the rows of the Result Set.
-     * 
-     * @return A List of {@link com.stratio.crossdata.common.data.Row}
-     */
-    @Override
-    public List<Row> getRows() {
-        return rows;
-    }
+	/**
+	 * Get the rows of the Result Set.
+	 * 
+	 * @return A List of {@link com.stratio.crossdata.common.data.Row}
+	 */
+	@Override
+	public List<Row> getRows() {
+		return rows;
+	}
 
-    /**
-     * Set the list of column metadata.
-     * 
-     * @param columnMetadata
-     *            A list of {@link ColumnMetadata} in order
-     */
-    @Override
-    public void setColumnMetadata(List<ColumnMetadata> columnMetadata) {
-        this.columnMetadata = columnMetadata;
-    }
+	/**
+	 * Set the list of column metadata.
+	 * 
+	 * @param columnMetadata
+	 *            A list of {@link ColumnMetadata} in order
+	 */
+	@Override
+	public void setColumnMetadata(List<ColumnMetadata> columnMetadata) {
+		this.columnMetadata = columnMetadata;
+	}
 
-    /**
-     * Get the column metadata in order.
-     * 
-     * @return A list of {@link ColumnMetadata}
-     */
-    @Override
-    public List<ColumnMetadata> getColumnMetadata() {
-        return columnMetadata;
-    }
+	/**
+	 * Get the column metadata in order.
+	 * 
+	 * @return A list of {@link ColumnMetadata}
+	 */
+	@Override
+	public List<ColumnMetadata> getColumnMetadata() {
+		return columnMetadata;
+	}
 
-    /**
-     * Add a row to the Result Set.
-     * 
-     * @param row
-     *            {@link com.stratio.crossdata.common.data.Row} to add
-     */
-    @Override
-    public void add(Row row) {
-        rows.add(row);
-    }
+	/**
+	 * Add a row to the Result Set.
+	 * 
+	 * @param row
+	 *            {@link com.stratio.crossdata.common.data.Row} to add
+	 */
+	@Override
+	public void add(Row row) {
+		rows.add(row);
+	}
 
-    /**
-     * Remove a row.
-     * 
-     * @param index
-     *            Index of the row to remove
-     */
-    @Override
-    public void remove(int index) {
-        rows.remove(index);
-    }
+	/**
+	 * Remove a row.
+	 * 
+	 * @param index
+	 *            Index of the row to remove
+	 */
+	@Override
+	public void remove(int index) {
+		rows.remove(index);
+	}
 
-    /**
-     * Get the size of the Result Set.
-     * 
-     * @return 
-     * 			The size
-     */
-    @Override
-    public int size() {
-        return rows.size();
-    }
+	/**
+	 * Get the size of the Result Set.
+	 * 
+	 * @return 
+	 * 			The size
+	 */
+	@Override
+	public int size() {
+		return rows.size();
+	}
 
-    @Override
-    public Iterator<Row> iterator() {
-        return new DeepResultSetIterator(this);
-    }
+	@Override
+	public Iterator<Row> iterator() {
+		return new DeepResultSetIterator(this);
+	}
 
 }

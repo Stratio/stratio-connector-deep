@@ -30,38 +30,38 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class DeepEquals implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = -6143471452730703044L;
+	private static final long serialVersionUID = -6143471452730703044L;
 
-    /**
-     * Term to be compared.
-     */
-    private final Term<?> term;
+	/**
+	 * Term to be compared.
+	 */
+	private final Term<?> term;
 
 
-    /**
-     * Column cell to compare to.
-     */
-    private final ColumnName column;
+	/**
+	 * Column cell to compare to.
+	 */
+	private final ColumnName column;
 
-    /**
-     * Basic constructor for the DeepEquals function class.
-     * @param column
-     * 				Column cell to compare to
-     * @param term
-     * 				Term to be compared
-     */
-    public DeepEquals(ColumnName column, Term<?> term) {
-        this.term = term;
-        this.column = column;
-    }
+	/**
+	 * Basic constructor for the DeepEquals function class.
+	 * @param column
+	 * 				Column cell to compare to
+	 * @param term
+	 * 				Term to be compared
+	 */
+	public DeepEquals(ColumnName column, Term<?> term) {
+		this.term = term;
+		this.column = column;
+	}
 
-    @Override
-    public Boolean call(Cells cells) {
+	@Override
+	public Boolean call(Cells cells) {
 
-        Object currentValue = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName())
-                .getCellValue();
+		Object currentValue = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName())
+				.getCellValue();
 
-        return term.equals(currentValue);
-    }
+		return term.equals(currentValue);
+	}
 
 }

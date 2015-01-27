@@ -35,33 +35,33 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class MapKeyForJoin implements PairFunction<Cells, List<Object>, Cells> {
 
-    private static final long serialVersionUID = -6677647619149716567L;
+	private static final long serialVersionUID = -6677647619149716567L;
 
-    /**
-     * Map key.
-     */
-    private final List<ColumnName> keys;
+	/**
+	 * Map key.
+	 */
+	private final List<ColumnName> keys;
 
-    /**
-     * MapKeyForJoin maps a field in a Cell.
-     * 
-     * @param keys
-     *            Field to map
-     */
-    public MapKeyForJoin(List<ColumnName> keys) {
-        this.keys = keys;
-    }
+	/**
+	 * MapKeyForJoin maps a field in a Cell.
+	 * 
+	 * @param keys
+	 *            Field to map
+	 */
+	public MapKeyForJoin(List<ColumnName> keys) {
+		this.keys = keys;
+	}
 
-    @Override
-    public Tuple2<List<Object>, Cells> call(Cells cells) {
+	@Override
+	public Tuple2<List<Object>, Cells> call(Cells cells) {
 
-        List<Object> cellsValues = new LinkedList<>();
-        for (ColumnName columnKey : keys) {
-            String tableName = columnKey.getTableName().getQualifiedName();
-            Cell cell = cells.getCellByName(tableName, columnKey.getName());
-            cellsValues.add(cell.getCellValue());
-        }
+		List<Object> cellsValues = new LinkedList<>();
+		for (ColumnName columnKey : keys) {
+			String tableName = columnKey.getTableName().getQualifiedName();
+			Cell cell = cells.getCellByName(tableName, columnKey.getName());
+			cellsValues.add(cell.getCellValue());
+		}
 
-        return new Tuple2<>(cellsValues, cells);
-    }
+		return new Tuple2<>(cellsValues, cells);
+	}
 }

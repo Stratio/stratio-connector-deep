@@ -30,39 +30,39 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class In implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = -6637139616271541577L;
+	private static final long serialVersionUID = -6637139616271541577L;
 
-    /**
-     * Name of the field of the cell to be compared.
-     */
-    private final String field;
+	/**
+	 * Name of the field of the cell to be compared.
+	 */
+	private final String field;
 
-    /**
-     * IDs in the IN clause.
-     */
-    private final List<Serializable> terms;
+	/**
+	 * IDs in the IN clause.
+	 */
+	private final List<Serializable> terms;
 
-    /**
-     * Basic constructor for the In function class.
-     * @param field
-     * 				Name of the field of the cell to be compared
-     * @param terms
-     * 				IDs in the IN clause
-     */
-    public In(String field, List<Serializable> terms) {
-        this.field = field;
-        this.terms = terms;
-    }
+	/**
+	 * Basic constructor for the In function class.
+	 * @param field
+	 * 				Name of the field of the cell to be compared
+	 * @param terms
+	 * 				IDs in the IN clause
+	 */
+	public In(String field, List<Serializable> terms) {
+		this.field = field;
+		this.terms = terms;
+	}
 
-    @Override
-    public Boolean call(Cells cells) {
+	@Override
+	public Boolean call(Cells cells) {
 
-        Boolean isValid = false;
+		Boolean isValid = false;
 
-        if (this.field != null && this.terms != null) {
-            // TODO: Implements call to create IN stuff
-        }
+		if (this.field != null && this.terms != null) {
+			// TODO: Implements call to create IN stuff
+		}
 
-        return isValid;
-    }
+		return isValid;
+	}
 }

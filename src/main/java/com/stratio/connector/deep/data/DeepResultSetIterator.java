@@ -27,39 +27,39 @@ import java.util.Iterator;
  */
 public class DeepResultSetIterator implements Iterator<com.stratio.crossdata.common.data.Row> {
 
-    /**
-     * Set representing a result from Cassandra.
-     */
-    private final DeepResultSet deepResultSet;
+	/**
+	 * Set representing a result from Cassandra.
+	 */
+	private final DeepResultSet deepResultSet;
 
-    /**
-     * Pointer to the current element.
-     */
-    private int current;
+	/**
+	 * Pointer to the current element.
+	 */
+	private int current;
 
-    /**
-     * Build a {@link com.stratio.connector.deep.data.DeepResultSet}.
-     * 
-     * @param deepResultSet
-     *            Result Set.
-     */
-    public DeepResultSetIterator(DeepResultSet deepResultSet) {
-        this.deepResultSet = deepResultSet;
-        this.current = 0;
-    }
+	/**
+	 * Build a {@link com.stratio.connector.deep.data.DeepResultSet}.
+	 * 
+	 * @param deepResultSet
+	 *            Result Set.
+	 */
+	public DeepResultSetIterator(DeepResultSet deepResultSet) {
+		this.deepResultSet = deepResultSet;
+		this.current = 0;
+	}
 
-    @Override
-    public boolean hasNext() {
-        return current < deepResultSet.getRows().size();
-    }
+	@Override
+	public boolean hasNext() {
+		return current < deepResultSet.getRows().size();
+	}
 
-    @Override
-    public com.stratio.crossdata.common.data.Row next() {
-        return deepResultSet.getRows().get(current++);
-    }
+	@Override
+	public com.stratio.crossdata.common.data.Row next() {
+		return deepResultSet.getRows().get(current++);
+	}
 
-    @Override
-    public void remove() {
-        deepResultSet.remove(current);
-    }
+	@Override
+	public void remove() {
+		deepResultSet.remove(current);
+	}
 }

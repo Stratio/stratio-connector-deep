@@ -29,34 +29,34 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class GreaterEqualThan implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = 2927596112428729111L;
+	private static final long serialVersionUID = 2927596112428729111L;
 
-    /**
-     * Value to be compared.
-     */
-    private final Term<?> term;
+	/**
+	 * Value to be compared.
+	 */
+	private final Term<?> term;
 
-    /**
-     * Column cell to compare to.
-     */
-    private final ColumnName column;
+	/**
+	 * Column cell to compare to.
+	 */
+	private final ColumnName column;
 
-    /**
-     * Basic constructor for the GreaterEqualThan function class.
-     * 
-     * @param column
-     * 				Column cell to compare to
-     * @param term
-     * 				Value to be compared
-     */
-    public GreaterEqualThan(ColumnName column, Term term) {
-        this.term = term;
-        this.column = column;
-    }
+	/**
+	 * Basic constructor for the GreaterEqualThan function class.
+	 * 
+	 * @param column
+	 * 				Column cell to compare to
+	 * @param term
+	 * 				Value to be compared
+	 */
+	public GreaterEqualThan(ColumnName column, Term term) {
+		this.term = term;
+		this.column = column;
+	}
 
-    @Override
-    public Boolean call(Cells cells) {
-        Object obj = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName()).getCellValue();
-        return ((Comparable) term).compareTo(obj) <= 0;
-    }
+	@Override
+	public Boolean call(Cells cells) {
+		Object obj = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName()).getCellValue();
+		return ((Comparable) term).compareTo(obj) <= 0;
+	}
 }
