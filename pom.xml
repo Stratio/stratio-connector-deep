@@ -39,6 +39,16 @@
             <name>David Gómez</name>
             <email>dgomez at stratio dot com</email>
         </developer>
+        <developer>
+            <id>darroyo</id>
+            <name>David Arroyo</name>
+            <email>darroyo at stratio dot com</email>
+        </developer>
+      <developer>
+            <id>jmgomez</id>
+            <name>Jose Manuel Gomez</name>
+            <email>jmgomez at stratio dot com</email>
+        </developer>
     </developers>
 
     <properties>
