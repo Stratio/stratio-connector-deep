@@ -31,7 +31,7 @@
     <developers>
         <developer>
             <id>opuertas</id>
-            <name>Óscar Puertas</name>
+            <name>Oscar Puertas</name>
             <email>opuertas at stratio dot com</email>
         </developer>
         <developer>
@@ -54,7 +54,7 @@
     <properties>
         <version.crossdata>0.2.0-RC2</version.crossdata>
         <version.connector.commons>0.4.0-RC3</version.connector.commons>
-        <version.deep>0.7.0-RC2</version.deep>
+        <version.deep>0.7.0-RC3</version.deep>
         <version.hadoop>2.4.0</version.hadoop>
     </properties>
 

@@ -151,9 +151,7 @@ public class QueryExecutor {
 		nextStep = arrangeQueryFilters(nextStep);
 		nextStep = arrangeOrderBy(nextStep);
 
-		JavaRDD<Cells> initialRdd = createRdd(project, extractorConfig, indexFilters);
-
-		JavaRDD<Cells> filteredRdd = initialRdd;
+		JavaRDD<Cells> filteredRdd = createRdd(project, extractorConfig, indexFilters);
 
 		for (Filter filter : nonIndexFilters) {
 			filteredRdd = executeFilter(filter, filteredRdd);
@@ -542,41 +540,46 @@ public class QueryExecutor {
 	 * @throws UnsupportedException
 	 *             If the required set of operations are not supported by the connector.
 	 */
-	private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws ExecutionException,
+	private JavaRDD<Cells> executeUnion(UnionStep unionStep, JavaRDD<Cells> rdd) throws
+            ExecutionException,
 	UnsupportedException {
 
-		JavaRDD<Cells> joinedRdd = null;
-		if (unionStep instanceof Join) {
-			Join joinStep = (Join) unionStep;
 
-			if (joinStep.getOperation().equals(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS)) {
+		if (!(unionStep instanceof Join)) {
+            throw new ExecutionException("Unknown union step found [" + unionStep.getOperation().toString() + "]");
+        }
 
-				PartialResults partialResults = QueryPartialResultsUtils.getPartialResult(joinStep);
-				JavaRDD<Cells> partialResultsRdd = QueryPartialResultsUtils.createRDDFromResultSet(deepContext,
-						partialResults.getResults());
-				List<Relation> relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
-						joinStep.getJoinRelations());
 
-				joinedRdd = executeJoin(partialResultsRdd, rdd, relations);
+        JavaRDD<Cells> joinedRdd = null;
+        Join joinStep = (Join) unionStep;
+        JavaRDD<Cells> leftPartialRdd;
+        JavaRDD<Cells> rightPartialRdd = rdd;
+        List<Relation> relations;
 
-			} else {
-				String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
-				JavaRDD<Cells> partialRdd = partialResultsMap.get(joinLeftTableName);
 
-				if (partialRdd != null) {
-					joinedRdd = executeJoin(partialRdd, rdd, joinStep.getJoinRelations());
-				} else {
-					String joinRightTableName = joinStep.getSourceIdentifiers().get(1);
-					partialRdd = partialResultsMap.get(joinRightTableName);
-					partialResultsMap.remove(joinRightTableName);
-					if (partialRdd != null) {
-						joinedRdd = executeJoin(rdd, partialRdd, joinStep.getJoinRelations());
-					}
-				}
-			}
-		} else {
-			throw new ExecutionException("Unknown union step found [" + unionStep.getOperation().toString() + "]");
-		}
+        if (joinStep.getOperation().equals(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS)) {
+
+            PartialResults partialResults = QueryPartialResultsUtils.getPartialResult(joinStep);
+             leftPartialRdd = QueryPartialResultsUtils.createRDDFromResultSet(deepContext,
+                    partialResults.getResults());
+            relations = QueryPartialResultsUtils.getOrderedRelations(partialResults,
+                   joinStep.getJoinRelations());
+
+        } else {
+            String joinLeftTableName = joinStep.getSourceIdentifiers().get(0);
+            leftPartialRdd = partialResultsMap.get(joinLeftTableName);
+            relations = joinStep.getJoinRelations();
+            if (leftPartialRdd == null) {
+                String joinRightTableName = joinStep.getSourceIdentifiers().get(1);
+                rightPartialRdd = partialResultsMap.get(joinRightTableName);
+                leftPartialRdd = rdd;
+                partialResultsMap.remove(joinRightTableName);
+            }
+        }
+
+        if (rightPartialRdd != null) {
+            joinedRdd = executeJoin(leftPartialRdd,rightPartialRdd, relations);
+        }
 
 		return joinedRdd;
 	}
@@ -585,13 +588,14 @@ public class QueryExecutor {
 	 * Joins the left {@link JavaRDD} to the right one based on the given list of relations.
 	 * 
 	 * @param leftRdd
-	 *            Left {@link JavaRDD}.
+	 *            Left {@link org.apache.spark.api.java.JavaRDD}.
 	 * @param rdd
-	 *            right {@link JavaRDD}.
+	 *            right {@link org.apache.spark.api.java.JavaRDD}.
 	 * @param joinRelations
 	 *            List of relations to take into account when joining.
-	 * 
-	 * @return Joined {@link JavaRDD}.
+	 *
+	 * @param joinsRdds
+     * @return Joined {@link JavaRDD}.
 	 */
 	private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
 
@@ -661,21 +665,7 @@ public class QueryExecutor {
 	private JavaRDD<Cells> executeFilter(Filter filterStep, JavaRDD<Cells> rdd) throws ExecutionException,
 	UnsupportedException {
 
-		JavaRDD<Cells> resultRdd;
-
-		Relation relation = filterStep.getRelation();
-		if (relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
-
-			resultRdd = QueryFilterUtils.doWhere(rdd, relation);
-
-		} else {
-
-			throw new ExecutionException("Unknown Filter found [" + filterStep.getRelation().getOperator().toString()
-					+ "]");
-
-		}
-
-		return resultRdd;
+	return  QueryFilterUtils.doWhere(rdd, filterStep.getRelation());
 
 	}
 }

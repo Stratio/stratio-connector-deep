@@ -21,6 +21,7 @@ package com.stratio.connector.deep.engine.query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -90,6 +91,10 @@ public final class QueryFilterUtils {
 	static JavaRDD<Cells> doWhere(JavaRDD<Cells> rdd, Relation relation) throws UnsupportedException,
 	ExecutionException {
 
+        if (!relation.getOperator().isInGroup(Operator.Group.COMPARATOR)) {
+            throw new ExecutionException("Unknown Filter found [" + relation.getOperator().toString()+ "]");
+        }
+
 		Operator operator = relation.getOperator();
 		JavaRDD<Cells> result = null;
 		ColumnName column = ((ColumnSelector) relation.getLeftTerm()).getName();
@@ -157,6 +162,7 @@ public final class QueryFilterUtils {
 
 		List<ColumnName> firstTables = new ArrayList<>();
 		List<ColumnName> secondTables = new ArrayList<>();
+
 
 		for (Relation relation : joinRelations) {
 
