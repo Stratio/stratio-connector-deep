@@ -21,9 +21,7 @@ package com.stratio.connector.deep.connection;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map.Entry;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.util.ConnectorParser;
@@ -38,135 +36,118 @@ import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 /**
  * .Connection object exist in the ConnectionHandler and contains all the connection info & config.
  * {@link com.stratio.connector.commons.connection.Connection}
- * 
+ *
  */
 public class DeepConnection extends Connection<Object> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeepConnection.class);
+	private boolean isConnect = false;
 
-    private boolean isConnect = false;
+	private final ExtractorConfig<Cells> extractorConfig;
 
-    private final ExtractorConfig<Cells> extractorConfig;
+	/**
+	 * Constructor using credentials and cluster config.
+	 *
+	 * @param credentials
+	 *            the credentials.
+	 * @param config
+	 *            The cluster configuration.
+	 */
+	public DeepConnection(ICredentials credentials, ConnectorClusterConfig config)
+			throws ConnectionException {
 
-    /**
-     * Constructor using credentials and cluster config.
-     * 
-     * @param credentials
-     *            the credentials.
-     * @param config
-     *            The cluster configuration.
-     */
-    public DeepConnection(ICredentials credentials, ConnectorClusterConfig config)
-            throws ConnectionException {
+		if (credentials != null) {
+			// TODO check the credentials
+		}
 
-        if (credentials != null) {
-            // TODO check the credentials
-        }
+		Map<String, String> clusterOptions = config.getClusterOptions();
+		Map<String, String> connectorOptions = config.getConnectorOptions();
+		// Creating a configuration for the Extractor and initialize it
+		ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
+		String extractorImplClassName = clusterOptions.get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
 
-        Map<String, String> clusterOptions = config.getClusterOptions();
+		if (extractorImplClassName == null) {
+			throw new ConnectionException("Unknown data source, please add it to the configuration.");
+		}
+		Map<String,Serializable> values = returnConfig(clusterOptions);
+		values.put(DeepConnectorConstants.PROPERTY_DEFAULT_LIMIT,connectorOptions.get(DeepConnectorConstants
+				.PROPERTY_DEFAULT_LIMIT));
+		extractorconfig.setValues(values);
 
-        // Creating a configuration for the Extractor and initialize it
-        ExtractorConfig<Cells> extractorconfig = new ExtractorConfig<>(Cells.class);
+		extractorconfig.setExtractorImplClassName(extractorImplClassName);
 
-        Map<String, Serializable> values = new HashMap<>();
+		this.extractorConfig = extractorconfig;
 
-        if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
-            values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
-            String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
+		this.isConnect = true;
+	}
 
-            values.put(ExtractorConstants.HOST, hosts[0]);
-        } else {
-            values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
-        }
+	private Map<String,Serializable> returnConfig(Map<String, String> clusterOptions) {
 
-        if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
-            values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
+		Map<String, Serializable> values = new HashMap<>();
 
-            String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
+		if (clusterOptions.get(ExtractorConstants.HOSTS) != null) {
+			values.put(ExtractorConstants.HOSTS, clusterOptions.get(ExtractorConstants.HOSTS));
+			String[] hosts = ConnectorParser.hosts(clusterOptions.get(ExtractorConstants.HOSTS));
 
-            values.put(ExtractorConstants.PORT, ports[0]);
+			values.put(ExtractorConstants.HOST, hosts[0]);
+		} else {
+			values.put(ExtractorConstants.HOST, clusterOptions.get(ExtractorConstants.HOST));
+		}
 
-        } else {
-            values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+		if (clusterOptions.get(ExtractorConstants.PORTS) != null) {
+			values.put(ExtractorConstants.PORTS, clusterOptions.get(ExtractorConstants.PORTS));
 
-        }
+			String[] ports = ConnectorParser.ports(clusterOptions.get(ExtractorConstants.PORTS));
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
-            values.put(ExtractorConstants.HDFS_SCHEMA, clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
-        }
+			values.put(ExtractorConstants.PORT, ports[0]);
 
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_SEPARATOR,
-                    clusterOptions.get(ExtractorConstants.HDFS_FILE_SEPARATOR));
-        }
-
-        if (clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION) != null) {
-            values.put(ExtractorConstants.HDFS_FILE_EXTENSION,
-                    clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
-        }
+		} else {
+			values.put(ExtractorConstants.PORT, clusterOptions.get(ExtractorConstants.PORT));
+		}
 
 
+		for (Entry<String, String> entry : clusterOptions.entrySet()){
+			Serializable val = entry.getValue();
+			if (entry.getKey().equals(ExtractorConstants.HOSTS) ||entry.getKey().equals(ExtractorConstants.HOST) || entry.getKey().equals
+					(ExtractorConstants.PORTS) || entry.getKey().equals(ExtractorConstants.ES_REST_PORTS)){
+				String formatArray = entry.getValue().replaceAll("\\s+", "").replaceAll("\\[",
+				                                                                            "").replaceAll("]", "");
+				values.put(entry.getKey(),formatArray);
+			}else{
+				values.put(entry.getKey(),val);
+			}
 
-        String extractorImplClassName = config.getClusterOptions().get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
+		}
 
-        //TODO: Revision of Bug Atach Clusters, Deep only accept the port 9200 for elasticSearch connection
-        // and Native Connector uses 9300
-        if(extractorImplClassName!=null && extractorImplClassName.equals("com.stratio.deep.es.extractor" +
-                ".ESCellExtractor")  && clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS)!=null){
-            if (clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS) != null) {
-                values.put(ExtractorConstants.PORTS, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
+		return values;
 
-                String[] ports = ConnectorParser.ports(clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
+	}
 
-                values.put(ExtractorConstants.PORT, ports[0]);
+	/**
+	 * Change the connection status.
+	 *
+	 */
+	@Override
+	public void close() {
+		isConnect = false;
+	}
 
-            } else {
-                values.put(ExtractorConstants.PORT, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
+	/**
+	 * return the connection status.
+	 *
+	 * @return Boolean
+	 */
+	@Override
+	public boolean isConnected() {
 
-            }
-        }
+		return isConnect;
+	}
 
-        if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
-        }
+	@Override
+	public Object getNativeConnection() {
+		return null;
+	}
 
-        if (extractorImplClassName == null) {
-            throw new ConnectionException("Unknown data source, please add it to the configuration.");
-        }
-        extractorconfig.setValues(values);
-        extractorconfig.setExtractorImplClassName(extractorImplClassName);
-
-        this.extractorConfig = extractorconfig;
-
-        this.isConnect = true;
-    }
-
-    /**
-     * Change the connection status.
-     * 
-     */
-    @Override
-    public void close() {
-        isConnect = false;
-    }
-
-    /**
-     * return the connection status.
-     * 
-     * @return Boolean
-     */
-    @Override
-    public boolean isConnect() {
-
-        return isConnect;
-    }
-
-    @Override
-    public Object getNativeConnection() {
-        return null;
-    }
-
-    public ExtractorConfig<Cells> getExtractorConfig() {
-        return extractorConfig;
-    }
+	public ExtractorConfig<Cells> getExtractorConfig() {
+		return extractorConfig;
+	}
 }

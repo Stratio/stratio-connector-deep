@@ -6,8 +6,16 @@
         <DataStoreName>Mongo</DataStoreName>
         <DataStoreName>elasticsearch</DataStoreName>
         <DataStoreName>hdfs</DataStoreName>
+        <DataStoreName>jdbc</DataStoreName>
+        <DataStoreName>aerospike</DataStoreName>
     </DataStores>
     <Version>0.1.0</Version>
+    <RequiredProperties>
+        <Property>
+            <PropertyName>DefaultLimit</PropertyName>
+            <Description>It is necessary to indicate de default limit for the queries</Description>
+        </Property>
+    </RequiredProperties>
     <SupportedOperations>
         <operation>PROJECT</operation>
         <operation>SELECT_OPERATOR</operation>
@@ -34,5 +42,6 @@
         <operation>FILTER_INDEXED_MATCH</operation>
         <operation>PARTIAL_RESULTS</operation>
         <operation>SELECT_GROUP_BY</operation>
+        <operation>SELECT_ORDER_BY</operation>
     </SupportedOperations>
 </Connector>

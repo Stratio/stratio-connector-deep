@@ -25,46 +25,56 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is between the provided lower and uppper bounds.
+ * Spark function that determines if the value in the given field is between the provided lower and upper bounds.
  */
 public class Between implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = -4498262312538738011L;
+	private static final long serialVersionUID = -4498262312538738011L;
 
-    /**
-     * Name of the field of the cell to compare.
-     */
-    private final String field;
+	/**
+	 * Name of the field of the cell to compare.
+	 */
+	private final String field;
 
-    /**
-     * Lower bound.
-     */
-    private final Serializable lowerBound;
+	/**
+	 * Lower bound.
+	 */
+	private final Serializable lowerBound;
 
-    /**
-     * Upper bound.
-     */
-    private final Serializable upperBound;
+	/**
+	 * Upper bound.
+	 */
+	private final Serializable upperBound;
 
-    public Between(String field, Serializable lowerBound, Serializable upperBound) {
-        this.field = field;
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-    }
+	/**
+	 * Basic constructor for the Between function class.
+	 * 
+	 * @param field
+	 * 				Name of the field of the cell to compare
+	 * @param lowerBound
+	 * 					 The lower bound	
+	 * @param upperBound
+	 * 					 The upper bound
+	 */
+	public Between(String field, Serializable lowerBound, Serializable upperBound) {
+		this.field = field;
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
+	}
 
-    @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Boolean call(Cells cells) {
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Boolean call(Cells cells) {
 
-        Boolean isValid = false;
-        Object cellValue = cells.getCellByName(field).getCellValue();
+		Boolean isValid = false;
+		Object cellValue = cells.getCellByName(field).getCellValue();
 
-        if (cellValue != null) {
-            isValid =
-                    (((Comparable) lowerBound).compareTo(cellValue) <= 0)
-                            && (((Comparable) upperBound).compareTo(cellValue) >= 0);
-        }
+		if (cellValue != null) {
+			isValid =
+					(((Comparable) lowerBound).compareTo(cellValue) <= 0)
+					&& (((Comparable) upperBound).compareTo(cellValue) >= 0);
+		}
 
-        return isValid;
-    }
+		return isValid;
+	}
 }

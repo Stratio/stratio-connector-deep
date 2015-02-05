@@ -4,10 +4,11 @@ import com.stratio.connector.deep.connection.DeepConnector;
 import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
+import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
-import com.stratio.crossdata.common.data.ClusterName;
 
 public class ConnectionsHandler {
 
@@ -41,5 +42,9 @@ public class ConnectionsHandler {
 
     public void close(ClusterName clusterName) throws ConnectionException {
         this.deepConnector.close(clusterName);
+    }
+
+    public void shutdown() throws ExecutionException {
+        this.deepConnector.shutdown();
     }
 }

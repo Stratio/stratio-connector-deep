@@ -18,15 +18,12 @@
 
 package com.stratio.connector.deep.connection;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
@@ -44,211 +41,242 @@ import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigFactory;
 
 /**
- * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
+ * Class that implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
  * 
  */
 public class DeepConnector implements IConnector {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeepConnector.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DeepConnector.class);
 
-    private static final String CONFIGURATION_FILE_CONSTANT = "connector-application.conf";
+	private static final String CONFIGURATION_FILE_CONSTANT = "connector-application.conf";
 
-    /**
-     * The connectionHandler.
-     */
-    private DeepConnectionHandler connectionHandler;
+	/**
+	 * The connectionHandler.
+	 */
+	private DeepConnectionHandler connectionHandler;
 
-    /**
-     * The deepContext.
-     */
-    private DeepSparkContext deepContext;
+	/**
+	 * The deepContext.
+	 */
+	private DeepSparkContext deepContext;
 
-    /**
-     * Connector configuration from the properties file
-     */
-    private final Properties connectorConfig = new Properties();
+	/**
+	 * Connector configuration from the properties file. 
+	 */
+	private Config connectorConfig;
 
-    /**
-     * Main uses to asociate the connector to crossdata.
-     * 
-     * */
-    public static void main(String[] args) {
+	/**
+	 * Main uses to associate the connector to Crossdata.
+	 * 
+	 * @param args
+	 * 				Args
+	 * @throws InitializationException
+	 */
+	public static void main(String[] args)  throws InitializationException{
 
-        DeepConnector deepConnector = new DeepConnector();
+		DeepConnector deepConnector = new DeepConnector();
 
-        ConnectorApp connectorApp = new ConnectorApp();
-        connectorApp.startup(deepConnector);
-    }
+		ConnectorApp connectorApp = new ConnectorApp();
+		connectorApp.startup(deepConnector);
+		deepConnector.attachShutDownHook();
+	}
 
-    public DeepConnector() {
+	/**
+	 * Run the shutdown.
+	 */
+	public void attachShutDownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					shutdown();
+				} catch (ExecutionException e) {
+					LOGGER.error("Fail ShutDown", e);
+				}
+			}
+		});
+	}
 
-        // Retrieving configuration
-        InputStream input = DeepConnector.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_CONSTANT);
-        if (input == null) {
-            logger.error("Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]");
-            return;
-        }
+	/**
+	 * Basic constructor.
+	 * 
+	 * @throws InitializationException
+	 */
+	public DeepConnector() throws InitializationException {
 
-        try {
-            connectorConfig.load(input);
-        } catch (IOException e) {
-            logger.error("Error loading configuration from: [" + CONFIGURATION_FILE_CONSTANT + "]");
-            return;
-        }
-    }
+		// Retrieving configuration
+		InputStream input = DeepConnector.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_CONSTANT);
 
-    @Override
-    public String getConnectorName() {
-        return "DeepConnector";
-    }
+		if (input == null) {
+			String message = "Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]";
+			LOGGER.error(message);
+			throw new InitializationException(message);
+		}
+		connectorConfig = ConfigFactory.load(CONFIGURATION_FILE_CONSTANT);
 
-    @Override
-    public String[] getDatastoreName() {
-        return new String[] { "DeepConnector" };
-    }
+	}
 
-    /**
-     * Init Connection.
-     * 
-     * @param configuration
-     * @see{com.stratio.connector.deep.configuration.ConnectionConfiguration.
-     */
-    @Override
-    public void init(IConfiguration configuration) throws InitializationException {
+	@Override
+	public String getConnectorName() {
+		return "DeepConnector";
+	}
 
-        this.connectionHandler = new DeepConnectionHandler(null);
+	@Override
+	public String[] getDatastoreName() {
+		return new String[] { "DeepConnector" };
+	}
 
-        logger.info("-------------StartUp the SparkContext------------ ");
+	/**
+	 * Init Connection.
+	 * 
+	 * @param configuration
+	 * @see{com.stratio.connector.deep.configuration.ConnectionConfiguration.
+	 */
+	@Override
+	public void init(IConfiguration configuration) throws InitializationException {
 
-        logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
-        logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
+		this.connectionHandler = new DeepConnectionHandler(null);
 
-        String sparkMaster = connectorConfig.getProperty(DeepConnectorConstants.SPARK_MASTER);
-        String sparkHome = connectorConfig.getProperty(DeepConnectorConstants.SPARK_HOME);
-        String sparkJars = connectorConfig.getProperty(DeepConnectorConstants.SPARK_JARS);
+		LOGGER.info("-------------StartUp the SparkContext------------ ");
 
-        this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
-                sparkHome, sparkJars);
+		LOGGER.info("spark.serializer: " + System.getProperty("spark.serializer"));
+		LOGGER.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
-        logger.info("-------------End StartUp the SparkContext------------ ");
-    }
+		String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
+		String sparkHome = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
+		List<String> sparkJars = null;
+		String[] jarsArray = new String[0];
 
-    /**
-     * Connect with the config expecified associate to a clusterName {ConnectionHandler}
-     * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
-     * 
-     * @param credentials
-     * @param config
-     *            {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}.
-     */
-    @Override
-    public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
+		try {
+			sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(
+					DeepConnectorConstants.SPARK_JARS);
 
-        try {
-            // Setting the extractor class
-            String dataSourceName = config.getDataStoreName().getName();
-            String extractorImplClassName = connectorConfig.getProperty(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT
-                    + dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
+		} catch (ConfigException e) {
+			LOGGER.info("--No spark Jars added--", e);
+		}
+		if (sparkJars != null) {
+			jarsArray = new String[sparkJars.size()];
+			sparkJars.toArray(jarsArray);
+		}
 
-            config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
+		LOGGER.info("---SPARK-Master---->" + sparkMaster);
+		LOGGER.info("---SPARK-Home---->" + sparkHome);
 
-            if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
-                config.getClusterOptions().put(ExtractorConstants.HDFS_FILE_PATH,
-                        connectorConfig.getProperty(ExtractorConstants.HDFS+"."+ExtractorConstants.HDFS_FILE_PATH));
-            }
+		this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
+				sparkHome, jarsArray);
 
+		LOGGER.info("-------------End StartUp the SparkContext------------ ");
+	}
 
-            connectionHandler.createConnection(credentials, config);
+	/**
+	 * Connect with the config expecified associate to a clusterName {ConnectionHandler}
+	 * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
+	 * 
+	 * @param credentials
+	 * @param config
+	 *            {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}
+	 */
+	@Override
+	public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
-        } catch (HandlerConnectionException e) {
-            String msg = "fail creating the Connection. " + e.getMessage();
-            logger.error(msg);
-            throw new ConnectionException(msg, e);
-        }
+		// Setting the extractor class
+		String dataSourceName = config.getDataStoreName().getName();
 
-    }
+		String extractorImplClassName = connectorConfig.getConfig(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT)
+				.getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
 
-    /**
-     * Close connection associate to the clusterName.
-     * 
-     * @see{com.stratio.connector.commons.connection.ConnectionHandler.close
-     * 
-     * @param name
-     *            {@link com.stratio.crossdata.common.data.ClusterName}.
-     */
-    @Override
-    public void close(ClusterName name) throws ConnectionException {
+		config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
 
-        connectionHandler.closeConnection(name.getName());
-    }
+		if (extractorImplClassName != null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+			config.getClusterOptions().put(
+					ExtractorConstants.FS_FILE_PATH,
+					connectorConfig.getConfig(ExtractorConstants.HDFS).getString(
+							ExtractorConstants.FS_FILE_PATH));
+		}
 
-    /**
-     * Shutdown when all the connections associate to the clusterNames end all the works stop the context.
-     */
-    @Override
-    public void shutdown() throws ExecutionException {
+		connectionHandler.createConnection(credentials, config);
 
-        Iterator it = connectionHandler.getConnections().values().iterator();
-        while (it.hasNext()) {
-            DeepConnection conn = (DeepConnection) it.next();
-            while (conn.isWorkInProgress()) {
-                shutdown();
-            }
-        }
-        deepContext.stop();
-    }
+	}
 
-    /**
-     * Check if the connection associate to the clusterName is connected
-     * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}.
-     * 
-     * @param name
-     *            {@link com.stratio.crossdata.common.data.ClusterName}.
-     * @return boolean
-     * 
-     */
-    @Override
-    public boolean isConnected(ClusterName name) {
+	/**
+	 * Close connection associate to the clusterName.
+	 * 
+	 * @see{com.stratio.connector.commons.connection.ConnectionHandler.close
+	 * 
+	 * @param name
+	 *            {@link com.stratio.crossdata.common.data.ClusterName}.
+	 */
+	@Override
+	public void close(ClusterName name) throws ConnectionException {
 
-        return connectionHandler.isConnected(name.getName());
-    }
+		connectionHandler.closeConnection(name.getName());
+	}
 
-    /**
-     * Unsupported method.
-     * 
-     * @return IStorageEngine
-     * 
-     */
-    @Override
-    public IStorageEngine getStorageEngine() throws UnsupportedException {
+	/**
+	 * Shutdown when all the connections associate to the clusterNames end all the works stop the context.
+	 */
+	@Override
+	public void shutdown() throws ExecutionException {
 
-        throw new UnsupportedException("Not yet supported");
+		connectionHandler.closeAllConnections();
+		deepContext.stop();
+	}
 
-    }
+	/**
+	 * Check if the connection associate to the clusterName is connected
+	 * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}.
+	 * 
+	 * @param name
+	 *            {@link com.stratio.crossdata.common.data.ClusterName}
+	 * @return boolean
+	 * 
+	 */
+	@Override
+	public boolean isConnected(ClusterName name) {
 
-    /*
-     * Return the interface to invoke queries from crossdata.
-     * 
-     * @return DeepQueryEngine
-     */
-    @Override
-    public IQueryEngine getQueryEngine() throws UnsupportedException {
+		return connectionHandler.isConnected(name.getName());
+	}
 
-        return new DeepQueryEngine(deepContext, connectionHandler);
+	/**
+	 * Unsupported method.
+	 * 
+	 * @return IStorageEngine
+	 * 
+	 */
+	@Override
+	public IStorageEngine getStorageEngine() throws UnsupportedException {
 
-    }
+		throw new UnsupportedException("Not yet supported");
 
-    /*
-     * Unsupported method.
-     * 
-     * @return IMetadataEngine
-     */
-    @Override
-    public IMetadataEngine getMetadataEngine() throws UnsupportedException {
+	}
 
-        throw new UnsupportedException("Not yet supported");
+	/**
+	 * Return the interface to invoke queries from crossdata.
+	 * 
+	 * @return DeepQueryEngine
+	 */
+	@Override
+	public IQueryEngine getQueryEngine() throws UnsupportedException {
 
-    }
+		return new DeepQueryEngine(deepContext, connectionHandler);
+
+	}
+
+	/**
+	 * Unsupported method.
+	 * 
+	 * @return IMetadataEngine
+	 */
+	@Override
+	public IMetadataEngine getMetadataEngine() throws UnsupportedException {
+
+		throw new UnsupportedException("Not yet supported");
+
+	}
+
 }

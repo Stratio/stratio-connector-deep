@@ -19,13 +19,14 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
+import org.apache.spark.rdd.RDD;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
+
 import com.stratio.connector.deep.connection.DeepConnection;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.functions.DeepEquals;
@@ -97,6 +98,8 @@ public class QueryExecutorTest {
     private JavaRDD<Cells> singleRdd;
 
     @Mock
+    private RDD<Cells> rdd;
+    @Mock
     private JavaPairRDD<List<Object>, Cells> pairRdd;
 
     @Mock
@@ -108,7 +111,7 @@ public class QueryExecutorTest {
     private QueryExecutor queryExecutor;
 
     @Before
-    public void before() throws Exception, HandlerConnectionException {
+    public void before() throws Exception {
 
         queryExecutor = new QueryExecutor(deepContext, deepConnectionHandler);
 
@@ -117,7 +120,8 @@ public class QueryExecutorTest {
         when(deepConnection.getExtractorConfig()).thenReturn(extractorConfig);
         when(extractorConfig.clone()).thenReturn(extractorConfig);
         when(deepContext.createJavaRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
-        when(deepContext.createHDFSRDD(any(ExtractorConfig.class))).thenReturn(singleRdd);
+        when(deepContext.createHDFSRDD(any(ExtractorConfig.class))).thenReturn(rdd);
+        when(rdd.toJavaRDD()).thenReturn(singleRdd);
         when(singleRdd.collect()).thenReturn(generateListOfCells(3));
         when(singleRdd.filter(any(Function.class))).thenReturn(singleRdd);
         when(singleRdd.map(any(FilterColumns.class))).thenReturn(singleRdd);
@@ -127,11 +131,12 @@ public class QueryExecutorTest {
         when(pairRdd.reduceByKey(any(Function2.class))).thenReturn(pairRdd);
         when(pairRdd.map(any(Function.class))).thenReturn(singleRdd);
         when(joinedRdd.map(any(JoinCells.class))).thenReturn(singleRdd);
+
+
     }
 
     @Test
-    public void simpleProjectAndSelectQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectQueryTest() throws UnsupportedException, ExecutionException         {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -160,8 +165,8 @@ public class QueryExecutorTest {
 
 
     @Test
-    public void simpleProjectAndSelectQueryHDFSTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectQueryHDFSTest() throws UnsupportedException, ExecutionException
+             {
 
         ExtractorConfig<Cells> config = createExtractorForHDFS();
 
@@ -198,7 +203,7 @@ public class QueryExecutorTest {
         ExtractorConfig<Cells> extractorConfigHDFS = new ExtractorConfig<>();
         extractorConfigHDFS.setExtractorImplClassName("hdfs");
         extractorConfigHDFS.setValues(extractorConfig.getValues());
-        extractorConfigHDFS.putValue(ExtractorConstants.HDFS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
+        extractorConfigHDFS.putValue(ExtractorConstants.FS_SCHEMA,"[id:java.lang.String,author:java.lang.String," +
                 "title:java.lang.String,year:java.lang.Integer,length:java.lang.Integer,single:java.lang.String]");
 
         return extractorConfigHDFS;
@@ -206,8 +211,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectWithOneFilterQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectWithOneFilterQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -238,8 +243,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectWithThreeFiltersQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectWithThreeFiltersQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -274,8 +279,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void twoProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void twoProjectsJoinedAndSelectQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -376,8 +381,8 @@ public class QueryExecutorTest {
     }
 
     @Test
-    public void simpleProjectAndSelectWithGroupByQueryTest() throws UnsupportedException, ExecutionException,
-            HandlerConnectionException {
+    public void simpleProjectAndSelectWithGroupByQueryTest() throws UnsupportedException, ExecutionException
+             {
 
         // Input data
         List<LogicalStep> stepList = new ArrayList<>();
@@ -473,15 +478,17 @@ public class QueryExecutorTest {
     private Select createSelect() {
 
         ColumnName columnName = new ColumnName("catalogname", "tablename1", "column1Name");
-
-        Map<ColumnName, String> columnsAliases = new HashMap<>();
-        columnsAliases.put(columnName, "nameAlias");
+        ColumnSelector columnSelector = new ColumnSelector(columnName);
+        columnSelector.setAlias("nameAlias");
+        Map<Selector, String> columnsAliases = new HashMap<>();
+        columnsAliases.put(columnSelector, "nameAlias");
 
         Map<String, ColumnType> columnsTypes = new HashMap<>();
         columnsTypes.put("catalogname.tablename1.column1Name", ColumnType.BIGINT);
 
-        Map<ColumnName, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
-        typeMapFromColumnName.put(columnName, ColumnType.BIGINT);
+        Map<Selector, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
+
+        typeMapFromColumnName.put(columnSelector, ColumnType.BIGINT);
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
 

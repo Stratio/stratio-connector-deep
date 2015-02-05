@@ -25,30 +25,38 @@ import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is less than the provided term.
+ * Class that defines LessThan, Spark function that determines if the value in the given field is less than the provided term.
  */
 public class LessThan implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = 2675616112608139116L;
+	private static final long serialVersionUID = 2675616112608139116L;
 
-    /**
-     * Term to compare.
-     */
-    private final Term<?> term;
+	/**
+	 * Term to be compared.
+	 */
+	private final Term<?> term;
 
-    /**
-     * Column cell to compare to.
-     */
-    private final ColumnName column;
+	/**
+	 * Column cell to compare to.
+	 */
+	private final ColumnName column;
 
-    public LessThan(ColumnName column, Term term) {
-        this.term = term;
-        this.column = column;
-    }
+	/**
+	 * Basic constructor for the LessThan function class.
+	 * 
+	 * @param column
+	 * 				Column cell to compare to
+	 * @param term
+	 * 				Term to be compared
+	 */
+	public LessThan(ColumnName column, Term term) {
+		this.term = term;
+		this.column = column;
+	}
 
-    @Override
-    public Boolean call(Cells cells) {
-        Object obj = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName()).getCellValue();
-        return ((Comparable) term).compareTo(obj) > 0;
-    }
+	@Override
+	public Boolean call(Cells cells) {
+		Object obj = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName()).getCellValue();
+		return ((Comparable) term).compareTo(obj) > 0;
+	}
 }

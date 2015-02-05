@@ -20,7 +20,6 @@ package com.stratio.connector.deep.connection;
 
 import com.stratio.connector.commons.connection.Connection;
 import com.stratio.connector.commons.connection.ConnectionHandler;
-import com.stratio.connector.commons.connection.exceptions.CreateNativeConnectionException;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -32,33 +31,36 @@ import com.stratio.crossdata.common.security.ICredentials;
  */
 public class DeepConnectionHandler extends ConnectionHandler {
 
-    public DeepConnectionHandler(IConfiguration configuration) {
-        super(configuration);
-    }
+	/**
+	 * Basic constructor.
+	 * 
+	 * @param configuration
+	 * 						The configuration
+	 */
+	public DeepConnectionHandler(IConfiguration configuration) {
+		super(configuration);
+	}
 
-    /**
-     * Use config & Credentials to create Deep native connection.
-     * 
-     * @param iCredentials
-     *            .
-     * @param connectorClusterConfig
-     *            .
-     * 
-     * @return DeepConnection.
-     **/
-    @Override
-    protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
-            throws CreateNativeConnectionException {
+	/**
+	 * Use config & Credentials to create Deep native connection.
+	 * 
+	 * @param iCredentials
+	 *            			The credentials
+	 * @param connectorClusterConfig
+	 *            					The connector cluster configuration
+	 * 
+	 * @return DeepConnection
+	 **/
+	@Override
+	protected Connection createNativeConnection(ICredentials iCredentials, ConnectorClusterConfig connectorClusterConfig)
+			throws ConnectionException {
 
-        Connection connection;
+		Connection connection;
 
-        try {
-            connection = new DeepConnection(iCredentials, connectorClusterConfig);
-        } catch (ConnectionException e) {
-            throw new CreateNativeConnectionException("Error creating native connection", e);
-        }
+		connection = new DeepConnection(iCredentials, connectorClusterConfig);
 
-        return connection;
-    }
+
+		return connection;
+	}
 
 }

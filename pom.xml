@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <!-- ~ Licensed to STRATIO (C) under one or more contributor license agreements. 
     ~ See the NOTICE file distributed with this work for additional information 
     ~ regarding copyright ownership. The STRATIO (C) licenses this file ~ to 
@@ -24,7 +23,7 @@
     <name>Deep Connector</name>
     <groupId>com.stratio.connector</groupId>
     <artifactId>stratio-connector-deep</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <description>Deep connector for multiple data sources</description>
     <url>http://www.stratio.com</url>
     <packaging>jar</packaging>
@@ -32,7 +31,7 @@
     <developers>
         <developer>
             <id>opuertas</id>
-            <name>Óscar Puertas</name>
+            <name>Oscar Puertas</name>
             <email>opuertas at stratio dot com</email>
         </developer>
         <developer>
@@ -40,13 +39,23 @@
             <name>David Gómez</name>
             <email>dgomez at stratio dot com</email>
         </developer>
+        <developer>
+            <id>darroyo</id>
+            <name>David Arroyo</name>
+            <email>darroyo at stratio dot com</email>
+        </developer>
+      <developer>
+            <id>jmgomez</id>
+            <name>Jose Manuel Gomez</name>
+            <email>jmgomez at stratio dot com</email>
+        </developer>
     </developers>
 
     <properties>
-        <version.crossdata>0.1.1</version.crossdata>
-        <version.connector.commons>0.2.0</version.connector.commons>
-        <version.deep>0.6.2</version.deep>
-        <version.hadoop>2.4.1</version.hadoop>
+        <version.crossdata>0.2.0</version.crossdata>
+        <version.connector.commons>0.4.0</version.connector.commons>
+        <version.deep>0.7.0</version.deep>
+        <version.hadoop>2.4.0</version.hadoop>
     </properties>
 
     <licenses>
@@ -82,10 +91,15 @@
             <artifactId>crossdata-connector</artifactId>
             <version>${version.crossdata}</version>
             <type>jar</type>
+
             <exclusions>
                 <exclusion>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-remote_2.10</artifactId>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-compiler</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -94,6 +108,16 @@
             <groupId>com.stratio.crossdata</groupId>
             <artifactId>crossdata-common</artifactId>
             <version>${version.crossdata}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.stratio.deep</groupId>
@@ -137,8 +161,14 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>com.stratio.deep</groupId>
+            <artifactId>deep-jdbc</artifactId>
+            <version>${version.deep}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>com.stratio.connector</groupId>
-            <artifactId>connector-commons-core</artifactId>
+            <artifactId>stratio-connector-commons</artifactId>
             <version>${version.connector.commons}</version>
         </dependency>
 
@@ -173,11 +203,6 @@
         </dependency>
     </dependencies>
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/config</directory>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

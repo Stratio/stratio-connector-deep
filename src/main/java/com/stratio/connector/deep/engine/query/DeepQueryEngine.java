@@ -19,6 +19,7 @@
 package com.stratio.connector.deep.engine.query;
 
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
+import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.connector.IResultHandler;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
@@ -27,53 +28,66 @@ import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.deep.core.context.DeepSparkContext;
 
+/**
+ * 
+ * Subclass that extends CommonsQueryEngine.
+ *
+ */
 public class DeepQueryEngine extends CommonsQueryEngine {
 
-    private final DeepSparkContext deepContext;
+	private final DeepSparkContext deepContext;
 
-    private final DeepConnectionHandler deepConnectionHandler;
+	private final DeepConnectionHandler deepConnectionHandler;
 
-    public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
-        super(deepConnectionHandler);
-        this.deepContext = deepContext;
-        this.deepConnectionHandler = deepConnectionHandler;
-    }
+	/**
+	 * Basic constructor.
+	 * 
+	 * @param deepContext
+	 * 						The Deep Context
+	 * @param deepConnectionHandler
+	 * 								The connection handler
+	 */
+	public DeepQueryEngine(DeepSparkContext deepContext, DeepConnectionHandler deepConnectionHandler) {
+		super(deepConnectionHandler);
+		this.deepContext = deepContext;
+		this.deepConnectionHandler = deepConnectionHandler;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.stratio.crossdata.common.connector.IQueryEngine#execute(com.stratio.crossdata.common.logicalplan.LogicalWorkflow
-     * )
-     */
-    @Override
-    public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
-        QueryExecutor executor = new QueryExecutor(deepContext, deepConnectionHandler);
-        return executor.executeWorkFlow(workflow);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.stratio.crossdata.common.connector.IQueryEngine#execute(com.stratio.crossdata.common.logicalplan.LogicalWorkflow
+	 * )
+	 */
+	@Override
+	public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
+		QueryExecutor executor = new QueryExecutor(deepContext, deepConnectionHandler);
+		return executor.executeWorkFlow(workflow);
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.stratio.crossdata.common.connector.IQueryEngine#asyncExecute(java.lang.String,
-     * com.stratio.crossdata.common.logicalplan.LogicalWorkflow, com.stratio.crossdata.common.connector.IResultHandler)
-     */
-    @Override
-    public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
-            throws UnsupportedException, ExecutionException {
-        // TODO Auto-generated method stub
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.stratio.crossdata.common.connector.IQueryEngine#asyncExecute(java.lang.String,
+	 * com.stratio.crossdata.common.logicalplan.LogicalWorkflow, com.stratio.crossdata.common.connector.IResultHandler)
+	 */
+	@Override
+	public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
+			throws UnsupportedException, ExecutionException {
+		throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.stratio.crossdata.common.connector.IQueryEngine#stop(java.lang.String)
-     */
-    @Override
-    public void stop(String queryId) throws UnsupportedException, ExecutionException {
-        // TODO Auto-generated method stub
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.stratio.crossdata.common.connector.IQueryEngine#stop(java.lang.String)
+	 */
+	@Override
+	public void stop(String queryId) throws UnsupportedException, ExecutionException {
+		throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
 
-    }
+	}
 }

@@ -18,15 +18,30 @@
 
 package com.stratio.connector.deep.engine.query.structures;
 
+/**
+ * 
+ * Subclass of the class 'Term' that defines a Double Term.
+ *
+ */
 public class DoubleTerm extends Term<Double> {
 
-    private static final long serialVersionUID = -578510540271635667L;
+	private static final long serialVersionUID = -578510540271635667L;
 
-    public DoubleTerm(String term) {
-        super(Double.class, Double.valueOf(term));
-    }
+	/**
+	 * Constructor from a String representation of a Double value.
+	 * @param term
+	 * 				String representation of a Double value
+	 */
+	public DoubleTerm(String term) {
+		super(Double.class, Double.valueOf(term));
+	}
 
-    public DoubleTerm(Double term) {
-        super(Double.class, term);
-    }
+	/**
+	 * Constructor from Double type.
+	 * @param term
+	 * 				Double value
+	 */
+	public DoubleTerm(Double term) {
+		super(Double.class, term);
+	}
 }

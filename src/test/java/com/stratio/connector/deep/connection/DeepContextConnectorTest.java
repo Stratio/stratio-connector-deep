@@ -14,12 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.DataStoreName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
+import com.stratio.crossdata.common.exceptions.ExecutionException;
+import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.security.ICredentials;
 
 /**
@@ -34,6 +35,7 @@ public class DeepContextConnectorTest {
      */
     private static final String DEFAULT_HOST = "127.0.0.1";
     private static final String CLUSTER_NAME = "CLUSTER_NAME";
+    private static final String DATASTORE_NAME = "mongo";
 
     /**
      *
@@ -41,7 +43,7 @@ public class DeepContextConnectorTest {
     protected static DeepConnector deepConnector;
 
     @Before
-    public void setUp() {
+    public void setUp() throws InitializationException {
         // TODO Start All the DeepSparkContext
         // TODO loadTestData
         // Creating the Deep Context
@@ -60,13 +62,14 @@ public class DeepContextConnectorTest {
         deepConnector.init(iconfiguration);
 
         DeepConnectionHandler connectionHandler = (DeepConnectionHandler) Whitebox.getInternalState(deepConnector,
-                "connectionHandler");
+                        "connectionHandler");
 
         Object recoveredConfiguration = Whitebox.getInternalState(connectionHandler, "configuration");
 
         assertNull("The configuration is not null", recoveredConfiguration);
         assertNotNull("The connection handle is not null", connectionHandler);
-        //assertEquals ("The configuration is correct" , iconfiguration, recoveredConfiguration);
+        // assertEquals ("The configuration is correct" , iconfiguration, recoveredConfiguration);
+        deepConnector.shutdown();
     }
 
     /**
@@ -78,13 +81,13 @@ public class DeepContextConnectorTest {
      */
 
     @Test
-    public void testConnect() throws Exception, HandlerConnectionException {
+    public void testConnect() throws Exception {
 
         ICredentials iCredentials = mock(ICredentials.class);
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
         Map<String, String> options = new HashMap<>();
-        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
-        config.setDataStoreName(new DataStoreName(CLUSTER_NAME));
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options, options);
+        config.setDataStoreName(new DataStoreName(DATASTORE_NAME));
 
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
@@ -95,14 +98,14 @@ public class DeepContextConnectorTest {
     }
 
     @Test
-    public void testClose() throws ConnectionException, HandlerConnectionException {
+    public void testClose() throws ConnectionException, ExecutionException {
 
         ICredentials iCredentials = mock(ICredentials.class);
         ClusterName clusterName = new ClusterName(CLUSTER_NAME);
 
         Map<String, String> options = new HashMap<>();
-        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options,options);
-        config.setDataStoreName(new DataStoreName(CLUSTER_NAME));
+        ConnectorClusterConfig config = new ConnectorClusterConfig(clusterName, options, options);
+        config.setDataStoreName(new DataStoreName(DATASTORE_NAME));
         DeepConnectionHandler connectionHandler = mock(DeepConnectionHandler.class);
         Whitebox.setInternalState(deepConnector, "connectionHandler", connectionHandler);
 

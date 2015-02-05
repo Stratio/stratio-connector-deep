@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.stratio.connector.commons.connection.ConnectionHandler;
-import com.stratio.connector.commons.connection.exceptions.HandlerConnectionException;
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.data.DataStoreName;
@@ -49,7 +48,7 @@ public class DeepConnectionTest {
 
     @Test
     public void createNewDeepConnectionWithDataSourceNameTest()
-            throws ConnectionException, HandlerConnectionException, InitializationException {
+            throws ConnectionException,  InitializationException {
 
         // Set up
         DataStoreName dataStoreName = new DataStoreName(CASSANDRA_CONSTANT);

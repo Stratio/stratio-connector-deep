@@ -25,31 +25,39 @@ import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is different to the provided term.
+ * Class that defines Class that defines, Spark function that determines if the value in the given field is different to the provided term.
  */
 public class NotEquals implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = 927384912608139416L;
+	private static final long serialVersionUID = 927384912608139416L;
 
-    /**
-     * Term to compare.
-     */
-    private final Term<?> term;
+	/**
+	 * Term to be compared.
+	 */
+	private final Term<?> term;
 
-    /**
-     * Column cell to compare to.
-     */
-    private final ColumnName column;
+	/**
+	 * Column cell to compare to.
+	 */
+	private final ColumnName column;
 
-    public NotEquals(ColumnName column, Term term) {
-        this.term = term;
-        this.column = column;
-    }
+	/**
+	 * Basic constructor for the NotEquals function class.
+	 * 
+	 * @param column
+	 * 				Column cell to compare to
+	 * @param term
+	 * 				Term to be compared
+	 */
+	public NotEquals(ColumnName column, Term term) {
+		this.term = term;
+		this.column = column;
+	}
 
-    @Override
-    public Boolean call(Cells cells) {
-        Object currentValue = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName())
-                .getCellValue();
-        return !term.equals(currentValue);
-    }
+	@Override
+	public Boolean call(Cells cells) {
+		Object currentValue = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName())
+				.getCellValue();
+		return !term.equals(currentValue);
+	}
 }

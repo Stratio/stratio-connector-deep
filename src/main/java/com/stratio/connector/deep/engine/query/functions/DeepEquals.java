@@ -25,35 +25,43 @@ import com.stratio.crossdata.common.data.ColumnName;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is equals to the provided term.
+ * Class that defines DeepEquals, Spark function that determines if the value in the given field is equals to the provided term.
  *
  */
 public class DeepEquals implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = -6143471452730703044L;
+	private static final long serialVersionUID = -6143471452730703044L;
 
-    /**
-     * Term to compare.
-     */
-    private final Term<?> term;
+	/**
+	 * Term to be compared.
+	 */
+	private final Term<?> term;
 
-    /**
-     * Column cell to compare to.
-     */
-    private final ColumnName column;
 
-    public DeepEquals(ColumnName column, Term<?> term) {
-        this.term = term;
-        this.column = column;
-    }
+	/**
+	 * Column cell to compare to.
+	 */
+	private final ColumnName column;
 
-    @Override
-    public Boolean call(Cells cells) {
+	/**
+	 * Basic constructor for the DeepEquals function class.
+	 * @param column
+	 * 				Column cell to compare to
+	 * @param term
+	 * 				Term to be compared
+	 */
+	public DeepEquals(ColumnName column, Term<?> term) {
+		this.term = term;
+		this.column = column;
+	}
 
-        Object currentValue = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName())
-                .getCellValue();
+	@Override
+	public Boolean call(Cells cells) {
 
-        return term.equals(currentValue);
-    }
+		Object currentValue = cells.getCellByName(column.getTableName().getQualifiedName(), column.getName())
+				.getCellValue();
+
+		return term.equals(currentValue);
+	}
 
 }

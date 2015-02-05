@@ -26,36 +26,43 @@ import org.apache.spark.api.java.function.Function;
 import com.stratio.deep.commons.entity.Cells;
 
 /**
- * Spark function that determines if the value in the given field is included in the provided list of terms.
+ * Class that defines In, Spark function that determines if the value in the given field is included in the provided list of terms.
  */
 public class In implements Function<Cells, Boolean> {
 
-    private static final long serialVersionUID = -6637139616271541577L;
+	private static final long serialVersionUID = -6637139616271541577L;
 
-    /**
-     * Name of the field of the cell to compare.
-     */
-    private final String field;
+	/**
+	 * Name of the field of the cell to be compared.
+	 */
+	private final String field;
 
-    /**
-     * IDs in the IN clause.
-     */
-    private final List<Serializable> terms;
+	/**
+	 * IDs in the IN clause.
+	 */
+	private final List<Serializable> terms;
 
-    public In(String field, List<Serializable> terms) {
-        this.field = field;
-        this.terms = terms;
-    }
+	/**
+	 * Basic constructor for the In function class.
+	 * @param field
+	 * 				Name of the field of the cell to be compared
+	 * @param terms
+	 * 				IDs in the IN clause
+	 */
+	public In(String field, List<Serializable> terms) {
+		this.field = field;
+		this.terms = terms;
+	}
 
-    @Override
-    public Boolean call(Cells cells) {
+	@Override
+	public Boolean call(Cells cells) {
 
-        Boolean isValid = false;
+		Boolean isValid = false;
 
-        if (this.field != null && this.terms != null) {
-            // TODO: Implements call to create IN stuff
-        }
+		if (this.field != null && this.terms != null) {
+			// TODO: Implements call to create IN stuff
+		}
 
-        return isValid;
-    }
+		return isValid;
+	}
 }

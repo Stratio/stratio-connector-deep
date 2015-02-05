@@ -1,0 +1,13 @@
+QualifiedName=test.songs
+CatalogName=test
+TableName=songs
+PrimaryKey=[test.songs.id]
+Indexes={}
+Schema {
+Field 0:id:TEXT
+Field 1:title:TEXT
+Field 2:single:TEXT
+Field 3:year:INT
+Field 4:length:INT
+Field 5:author:TEXT
+}

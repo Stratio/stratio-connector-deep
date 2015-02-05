@@ -31,22 +31,22 @@ import com.stratio.deep.commons.entity.Cells;
  */
 public class JoinCells implements Function<Tuple2<List<Object>, Tuple2<Cells, Cells>>, Cells> {
 
-    private static final long serialVersionUID = 4534397129761833793L;
+	private static final long serialVersionUID = 4534397129761833793L;
 
-    public JoinCells() {
+	public JoinCells() {
 
-    }
+	}
 
-    @Override
-    public Cells call(Tuple2<List<Object>, Tuple2<Cells, Cells>> result) {
+	@Override
+	public Cells call(Tuple2<List<Object>, Tuple2<Cells, Cells>> result) {
 
-        Cells left = result._2()._1();
-        Cells right = result._2()._2();
+		Cells left = result._2()._1();
+		Cells right = result._2()._2();
 
-        Cells joinedCells = new Cells();
-        joinedCells.addAll(left.getInternalCells());
-        joinedCells.addAll(right.getInternalCells());
+		Cells joinedCells = new Cells();
+		joinedCells.addAll(left.getInternalCells());
+		joinedCells.addAll(right.getInternalCells());
 
-        return joinedCells;
-    }
+		return joinedCells;
+	}
 }
