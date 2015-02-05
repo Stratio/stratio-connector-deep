@@ -43,5 +43,9 @@
             <PropertyName>password</PropertyName>
             <Description>Password</Description>
         </Property>
+        <Property>
+            <PropertyName>connectionUrl</PropertyName>
+            <Description>JDBC Connection URL</Description>
+        </Property>
     </OptionalProperties>
 </DataStore>
