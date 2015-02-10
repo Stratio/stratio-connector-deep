@@ -434,7 +434,7 @@ public class QueryExecutor {
 		ResultSet resultSet = new ResultSet();
 		resultSet.setRows(resultRows);
 		resultSet.setColumnMetadata(resultMetadata);
-		QueryResult queryResult = QueryResult.createQueryResult(resultSet,1,true);
+		QueryResult queryResult = QueryResult.createQueryResult(resultSet,0,true);
 
 		return queryResult;
 	}

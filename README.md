@@ -19,7 +19,7 @@ To automatically build execute the following command:
 ## Running the Stratio Connector Deep ##
 
 ```
-   > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.connection.DeepConnector"
+   > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.DeepConnector"
 ```
 
 

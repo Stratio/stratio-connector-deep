@@ -26,7 +26,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.stratio.connector.deep.connection.DeepConnector;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;

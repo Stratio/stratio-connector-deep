@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package com.stratio.connector.deep.connection;
+package com.stratio.connector.deep;
 
 import java.io.InputStream;
 import java.util.List;
@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
+import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.connector.IConfiguration;
