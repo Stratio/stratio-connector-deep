@@ -19,6 +19,15 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://maven.apache.org/POM/4.0.0"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <properties>
+        <version.crossdata>0.3.0-SNAPSHOT</version.crossdata>
+        <version.connector.commons>0.4.0-001</version.connector.commons>
+        <version.deep>0.7.0</version.deep>
+        <version.hadoop>2.4.0</version.hadoop>
+    </properties>
+
+
     <modelVersion>4.0.0</modelVersion>
     <name>Deep Connector</name>
     <groupId>com.stratio.connector</groupId>
@@ -27,6 +36,7 @@
     <description>Deep connector for multiple data sources</description>
     <url>http://www.stratio.com</url>
     <packaging>jar</packaging>
+
 
     <developers>
         <developer>
@@ -51,12 +61,7 @@
         </developer>
     </developers>
 
-    <properties>
-        <version.crossdata>0.2.0-001</version.crossdata>
-        <version.connector.commons>0.4.0-001</version.connector.commons>
-        <version.deep>0.7.0</version.deep>
-        <version.hadoop>2.4.0</version.hadoop>
-    </properties>
+
 
     <licenses>
         <license>
@@ -265,7 +270,7 @@
                 <groupId>com.stratio.crossdata</groupId>
                 <version>${version.crossdata}</version>
                 <configuration>
-                    <mainClass>com.stratio.connector.deep.connection.DeepConnector</mainClass>
+                    <mainClass>com.stratio.connector.deep.DeepConnector</mainClass>
                     <jmxPort>7189</jmxPort>
                 </configuration>
             </plugin>

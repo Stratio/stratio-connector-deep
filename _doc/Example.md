@@ -52,7 +52,7 @@ For each row the output must be:
 4. Start All the connectors
 
 ```
-    > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.connection.DeepConnector"
+    > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.DeepConnector"
     > mvn exec:java -Dexec.mainClass="com.stratio.connector.mongodb.core.MongoConnector"
     > mvn exec:java -Dexec.mainClass="com.stratio.connector.cassandra.CassandraConnector"
 ```

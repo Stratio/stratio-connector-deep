@@ -1,6 +1,5 @@
 package com.stratio.connector.deep;
 
-import com.stratio.connector.deep.connection.DeepConnector;
 import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
