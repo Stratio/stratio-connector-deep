@@ -10,5 +10,5 @@
 #var/log/sds/crossdata
 #var/sds/crossdata
 #var/sds/crossdata/crossdata-store
-mkdir -p /var/sds/stratio-connector-depp/stratio-connector-depp-store
-mkdir -p /var/log/sds/stratio-connector-depp
+mkdir -p /var/sds/stratio-connector-deep/stratio-connector-deep-store
+mkdir -p /var/log/sds/stratio-connector-deep
