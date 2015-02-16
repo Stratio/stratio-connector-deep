@@ -1,0 +1,60 @@
+#!/bin/sh
+
+set -e
+
+GROUP='stratio'
+USER='stratio'
+DIR_INSTALL='/opt/sds/stratio-connector-deep'
+DIR_CONF='/etc/sds/stratio-connector-deep'
+DIR_LOG='/var/log/sds/stratio-connector-deep'
+
+cp /opt/sds/stratio-connector-deep/bin/stratio-connector-deep-* /opt/sds/stratio-connector-deep/bin/stratio-connector-deep
+cp /opt/sds/stratio-connector-deep/template/DeepConnector /etc/init.d/stratio-connector-deep
+chmod 755 /etc/init.d/stratio-connector-deep
+chmod 755 /opt/sds/stratio-connector-deep/bin
+chmod +x /opt/sds/stratio-connector-deep/bin/stratio-connector-deep
+chmod +x /etc/default/stratio-connector-deep
+export DEEP_CONNECTOR_LIB=/opt/sds/stratio-connector-deep
+export DEEP_CONNECTOR_CONF="/etc/sds/stratio-connector-deep"
+
+case "$1" in
+  configure)
+
+  # Add stratio group if it doesn't already exists
+  if ! getent group $GROUP >/dev/null 2>&1; then
+    groupadd ${GROUP} 
+  fi
+
+  # Add stratio user if it doesn't already exists
+  if ! getent passwd $USER >/dev/null 2>&1; then
+    [ -d /opt ] || mkdir /opt
+    useradd -M -d /opt/sds -g ${GROUP} -s /bin/bash ${USER}
+  else
+    usermod -G $GROUP $USER
+  fi
+
+  if [ ! -d "$DIR_LOG" ]; then
+   echo "entra"
+    mkdir $DIR_LOG
+  fi
+echo "SALE"
+
+  chown -R ${USER}:${GROUP} /opt/sds /etc/sds
+
+  chown root:root /etc/init.d/stratio-connector-deep
+ 
+  chown -R ${USER}:${GROUP} $DIR_INSTALL
+  chown -R ${USER}:${GROUP} $DIR_CONF
+  chown -R ${USER}:${GROUP} $DIR_LOG
+  chmod 775 $DIR_INSTALL
+  chmod 775 $DIR_CONF
+  chmod 775 $DIR_LOG
+  
+  update-rc.d stratio-connector-deep defaults
+
+  ;;
+esac    
+
+
+exit 0
+

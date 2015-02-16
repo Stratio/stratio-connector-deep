@@ -1,0 +1,3 @@
+export DEEP_CONNECTOR_CONF="/etc/sds/stratio-connector-depp"
+export DEEP_CONNECTOR_HOME="/opt/sds/stratio-connector-depp"
+export DEEP_CONNECTOR_LOGS="/var/logs/sds/stratio-connector-depp"

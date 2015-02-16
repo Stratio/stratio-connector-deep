@@ -16,11 +16,56 @@ To automatically build execute the following command:
    > mvn clean compile install
 ```
 
-## Running the Stratio Connector Deep ##
+## Build an executable Connector Deep##
+
+To generate the executable execute the following command:
 
 ```
-   > mvn exec:java -Dexec.mainClass="com.stratio.connector.deep.DeepConnector"
+   > mvn crossdata-connector:install
 ```
+
+## Running the Stratio Connector Deep##
+
+
+To run Connector Elasticsearch execute:
+
+```
+   > cd connector-deep-core/
+   > target/connector-deep-core-0.4.0-SNAPSHOT/bin/connector-deep-core-0.4.0-SNAPSHOT start
+```
+
+To stop the connector execute:
+
+```
+   > target/connector-deep-core-0.4.0-SNAPSHOT/bin/connector-deep-core-0.4.0-SNAPSHOT stop
+```
+## Build a redistributable package ##
+
+It is possible too, to create a RPM or DEB redistributable package.
+
+RPM Package:
+
+    > mvn unix:package-rpm -N
+
+DEB Package:
+
+    > mvn unix:package-deb -N
+
+Once the package it's created, execute this commands to install:
+
+RPM Package:
+
+    > rpm -i target/stratio-connector-deep-0.4.0-SNAPSHOT.rpm
+
+DEB Package:
+
+    > dpkg -i target/stratio-connector-deep-0.4.0-SNAPSHOT.deb
+
+Now to start/stop the connector:
+
+    > service stratio-connector-deep start
+    > service stratio-connector-deep stop
+
 
 
 ## How to use Deep Connector ##

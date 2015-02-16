@@ -1,0 +1,4 @@
+/etc/default/stratio-connector-deep
+/etc/sds/stratio-connector-deep/connector-application.conf
+/etc/sds/stratio-connector-deep/log.properties
+/etc/sds/stratio-connector-deep/connector-reference.conf
