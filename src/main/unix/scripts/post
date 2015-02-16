@@ -47,8 +47,8 @@ cp /opt/sds/stratio-connector-deep/template/DeepConnector /etc/init.d/stratio-co
 chmod 755 /etc/init.d/stratio-connector-deep
 chmod 755 /opt/sds/stratio-connector-deep/bin/stratio-connector-deep
 chmod +x /etc/default/stratio-connector-deep
-export DEPP_CONNECTOR_LIB=/opt/sds/stratio-connector-deep/
-export DEPP_CONNECTOR_CONF="/etc/sds/stratio-connector-deep"
+export DEEP_CONNECTOR_LIB=/opt/sds/stratio-connector-deep/
+export DEEP_CONNECTOR_CONF="/etc/sds/stratio-connector-deep"
 
 
 exit 0
