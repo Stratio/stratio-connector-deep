@@ -19,6 +19,7 @@
 package com.stratio.connector.deep.connection;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ import com.typesafe.config.ConfigFactory;
  */
 public class DeepConnector implements IConnector {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DeepConnector.class);
+	private static transient final Logger LOGGER = LoggerFactory.getLogger(DeepConnector.class);
 
 	private static final String CONFIGURATION_FILE_CONSTANT = "connector-application.conf";
 
@@ -144,28 +145,22 @@ public class DeepConnector implements IConnector {
 
 		LOGGER.info("-------------StartUp the SparkContext------------ ");
 
-		LOGGER.info("spark.serializer: " + System.getProperty("spark.serializer"));
-		LOGGER.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
+
 
 		String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
 		String sparkHome = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
-		List<String> sparkJars = null;
-		String[] jarsArray = new String[0];
 
-		try {
-			sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(
-					DeepConnectorConstants.SPARK_JARS);
+        String[] jarsArray = setJarPath();
 
-		} catch (ConfigException e) {
-			LOGGER.info("--No spark Jars added--", e);
-		}
-		if (sparkJars != null) {
-			jarsArray = new String[sparkJars.size()];
-			sparkJars.toArray(jarsArray);
-		}
+        LOGGER.info("Creating DeepSparkContest");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("spark.serializer: [" + System.getProperty("spark.serializer")+"]");
+            LOGGER.debug("spark.kryo.registrator: [" + System.getProperty("spark.kryo.registrator")+"]");
+            LOGGER.debug("SPARK-Master [" + sparkMaster + "]");
+            LOGGER.debug("SPARK-Home   [" + sparkHome + "]");
+            LOGGER.debug("Jars "+ Arrays.toString(jarsArray));
+        }
 
-		LOGGER.info("---SPARK-Master---->" + sparkMaster);
-		LOGGER.info("---SPARK-Home---->" + sparkHome);
 
 		this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
 				sparkHome, jarsArray);
@@ -173,7 +168,23 @@ public class DeepConnector implements IConnector {
 		LOGGER.info("-------------End StartUp the SparkContext------------ ");
 	}
 
-	/**
+    private String[] setJarPath() {
+
+        String[] jarsArray = new String[0];
+
+        try {
+
+            List<String>   sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants.SPARK_JARS);
+            jarsArray = new String[sparkJars.size()];
+            sparkJars.toArray(jarsArray);
+
+        } catch (ConfigException e) {
+            LOGGER.info("--No spark Jars added--", e);
+        }
+        return jarsArray;
+    }
+
+    /**
 	 * Connect with the config expecified associate to a clusterName {ConnectionHandler}
 	 * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
 	 * 

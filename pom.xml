@@ -28,6 +28,15 @@
     <url>http://www.stratio.com</url>
     <packaging>jar</packaging>
 
+    <properties>
+        <version.crossdata>0.2.0-001</version.crossdata>
+        <version.connector.commons>0.4.0-001</version.connector.commons>
+        <version.deep>0.7.0</version.deep>
+        <version.hadoop>2.4.0</version.hadoop>
+    </properties>
+
+
+
     <developers>
         <developer>
             <id>opuertas</id>
@@ -51,12 +60,7 @@
         </developer>
     </developers>
 
-    <properties>
-        <version.crossdata>0.2.0-001</version.crossdata>
-        <version.connector.commons>0.4.0-001</version.connector.commons>
-        <version.deep>0.7.0</version.deep>
-        <version.hadoop>2.4.0</version.hadoop>
-    </properties>
+
 
     <licenses>
         <license>
