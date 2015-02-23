@@ -164,10 +164,12 @@ public class DeepConnector implements IConnector {
         }
 
 
-		this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
+        Long time = System.currentTimeMillis();
+        this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
 				sparkHome, jarsArray);
 
-		LOGGER.info("-------------End StartUp the SparkContext------------ ");
+		LOGGER.info("-------------End StartUp the SparkContext in ["+(System.currentTimeMillis()-time)+" ms] "
+                + "------------ ");
 	}
 
     private String[] setJarPath() {

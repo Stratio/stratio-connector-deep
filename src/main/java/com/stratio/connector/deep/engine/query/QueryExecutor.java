@@ -425,43 +425,88 @@ public class QueryExecutor {
 		if(orderBy!=null){
 			resultCells = executeOrderBy(orderBy,resultRdd);
 		}else{
+            Long timeTake = System.currentTimeMillis();
+
 			resultCells = resultRdd.take(limit);
+            LOGGER.info("TIME - execute take("+limit+") in ["+(System.currentTimeMillis()-timeTake)+" ms]");
             if (LOGGER.isDebugEnabled()){
-                LOGGER.debug("List<Cells>["+resultCells+"] = RDD["+resultRdd.id()+"].take("+limit+")");
+                LOGGER.debug("List<Cells> = RDD["+resultRdd.id()+"].take("+limit+")");
             }
 		}
 
 		Map<Selector, String> columnMap = selectStep.getColumnMap();
 		Map<Selector, ColumnType> columnType = selectStep.getTypeMapFromColumnName();
 
+
 		// Adding column metadata information
-		List<ColumnMetadata> resultMetadata = new LinkedList<>();
-		Object[] parameters = {};
-		for (Entry<Selector, String> columnItem : columnMap.entrySet()) {
 
-			ColumnName columnName = columnItem.getKey().getColumnName();
-			String columnAlias = columnItem.getValue();
-			columnName.setAlias(columnAlias);
+        List<ColumnMetadata> resultMetadata = generateMetadata(columnMap, columnType);
 
-			ColumnMetadata columnMetadata = new ColumnMetadata(columnName, parameters, columnType.get(columnName));
 
-			resultMetadata.add(columnMetadata);
-		}
+        Long timeRows = System.currentTimeMillis();
+        List<Row> resultRows = generateRowsResult(resultCells, columnMap);
+        LOGGER.info("TIME - Generate rows result in ["+(System.currentTimeMillis()-timeRows)+" ms]");
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("The resultRows has been created with ["+resultRows.size()+"] rows");
+        }
 
-		List<Row> resultRows = new LinkedList<>();
-		for (Cells cells : resultCells) {
-			resultRows.add(buildRowFromCells(cells, columnMap));
-		}
 
-		ResultSet resultSet = new ResultSet();
-		resultSet.setRows(resultRows);
-		resultSet.setColumnMetadata(resultMetadata);
-		QueryResult queryResult = QueryResult.createQueryResult(resultSet,0,true);
 
+        ResultSet resultSet = new ResultSet();
+        resultSet.setRows(resultRows);
+        resultSet.setColumnMetadata(resultMetadata);
+        QueryResult queryResult = QueryResult.createQueryResult(resultSet,0,true);
 		return queryResult;
 	}
 
-	/**
+    private List<Row> generateRowsResult(List<Cells> resultCells, Map<Selector, String> columnMap) {
+        List<Row> resultRows = new LinkedList<>();
+        long count = 1;
+        for (Cells cells : resultCells) {
+
+            resultRows.add(buildRowFromCells(cells, columnMap));
+            if (LOGGER.isDebugEnabled() && count==1000){
+                LOGGER.debug("The connector has been recovered ["+resultRows.size()+"] rows from Deep");
+                count =   1;
+            }
+            count++;
+        }
+        return resultRows;
+    }
+
+    private List<ColumnMetadata> generateMetadata(Map<Selector, String> columnMap,
+            Map<Selector, ColumnType> columnType) {
+        Long timeMetadata = System.currentTimeMillis();
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("Metadata generation starting");
+        }
+        List<ColumnMetadata> resultMetadata = new LinkedList<>();
+        Object[] parameters = {};
+        for (Entry<Selector, String> columnItem : columnMap.entrySet()) {
+            if (LOGGER.isDebugEnabled()){
+                LOGGER.debug("Generate metadata from ["+columnItem.getKey()+"]");
+            }
+            ColumnName columnName = columnItem.getKey().getColumnName();
+            String columnAlias = columnItem.getValue();
+            columnName.setAlias(columnAlias);
+
+            ColumnMetadata columnMetadata = new ColumnMetadata(columnName, parameters, columnType.get(columnName));
+
+            resultMetadata.add(columnMetadata);
+            if (LOGGER.isDebugEnabled()){
+                LOGGER.debug("columnName ["+columnName+"] : columnAlias ["+columnAlias+"] : columnType ["+columnType
+                        .get(columnName)+"]");
+            }
+        }
+
+        LOGGER.info("TIME - Generate Metadata) in ["+(System.currentTimeMillis()-timeMetadata)+" ms]");
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("The metadata has been created");
+        }
+        return resultMetadata;
+    }
+
+    /**
 	 * Transforms a {@link Cells} object to a {@link Row} one.
 	 * 
 	 * @param cells
