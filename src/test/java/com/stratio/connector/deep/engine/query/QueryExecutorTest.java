@@ -46,6 +46,7 @@ import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
 import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.metadata.DataType;
 import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
@@ -484,11 +485,11 @@ public class QueryExecutorTest {
         columnsAliases.put(columnSelector, "nameAlias");
 
         Map<String, ColumnType> columnsTypes = new HashMap<>();
-        columnsTypes.put("catalogname.tablename1.column1Name", ColumnType.BIGINT);
+        columnsTypes.put("catalogname.tablename1.column1Name", new ColumnType(DataType.BIGINT));
 
         Map<Selector, ColumnType> typeMapFromColumnName = new LinkedHashMap<>();
 
-        typeMapFromColumnName.put(columnSelector, ColumnType.BIGINT);
+        typeMapFromColumnName.put(columnSelector, new ColumnType(DataType.BIGINT));
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
 

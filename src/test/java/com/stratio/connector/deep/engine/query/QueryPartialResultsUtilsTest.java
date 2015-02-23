@@ -18,6 +18,7 @@ import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.logicalplan.PartialResults;
 import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.metadata.DataType;
 import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
 import com.stratio.crossdata.common.statements.structures.Operator;
@@ -70,8 +71,8 @@ public class QueryPartialResultsUtilsTest {
         List<Relation> listRelations = Arrays.asList(relation1, relation2);
 
         ResultSet resultSet = new ResultSet();
-        ColumnMetadata colMetadata = metaMetadata(CATALOG, TABLE, ROW1, ColumnType.INT);
-        ColumnMetadata colMetadata2 = metaMetadata(CATALOG, TABLE, ROW2, ColumnType.INT);
+        ColumnMetadata colMetadata = metaMetadata(CATALOG, TABLE, ROW1, new ColumnType(DataType.INT));
+        ColumnMetadata colMetadata2 = metaMetadata(CATALOG, TABLE, ROW2, new ColumnType(DataType.INT));
         resultSet.setColumnMetadata(Arrays.asList(colMetadata, colMetadata2));
         PartialResults partialResults = new PartialResults(Operations.PARTIAL_RESULTS);
         partialResults.setResults(resultSet);
@@ -89,8 +90,8 @@ public class QueryPartialResultsUtilsTest {
     public void createCellsFromResultSetTest() throws ExecutionException {
 
         ResultSet resultSet = new ResultSet();
-        resultSet.setColumnMetadata(Arrays.asList(metaMetadata(CATALOG, TABLE, ROW1, ColumnType.INT),
-                        metaMetadata(CATALOG, TABLE, ROW2, ColumnType.VARCHAR)));
+        resultSet.setColumnMetadata(Arrays.asList(metaMetadata(CATALOG, TABLE, ROW1, new ColumnType(DataType.INT)),
+                        metaMetadata(CATALOG, TABLE, ROW2, new ColumnType(DataType.VARCHAR))));
         resultSet.setRows(Arrays.asList(metaRow(ROW1, CELL1_VALUE1, ROW2, CELL1_VALUE2),
                         metaRow(ROW1, CELL2_VALUE1, ROW2, CELL2_VALUE2)));
 

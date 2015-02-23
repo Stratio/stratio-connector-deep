@@ -25,6 +25,7 @@ import com.stratio.crossdata.common.logicalplan.Project;
 import com.stratio.crossdata.common.logicalplan.Select;
 import com.stratio.crossdata.common.metadata.ColumnMetadata;
 import com.stratio.crossdata.common.metadata.ColumnType;
+import com.stratio.crossdata.common.metadata.DataType;
 import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.statements.structures.BooleanSelector;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
@@ -238,8 +239,8 @@ public class LogicalWorkflowBuilder {
             ColumnSelector columnSelector = new ColumnSelector(column);
             columnsAliases.put(columnSelector, aliasesIt.next());
 
-            columnsTypes.put(column.getQualifiedName(), ColumnType.TEXT);
-            typeMapFromColumnName.put(columnSelector, ColumnType.TEXT);
+            columnsTypes.put(column.getQualifiedName(), new ColumnType(DataType.TEXT));
+            typeMapFromColumnName.put(columnSelector, new ColumnType(DataType.TEXT));
         }
 
         Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);

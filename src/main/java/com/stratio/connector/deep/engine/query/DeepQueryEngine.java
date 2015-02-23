@@ -19,9 +19,9 @@
 package com.stratio.connector.deep.engine.query;
 
 import com.stratio.connector.commons.engine.CommonsQueryEngine;
-import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnectionHandler;
 import com.stratio.crossdata.common.connector.IResultHandler;
+import com.stratio.crossdata.common.exceptions.ConnectorException;
 import com.stratio.crossdata.common.exceptions.ExecutionException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.logicalplan.LogicalWorkflow;
@@ -67,27 +67,38 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.stratio.crossdata.common.connector.IQueryEngine#asyncExecute(java.lang.String,
-	 * com.stratio.crossdata.common.logicalplan.LogicalWorkflow, com.stratio.crossdata.common.connector.IResultHandler)
-	 */
-	@Override
-	public void asyncExecute(String queryId, LogicalWorkflow workflow, IResultHandler resultHandler)
-			throws UnsupportedException, ExecutionException {
-		throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+    @Override protected void asyncExecuteWorkFlow(String queryId, LogicalWorkflow workflow,
+            IResultHandler resultHandler) throws UnsupportedException {
+        throw new UnsupportedException("method asyncExecuteWorkFlow not supported");
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.stratio.crossdata.common.connector.IQueryEngine#stop(java.lang.String)
-	 */
+    /**
+     * Execute a paged query,
+     * @param queryId the queryID,
+     * @param workflow the workflow.
+     * @param resultHandler the resultHandler.
+     * @param pageSize the pageSize.
+     * @throws ConnectorException if any error happens.
+     */
+    @Override protected void pagedExecuteWorkFlow(String queryId, LogicalWorkflow workflow,
+            IResultHandler resultHandler, int pageSize)  throws ConnectorException{
+        throw new UnsupportedException("method pagedExecuteWorkFlow not supported");
+    }
+
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.stratio.crossdata.common.connector.IQueryEngine#stop(java.lang.String)
+     */
 	@Override
 	public void stop(String queryId) throws UnsupportedException, ExecutionException {
-		throw new UnsupportedException(DeepConnectorConstants.METHOD_NOT_SUPPORTED);
+        throw new UnsupportedException("method stop not supported");
 
-	}
+
+    }
+
+
+
 }
