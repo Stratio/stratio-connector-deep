@@ -20,6 +20,7 @@ package com.stratio.connector.deep.engine.query;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.stratio.connector.deep.configuration.DeepConnectorConstants;
 import com.stratio.connector.deep.connection.DeepConnection;
@@ -53,7 +56,6 @@ import com.stratio.crossdata.common.metadata.ColumnType;
 import com.stratio.crossdata.common.metadata.Operations;
 import com.stratio.crossdata.common.result.QueryResult;
 import com.stratio.crossdata.common.statements.structures.ColumnSelector;
-import com.stratio.crossdata.common.statements.structures.Operator;
 import com.stratio.crossdata.common.statements.structures.Relation;
 import com.stratio.crossdata.common.statements.structures.Selector;
 import com.stratio.deep.commons.config.ExtractorConfig;
@@ -71,7 +73,11 @@ import com.stratio.deep.core.fs.utils.TextFileDataTable;
  */
 public class QueryExecutor {
 
-	private final DeepSparkContext deepContext;
+    private static transient final Logger LOGGER = LoggerFactory.getLogger(QueryExecutor.class);
+
+
+
+    private final DeepSparkContext deepContext;
 
 	private final DeepConnectionHandler deepConnectionHandler;
 
@@ -254,40 +260,55 @@ public class QueryExecutor {
 		for (ColumnName columnName : project.getColumnList()) {
 			columnsList.add(columnName.getName());
 		}
-		Serializable auxLimit = extractorConfig.getValues().get(DeepConnectorConstants
-				.PROPERTY_DEFAULT_LIMIT);
+        configureExtractorConfig(project, extractorConfig, filtersList, columnsList);
 
-		limit = (auxLimit != null) ? Integer.valueOf((String) auxLimit): DeepConnectorConstants.DEFAULT_RESULT_SIZE ;
-
-		extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
-		extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
-		extractorConfig.putValue(ExtractorConstants.CATALOG, project.getCatalogName());
-
-		extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList).length>0?generateFilters(filtersList):null);
-
+        LOGGER.info("Creating RDD");
 		if(extractorConfig.getExtractorImplClassName()!=null && extractorConfig.getExtractorImplClassName().equals
 				(DeepConnectorConstants.HDFS)){
 
-			TextFileDataTable textFileDataTable = formatterFromSchema(extractorConfig,project);
-
-			extractorConfig.putValue(ExtractorConstants.FS_FILEDATATABLE, textFileDataTable);
-			extractorConfig.putValue(ExtractorConstants.TYPE_CONSTANT,ExtractorConstants.HDFS_TYPE);
-			String path = (String)extractorConfig.getValues().get(ExtractorConstants.FS_FILE_PATH);
-			extractorConfig.putValue(ExtractorConstants.FS_FILE_PATH,path+project.getCatalogName()+"/"+project
-					.getTableName().getName()+extractorConfig.getValues().get(ExtractorConstants.HDFS_FILE_EXTENSION));
-
-			rdd = deepContext.createHDFSRDD(extractorConfig).toJavaRDD();
-
-
+            rdd = createRDDToHDFS(project, extractorConfig);
 		}else{
 			rdd = deepContext.createJavaRDD(extractorConfig);
 		}
-
+        LOGGER.info("RDD["+rdd.id()+"] has been created successfully" );
 
 		return rdd;
 	}
 
-	private TextFileDataTable formatterFromSchema(ExtractorConfig extractorConfig, Project project)
+    private void configureExtractorConfig(Project project, ExtractorConfig<Cells> extractorConfig,
+            List<Filter> filtersList, List<String> columnsList) throws ExecutionException {
+        Serializable auxLimit = extractorConfig.getValues().get(DeepConnectorConstants
+                .PROPERTY_DEFAULT_LIMIT);
+
+        limit = (auxLimit != null) ? Integer.valueOf((String) auxLimit): DeepConnectorConstants.DEFAULT_RESULT_SIZE ;
+
+        extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
+        extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
+        extractorConfig.putValue(ExtractorConstants.CATALOG, project.getCatalogName());
+
+        extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList).length>0?generateFilters(filtersList):null);
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("ExtractorConfig "+ Arrays.toString(extractorConfig.getValues().entrySet().toArray())
+            );
+        }
+    }
+
+    private JavaRDD<Cells> createRDDToHDFS(Project project, ExtractorConfig<Cells> extractorConfig)
+            throws ExecutionException {
+        JavaRDD<Cells> rdd;
+        TextFileDataTable textFileDataTable = formatterFromSchema(extractorConfig,project);
+
+        extractorConfig.putValue(ExtractorConstants.FS_FILEDATATABLE, textFileDataTable);
+        extractorConfig.putValue(ExtractorConstants.TYPE_CONSTANT,ExtractorConstants.HDFS_TYPE);
+        String path = (String)extractorConfig.getValues().get(ExtractorConstants.FS_FILE_PATH);
+        extractorConfig.putValue(ExtractorConstants.FS_FILE_PATH,path+project.getCatalogName()+"/"+project
+                .getTableName().getName()+extractorConfig.getValues().get(ExtractorConstants.HDFS_FILE_EXTENSION));
+
+        rdd = deepContext.createHDFSRDD(extractorConfig).toJavaRDD();
+        return rdd;
+    }
+
+    private TextFileDataTable formatterFromSchema(ExtractorConfig extractorConfig, Project project)
 			throws ExecutionException {
 
 		String schemaStr = (String) extractorConfig.getValues().get(ExtractorConstants.FS_SCHEMA);
@@ -309,8 +330,6 @@ public class QueryExecutor {
 						.FS_FILE_SEPARATOR));
 
 			} catch (ClassNotFoundException e) {
-				throw new ExecutionException("" + e);
-			} catch (Exception e) {
 				throw new ExecutionException("" + e);
 			}
 		}
@@ -379,7 +398,7 @@ public class QueryExecutor {
 		deepConnection = (DeepConnection) deepConnectionHandler.getConnection(clusterName.getName());
 
 
-		ExtractorConfig<Cells> extractorConfig = null;
+		ExtractorConfig<Cells> extractorConfig;
 		if (deepConnection != null) {
 			extractorConfig = deepConnection.getExtractorConfig().clone();
 		} else {
@@ -407,6 +426,9 @@ public class QueryExecutor {
 			resultCells = executeOrderBy(orderBy,resultRdd);
 		}else{
 			resultCells = resultRdd.take(limit);
+            if (LOGGER.isDebugEnabled()){
+                LOGGER.debug("List<Cells>["+resultCells+"] = RDD["+resultRdd.id()+"].take("+limit+")");
+            }
 		}
 
 		Map<Selector, String> columnMap = selectStep.getColumnMap();

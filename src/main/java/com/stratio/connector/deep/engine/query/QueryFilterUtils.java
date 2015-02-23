@@ -21,7 +21,6 @@ package com.stratio.connector.deep.engine.query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -72,7 +71,7 @@ public final class QueryFilterUtils {
 	/**
 	 * Class logger.
 	 */
-	private static final Logger LOG = Logger.getLogger(QueryFilterUtils.class);
+	private static transient final Logger LOGGER = Logger.getLogger(QueryFilterUtils.class);
 
 
 	private QueryFilterUtils() {
@@ -96,50 +95,54 @@ public final class QueryFilterUtils {
         }
 
 		Operator operator = relation.getOperator();
-		JavaRDD<Cells> result = null;
+		JavaRDD<Cells> result;
 		ColumnName column = ((ColumnSelector) relation.getLeftTerm()).getName();
 		Term rightTerm = filterFromRightTermWhereRelation(relation);
+        Function function = chooseCompareFunction(operator, column, rightTerm);
+        result = rdd.filter(function);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Rdd["+result.id()+"]: Rdd["+rdd.id()+"].filter("+function.getClass().getSimpleName()+")");
+        }
 
-		try {
-			switch (operator) {
-			case EQ:
-				result = rdd.filter(new DeepEquals(column, rightTerm));
-				break;
-			case DISTINCT:
-				result = rdd.filter(new NotEquals(column, rightTerm));
-				break;
-			case GT:
-				result = rdd.filter(new GreaterThan(column, rightTerm));
-				break;
-			case GET:
-				result = rdd.filter(new GreaterEqualThan(column, rightTerm));
-				break;
-			case LT:
-				result = rdd.filter(new LessThan(column, rightTerm));
-				break;
-			case LET:
-				result = rdd.filter(new LessEqualThan(column, rightTerm));
-				break;
-			case IN:
 
-				throw new UnsupportedException("IN operator unsupported");
-			case BETWEEN:
-
-				throw new UnsupportedException("BETWEEN operator unsupported");
-			default:
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Operator not supported: " + operator);
-				}
-
-				result = null;
-			}
-		} catch (Exception e) {
-			throw new ExecutionException(" Error when try to comparate fields[ ]" + e);
-		}
 		return result;
 	}
 
-	/**
+    private static Function chooseCompareFunction(Operator operator, ColumnName column, Term rightTerm)
+            throws UnsupportedException {
+        Function function = null;
+
+        switch (operator) {
+        case EQ:
+            function = new DeepEquals(column, rightTerm);
+            break;
+        case DISTINCT:
+            function = new NotEquals(column, rightTerm);
+            break;
+        case GT:
+            function = new GreaterThan(column, rightTerm);
+            break;
+        case GET:
+            function = new GreaterEqualThan(column, rightTerm);
+            break;
+        case LT:
+            function = new LessThan(column, rightTerm);
+            break;
+        case LET:
+            function = new LessEqualThan(column, rightTerm);
+            break;
+
+        default:
+
+            String message = "Operator not supported: " + operator;
+            LOGGER.error(message);
+            throw new UnsupportedException(message);
+
+        }
+        return function;
+    }
+
+    /**
 	 * Build JavaRDD<Cells> from list of Cells and select Columns.
 	 * 
 	 * @param rdd
@@ -172,23 +175,30 @@ public final class QueryFilterUtils {
 			if (relation.getOperator().equals(Operator.EQ)) {
 				firstTables.add(selectorLeft.getName());
 				secondTables.add(selectorRight.getName());
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("INNER JOIN on: " + selectorRight.getName().getName() + " - "
+				LOGGER.info("INNER JOIN on: " + selectorRight.getName().getName() + " - "
 							+ selectorLeft.getName().getName());
-				}
+
 			}
 
 		}
 
 		JavaPairRDD<List<Object>, Cells> rddLeft = leftRdd.mapToPair(new MapKeyForJoin(firstTables));
-
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("RDD["+rddLeft.id()+"] = RDD["+leftRdd.id()+"].mapToPai()");
+        }
 		JavaPairRDD<List<Object>, Cells> rddRight = rightRdd.mapToPair(new MapKeyForJoin(secondTables));
-
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("RDD["+rddRight.id()+"] = RDD["+rightRdd.id()+"].mapToPai()");
+        }
 		if (rddLeft != null && rddRight != null) {
 			JavaPairRDD<List<Object>, Tuple2<Cells, Cells>> joinRDD = rddLeft.join(rddRight);
-
+            if (LOGGER.isDebugEnabled()){
+                LOGGER.debug("RDD["+joinRDD.id()+"] = RDD["+rddLeft.id()+"].join(RDD["+rddRight.id()+"])");
+            }
 			joinedResult = joinRDD.map(new JoinCells());
-
+            if (LOGGER.isDebugEnabled()){
+                LOGGER.debug("RDD["+joinedResult.id()+"] = RDD["+joinRDD.id()+"].map()");
+            }
 		}
 
 		return joinedResult;
@@ -338,6 +348,10 @@ public final class QueryFilterUtils {
 				return keysList;
 			}
 		});
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("RDD["+rddWithKeys.id() + "] =RDD[" + rdd.id() + "].keyBy");
+        }
+
 
 		JavaPairRDD<List<Cell>, Cells> reducedRdd = rddWithKeys.reduceByKey(new Function2<Cells, Cells, Cells>() {
 
@@ -350,15 +364,23 @@ public final class QueryFilterUtils {
 			}
 		});
 
-		return reducedRdd.map(new Function<Tuple2<List<Cell>, Cells>, Cells>() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("RDD["+reducedRdd.id() + "] =RDD[" + rddWithKeys.id() + "].reduceByKey");
+        }
+        JavaRDD<Cells> map = reducedRdd.map(new Function<Tuple2<List<Cell>, Cells>, Cells>() {
 
-			private static final long serialVersionUID = -4921967044782514288L;
+            private static final long serialVersionUID = -4921967044782514288L;
 
-			@Override
-			public Cells call(Tuple2<List<Cell>, Cells> tuple) {
-				return tuple._2();
-			}
-		});
+            @Override
+            public Cells call(Tuple2<List<Cell>, Cells> tuple) {
+                return tuple._2();
+            }
+        });
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("RDD["+map.id() + "] =RDD[" + reducedRdd.id() + "].map");
+        }
+        return map;
 	}
 
 
@@ -377,7 +399,9 @@ public final class QueryFilterUtils {
 	public static List<Cells> orderByFields(JavaRDD<Cells> rdd, final List<OrderByClause> orderByClauses, int limit) {
 
 		List<Cells> rddOrdered = rdd.takeOrdered(limit, new OrderByComparator(orderByClauses));
-
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("List<Cell>["+rddOrdered+"] =RDD[" + rdd.id() + "].takeOrdered");
+        }
 		return rddOrdered;
 
 	}
