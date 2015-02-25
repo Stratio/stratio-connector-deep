@@ -23,7 +23,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.data.Row;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -73,8 +72,6 @@ public class DeepConnectorElasticSearchFT {
     private static final String AGE_ALIAS_CONSTANT = "ageAlias";
 
     private static final String ES_CLUSTERNAME_CONSTANT = "elasticsearch";// TODO review
-
-    private static DeepMetadataEngine deepMetadataEngine;
 
     private static DeepQueryEngine deepQueryEngine;
     private static ConnectionsHandler connectionBuilder;

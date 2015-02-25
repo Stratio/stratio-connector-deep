@@ -1,6 +1,5 @@
 package com.stratio.connector.deep;
 
-import com.stratio.connector.deep.engine.DeepMetadataEngine;
 import com.stratio.connector.deep.engine.query.DeepQueryEngine;
 import com.stratio.crossdata.common.connector.ConnectorClusterConfig;
 import com.stratio.crossdata.common.data.ClusterName;
@@ -34,10 +33,7 @@ public class ConnectionsHandler {
         return (DeepQueryEngine) this.deepConnector.getQueryEngine();
     }
 
-    public DeepMetadataEngine getMetadataEngine() throws UnsupportedException {
 
-        return (DeepMetadataEngine) this.deepConnector.getMetadataEngine();
-    }
 
     public void close(ClusterName clusterName) throws ConnectionException {
         this.deepConnector.close(clusterName);

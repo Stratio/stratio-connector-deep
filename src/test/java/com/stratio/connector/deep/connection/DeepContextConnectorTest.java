@@ -36,7 +36,7 @@ public class DeepContextConnectorTest {
      */
     private static final String DEFAULT_HOST = "127.0.0.1";
     private static final String CLUSTER_NAME = "CLUSTER_NAME";
-    private static final String DATASTORE_NAME = "mongo";
+    private static final String DATASTORE_NAME = "Mongo";
 
     /**
      *

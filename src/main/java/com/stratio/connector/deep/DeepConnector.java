@@ -18,9 +18,6 @@
 
 package com.stratio.connector.deep;
 
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +41,6 @@ import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.crossdata.connectors.ConnectorApp;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
-import com.typesafe.config.ConfigFactory;
 
 /**
  * Class that implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
@@ -56,7 +50,6 @@ public class DeepConnector implements IConnector {
 
 	private static transient final Logger LOGGER = LoggerFactory.getLogger(DeepConnector.class);
 
-	private static final String CONFIGURATION_FILE_CONSTANT = "connector-application.conf";
 
 	/**
 	 * The connectionHandler.
@@ -68,10 +61,10 @@ public class DeepConnector implements IConnector {
 	 */
 	private DeepSparkContext deepContext;
 
-	/**
-	 * Connector configuration from the properties file. 
-	 */
-	private Config connectorConfig;
+    /**
+     * The DeepConfigurationBuilder.
+     */
+    private DeepConfigurationBuilder deepConfigurationBuilder;
 
 	/**
 	 * Main uses to associate the connector to Crossdata.
@@ -112,15 +105,9 @@ public class DeepConnector implements IConnector {
 	 */
 	public DeepConnector() throws InitializationException {
 
-		// Retrieving configuration
-		InputStream input = DeepConnector.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_CONSTANT);
+        deepConfigurationBuilder = new DeepConfigurationBuilder();
 
-		if (input == null) {
-			String message = "Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]";
-			LOGGER.error(message);
-			throw new InitializationException(message);
-		}
-		connectorConfig = ConfigFactory.load(CONFIGURATION_FILE_CONSTANT);
+
 
 	}
 
@@ -148,45 +135,17 @@ public class DeepConnector implements IConnector {
 		LOGGER.info("-------------StartUp the SparkContext------------ ");
 
 
-
-		String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
-		String sparkHome = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
-
-        String[] jarsArray = setJarPath();
-
-        LOGGER.info("Creating DeepSparkContest");
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("spark.serializer: [" + System.getProperty("spark.serializer")+"]");
-            LOGGER.debug("spark.kryo.registrator: [" + System.getProperty("spark.kryo.registrator")+"]");
-            LOGGER.debug("SPARK-Master [" + sparkMaster + "]");
-            LOGGER.debug("SPARK-Home   [" + sparkHome + "]");
-            LOGGER.debug("Jars "+ Arrays.toString(jarsArray));
-        }
-
-
         Long time = System.currentTimeMillis();
-        this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
-				sparkHome, jarsArray);
+
+        this.deepContext = new DeepSparkContext(deepConfigurationBuilder.createDeepSparkConf());
 
 		LOGGER.info("-------------End StartUp the SparkContext in ["+(System.currentTimeMillis()-time)+" ms] "
                 + "------------ ");
 	}
 
-    private String[] setJarPath() {
 
-        String[] jarsArray = new String[0];
 
-        try {
 
-            List<String>   sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants.SPARK_JARS);
-            jarsArray = new String[sparkJars.size()];
-            sparkJars.toArray(jarsArray);
-
-        } catch (ConfigException e) {
-            LOGGER.info("--No spark Jars added--", e);
-        }
-        return jarsArray;
-    }
 
     /**
 	 * Connect with the config expecified associate to a clusterName {ConnectionHandler}
@@ -199,19 +158,14 @@ public class DeepConnector implements IConnector {
 	@Override
 	public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
-		// Setting the extractor class
-		String dataSourceName = config.getDataStoreName().getName();
-
-		String extractorImplClassName = connectorConfig.getConfig(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT)
-				.getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
+		String extractorImplClassName = deepConfigurationBuilder.getImplementationClass(config.getDataStoreName().getName());
 
 		config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
 
-		if (extractorImplClassName != null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+        if (extractorImplClassName != null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
 			config.getClusterOptions().put(
 					ExtractorConstants.FS_FILE_PATH,
-					connectorConfig.getConfig(ExtractorConstants.HDFS).getString(
-							ExtractorConstants.FS_FILE_PATH));
+                    deepConfigurationBuilder.getHDFSFilePath());
 		}
 
 		connectionHandler.createConnection(credentials, config);
@@ -266,7 +220,7 @@ public class DeepConnector implements IConnector {
 	@Override
 	public IStorageEngine getStorageEngine() throws UnsupportedException {
 
-		throw new UnsupportedException("Not yet supported");
+		throw new UnsupportedException("getStorageEngine not yet supported");
 
 	}
 
@@ -290,7 +244,7 @@ public class DeepConnector implements IConnector {
 	@Override
 	public IMetadataEngine getMetadataEngine() throws UnsupportedException {
 
-		throw new UnsupportedException("Not yet supported");
+		throw new UnsupportedException("getMetadataEngine not yet supported");
 
 	}
     /**
@@ -299,7 +253,7 @@ public class DeepConnector implements IConnector {
      * @return IMetadataEngine
      */
     @Override public ISqlEngine getSqlEngine() throws UnsupportedException {
-        throw new UnsupportedException("Not yet supported");
+        throw new UnsupportedException("getSqlEngine not yet supported");
     }
 
 }
