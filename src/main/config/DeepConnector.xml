@@ -2,8 +2,8 @@
 <Connector>
     <ConnectorName>DeepConnector</ConnectorName>
     <DataStores>
-        <DataStoreName>Cassandra</DataStoreName>
-        <DataStoreName>Mongo</DataStoreName>
+        <DataStoreName>cassandra</DataStoreName>
+        <DataStoreName>mongo</DataStoreName>
         <DataStoreName>elasticsearch</DataStoreName>
         <DataStoreName>hdfs</DataStoreName>
         <DataStoreName>jdbc</DataStoreName>
