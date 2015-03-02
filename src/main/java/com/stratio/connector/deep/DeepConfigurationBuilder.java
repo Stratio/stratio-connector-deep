@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class must build the deep conffiguration.
+ * This class must build the deep configuration.
  * Created by jmgomez on 25/02/15.
  */
 public class DeepConfigurationBuilder {
@@ -83,6 +83,10 @@ public class DeepConfigurationBuilder {
         String sparkDriverMemory = connectorConfig.getString(DeepConnectorConstants.SPARK_DRIVER_MEMORY);
         String sparkExecutorMemory = connectorConfig.getString(DeepConnectorConstants.SPARK_EXECUTOR_MEMORY);
         String sparkTaskCpus = connectorConfig.getString(DeepConnectorConstants.SPARK_TASK_CPUS);
+        String spatkDefaultParalelism = connectorConfig.getString(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM);
+        String spatkCoresMax = connectorConfig.getString(DeepConnectorConstants.SPARK_CORES_MAX);
+        String spatkResultSize = connectorConfig.getString(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE);
+        String spatkTaskCpu = connectorConfig.getString(DeepConnectorConstants.SPARK_TASK_CPU);
 
 
         String[] jarsArray = setJarPath();
@@ -93,10 +97,15 @@ public class DeepConfigurationBuilder {
             LOGGER.debug("spark.kryo.registrator: [" + System.getProperty("spark.kryo.registrator")+"]");
             LOGGER.debug("spark.executor.memory [" +sparkExecutorMemory+"]");
             LOGGER.debug("spark.driver.memory [" +sparkDriverMemory+"]");
+            LOGGER.debug(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM +" [" +spatkDefaultParalelism+"]");
+            LOGGER.debug(DeepConnectorConstants.SPARK_CORES_MAX +" [" +spatkCoresMax+"]");
+            LOGGER.debug(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE +" [" +spatkResultSize+"]");
+            LOGGER.debug(DeepConnectorConstants.SPARK_TASK_CPU +" [" +spatkTaskCpu+"]");
             LOGGER.debug("spark.task.cpus [" +sparkTaskCpus+"]");
             LOGGER.debug("SPARK-Master [" + sparkMaster + "]");
             LOGGER.debug("SPARK-Home   [" + sparkHome + "]");
             LOGGER.debug("Jars "+ Arrays.toString(jarsArray));
+
         }
 
 
@@ -108,6 +117,10 @@ public class DeepConfigurationBuilder {
         sparkConf.set(DeepConnectorConstants.SPARK_EXECUTOR_MEMORY, sparkExecutorMemory);
         sparkConf.set(DeepConnectorConstants.SPARK_DRIVER_MEMORY, sparkDriverMemory);
         sparkConf.set(DeepConnectorConstants.SPARK_TASK_CPUS, sparkTaskCpus);
+        sparkConf.set(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM, spatkDefaultParalelism);
+        sparkConf.set(DeepConnectorConstants.SPARK_CORES_MAX, spatkCoresMax);
+        sparkConf.set(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE, spatkResultSize);
+        sparkConf.set(DeepConnectorConstants.SPARK_TASK_CPU, spatkTaskCpu);
         return sparkConf;
     }
 
@@ -119,7 +132,8 @@ public class DeepConfigurationBuilder {
 
         try {
 
-            List<String> sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants.SPARK_JARS);
+
+            List<String> sparkJars = connectorConfig.getStringList(DeepConnectorConstants.SPARK_JARS);
             jarsArray = new String[sparkJars.size()];
             sparkJars.toArray(jarsArray);
 

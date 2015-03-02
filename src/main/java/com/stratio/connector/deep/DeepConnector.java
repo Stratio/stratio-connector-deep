@@ -107,8 +107,6 @@ public class DeepConnector implements IConnector {
 
         deepConfigurationBuilder = new DeepConfigurationBuilder();
 
-
-
 	}
 
 	@Override
@@ -121,7 +119,10 @@ public class DeepConnector implements IConnector {
 		return new String[] { "DeepConnector" };
 	}
 
+
+
 	/**
+     *
 	 * Init Connection.
 	 * 
 	 * @param configuration

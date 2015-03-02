@@ -30,7 +30,7 @@ public final class DeepConnectorConstants {
 	public static final String HDFS = "hdfs";
 	public static final String SPARK_MASTER = "spark.master";
 	public static final String SPARK_HOME = "spark.home";
-	public static final String SPARK_JARS = "jars";
+	public static final String SPARK_JARS = "spark.jars";
 	public static final String CLUSTER_PREFIX_CONSTANT = "cluster";
 	public static final String IMPL_CLASS_SUFIX_CONSTANT = ".implClass";
 	public static final String EXTRACTOR_IMPL_CLASS = "extractorImplClass";
@@ -41,5 +41,11 @@ public final class DeepConnectorConstants {
     public static final String SPARK_EXECUTOR_MEMORY = "spark.executor.memory";
     public static final String SPARK_DRIVER_MEMORY = "spark.driver.memory";
     public static final String  SPARK_TASK_CPUS = "spark.task.cpus";
+    public static final String  SPARK_DEFAULT_PARALELISM = "spark.default.parallelism";
+    public static final String  SPARK_CORES_MAX = "spark.cores.max";
+    public static final String  SPARK_DRIVER_RESULTSIZE = "spark.driver.maxResultSize";
+    public static final String  SPARK_TASK_CPU = "spark.task.cpu";
+
+
 
 }
