@@ -86,7 +86,6 @@ public class DeepConfigurationBuilder {
         String spatkDefaultParalelism = connectorConfig.getString(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM);
         String spatkCoresMax = connectorConfig.getString(DeepConnectorConstants.SPARK_CORES_MAX);
         String spatkResultSize = connectorConfig.getString(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE);
-        String spatkTaskCpu = connectorConfig.getString(DeepConnectorConstants.SPARK_TASK_CPU);
 
 
         String[] jarsArray = setJarPath();
@@ -100,7 +99,6 @@ public class DeepConfigurationBuilder {
             LOGGER.debug(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM +" [" +spatkDefaultParalelism+"]");
             LOGGER.debug(DeepConnectorConstants.SPARK_CORES_MAX +" [" +spatkCoresMax+"]");
             LOGGER.debug(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE +" [" +spatkResultSize+"]");
-            LOGGER.debug(DeepConnectorConstants.SPARK_TASK_CPU +" [" +spatkTaskCpu+"]");
             LOGGER.debug("spark.task.cpus [" +sparkTaskCpus+"]");
             LOGGER.debug("SPARK-Master [" + sparkMaster + "]");
             LOGGER.debug("SPARK-Home   [" + sparkHome + "]");
@@ -120,7 +118,7 @@ public class DeepConfigurationBuilder {
         sparkConf.set(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM, spatkDefaultParalelism);
         sparkConf.set(DeepConnectorConstants.SPARK_CORES_MAX, spatkCoresMax);
         sparkConf.set(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE, spatkResultSize);
-        sparkConf.set(DeepConnectorConstants.SPARK_TASK_CPU, spatkTaskCpu);
+
         return sparkConf;
     }
 
