@@ -301,9 +301,12 @@ public class QueryExecutor {
             LOGGER.debug("ExtractorConfig "+ Arrays.toString(extractorConfig.getValues().entrySet().toArray())
             );
 
-            LOGGER.debug("  Filters: " + Arrays.toString(filters));
-            LOGGER.debug("  inputColumns: " + Arrays.toString(inputColumns));
-
+            if (filters!=null) {
+            	LOGGER.debug("  Filters: " + Arrays.toString(filters));
+            }
+            if (inputColumns!=null){
+            	LOGGER.debug("  inputColumns: " + Arrays.toString(inputColumns));
+            }
         }
     }
 
