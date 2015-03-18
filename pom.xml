@@ -171,7 +171,7 @@
         </dependency>
         <dependency>
             <groupId>com.stratio.connector</groupId>
-            <artifactId>stratio-connector-commons</artifactId>
+            <artifactId>stratio-connector-commons-core</artifactId>
             <version>${version.connector.commons}</version>
         </dependency>
 
