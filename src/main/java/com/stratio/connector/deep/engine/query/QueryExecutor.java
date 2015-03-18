@@ -190,20 +190,28 @@ public class QueryExecutor {
 			case FILTER_INDEXED_LET:
 			case FILTER_INDEXED_LT:
 			case FILTER_INDEXED_MATCH:
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Add ["+nextStep.getOperation().name()+"] ["+((Filter)nextStep).toString()+"] to indexed filters");
+
+                }
 				indexFilters.add((Filter) nextStep);
 				break;
-			case FILTER_PK_EQ:
+            case FILTER_PK_EQ:
 			case FILTER_PK_DISTINCT:
 			case FILTER_PK_GET:
 			case FILTER_PK_GT:
 			case FILTER_PK_LET:
 			case FILTER_PK_LT:
+            case FILTER_PK_MATCH:
 			case FILTER_NON_INDEXED_EQ:
 			case FILTER_NON_INDEXED_DISTINCT:
 			case FILTER_NON_INDEXED_GET:
 			case FILTER_NON_INDEXED_GT:
 			case FILTER_NON_INDEXED_LET:
 			case FILTER_NON_INDEXED_LT:
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("add ["+nextStep.getOperation().name()+"] ["+((Filter)nextStep).toString()+"] to NON  indexed filters");
+                }
 				nonIndexFilters.add((Filter) nextStep);
 				break;
 			default:
@@ -282,14 +290,23 @@ public class QueryExecutor {
 
         limit = (auxLimit != null) ? Integer.valueOf((String) auxLimit): DeepConnectorConstants.DEFAULT_RESULT_SIZE ;
 
-        extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, columnsList.toArray(new String[columnsList.size()]));
+        String[] inputColumns = columnsList.toArray(new String[columnsList.size()]);
+        extractorConfig.putValue(ExtractorConstants.INPUT_COLUMNS, inputColumns);
         extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
         extractorConfig.putValue(ExtractorConstants.CATALOG, project.getCatalogName());
 
-        extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList).length>0?generateFilters(filtersList):null);
+        com.stratio.deep.commons.filter.Filter[] filters = generateFilters(filtersList);
+        extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, filters.length>0? filters :null);
         if (LOGGER.isDebugEnabled()){
             LOGGER.debug("ExtractorConfig "+ Arrays.toString(extractorConfig.getValues().entrySet().toArray())
             );
+
+            if (filters!=null) {
+            	LOGGER.debug("  Filters: " + Arrays.toString(filters));
+            }
+            if (inputColumns!=null){
+            	LOGGER.debug("  inputColumns: " + Arrays.toString(inputColumns));
+            }
         }
     }
 
@@ -431,6 +448,7 @@ public class QueryExecutor {
             LOGGER.info("TIME - execute take("+limit+") in ["+(System.currentTimeMillis()-timeTake)+" ms]");
             if (LOGGER.isDebugEnabled()){
                 LOGGER.debug("List<Cells> = RDD["+resultRdd.id()+"].take("+limit+")");
+                LOGGER.debug("RDD["+resultRdd.id()+"].toDebugString()"+resultRdd.toDebugString());
             }
 		}
 

@@ -62,7 +62,6 @@ public class DeepQueryEngine extends CommonsQueryEngine {
 	 */
 	@Override
 	public QueryResult executeWorkFlow(LogicalWorkflow workflow) throws UnsupportedException, ExecutionException {
-
         QueryExecutor executor = new QueryExecutor(deepContext, deepConnectionHandler);
         QueryResult queryResult = executor.executeWorkFlow(workflow);
 

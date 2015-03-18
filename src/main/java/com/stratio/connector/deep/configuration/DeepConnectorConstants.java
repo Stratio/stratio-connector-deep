@@ -35,7 +35,7 @@ public final class DeepConnectorConstants {
 	public static final String IMPL_CLASS_SUFIX_CONSTANT = ".implClass";
 	public static final String EXTRACTOR_IMPL_CLASS = "extractorImplClass";
 	public static final String DEEP_CONNECTOR_JOB_CONSTANT = "DeepConnectorJob";
-	public static final String SPARK = "spark" ;
+
 	public static final int DEFAULT_RESULT_SIZE = 10000;
 	public static final String PROPERTY_DEFAULT_LIMIT = "DefaultLimit";
     public static final String SPARK_EXECUTOR_MEMORY = "spark.executor.memory";
@@ -44,7 +44,7 @@ public final class DeepConnectorConstants {
     public static final String  SPARK_DEFAULT_PARALELISM = "spark.default.parallelism";
     public static final String  SPARK_CORES_MAX = "spark.cores.max";
     public static final String  SPARK_DRIVER_RESULTSIZE = "spark.driver.maxResultSize";
-    public static final String  SPARK_TASK_CPU = "spark.task.cpu";
+
 
 
 
