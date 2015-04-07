@@ -8,11 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -423,9 +419,10 @@ public class QueryExecutorTest {
         columns.add(new ColumnName(CATALOG_CONSTANT, tableName.getName(), COLUMN1_CONSTANT));
         columns.add(new ColumnName(CATALOG_CONSTANT, tableName.getName(), COLUMN2_CONSTANT));
 
-        Project project = new Project(Operations.PROJECT, tableName, clusterName, columns);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.PROJECT);
 
-        return project;
+        return new Project(operations, tableName, clusterName, columns);
     }
 
     private Filter createFilter() {
@@ -436,9 +433,10 @@ public class QueryExecutorTest {
 
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 
-        Filter filter = new Filter(Operations.FILTER_NON_INDEXED_EQ, relation);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.FILTER_NON_INDEXED_EQ);
 
-        return filter;
+        return new Filter(operations, relation);
     }
 
     private Join createJoin(String joinId, String leftSourceId, TableName rightSourceId) {
@@ -451,7 +449,10 @@ public class QueryExecutorTest {
 
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 
-        Join join = new Join(Operations.SELECT_INNER_JOIN, joinId);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_INNER_JOIN);
+
+        Join join = new Join(operations, joinId);
         join.addJoinRelation(relation);
         join.addSourceIdentifier(leftSourceId);
         join.addSourceIdentifier(rightSourceId.getName());
@@ -468,7 +469,10 @@ public class QueryExecutorTest {
 
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 
-        Join join = new Join(Operations.SELECT_INNER_JOIN, joinId);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_INNER_JOIN);
+
+        Join join = new Join(operations, joinId);
         join.addJoinRelation(relation);
         join.addSourceIdentifier(leftSourceId.getQualifiedName());
         join.addSourceIdentifier(rightSourceId.getQualifiedName());
@@ -491,9 +495,10 @@ public class QueryExecutorTest {
 
         typeMapFromColumnName.put(columnSelector, new ColumnType(DataType.BIGINT));
 
-        Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.PROJECT);
 
-        return select;
+        return new Select(operations, columnsAliases, columnsTypes, typeMapFromColumnName);
     }
 
     private List<Cells> generateListOfCells(int numElements) {
@@ -529,6 +534,9 @@ public class QueryExecutorTest {
         List<Selector> selectorsList = new ArrayList<>();
         selectorsList.add(selector);
 
-        return new GroupBy(Operations.SELECT_GROUP_BY, selectorsList);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_GROUP_BY);
+
+        return new GroupBy(operations, selectorsList);
     }
 }

@@ -1,15 +1,10 @@
 /**
- * 
+ *
  */
 package com.stratio.connector.deep;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.data.ColumnName;
@@ -44,7 +39,7 @@ import com.stratio.crossdata.common.statements.structures.StringSelector;
 public class LogicalWorkflowBuilder {
 
     public static Project createProject(String clusterName, String catalogName, String tableName,
-            List<String> columnList) {
+                                        List<String> columnList) {
 
         List<ColumnName> columns = new ArrayList<>();
         for (String column : columnList) {
@@ -52,13 +47,14 @@ public class LogicalWorkflowBuilder {
         }
 
         TableName table = new TableName(catalogName, tableName);
-        Project project = new Project(Operations.PROJECT, table, new ClusterName(clusterName), columns);
+        HashSet<Operations> operations = new HashSet<>();
+        operations.add(Operations.PROJECT);
 
-        return project;
+        return new Project(operations, table, new ClusterName(clusterName), columns);
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Serializable data, boolean indexed) {
+                                      Serializable data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         Selector rightSelector = null;
@@ -74,115 +70,117 @@ public class LogicalWorkflowBuilder {
             rightSelector = new FloatingPointSelector((Float) data);
         }
 
-        Relation relation = new Relation(leftSelector, operator, rightSelector);
-
-        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
-
-        return filter;
+        return new Filter(retrieveFilterOperation(operator, indexed), new Relation(leftSelector, operator, rightSelector));
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Double data, boolean indexed) {
+                                      Double data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         FloatingPointSelector rightSelector = new FloatingPointSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
-
-        return filter;
+        return new Filter(retrieveFilterOperation(operator, indexed), relation);
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Integer data, boolean indexed) {
+                                      Integer data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         IntegerSelector rightSelector = new IntegerSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
-
-        return filter;
+        return new Filter(retrieveFilterOperation(operator, indexed), relation);
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Float data, boolean indexed) {
+                                      Float data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         FloatingPointSelector rightSelector = new FloatingPointSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
-
-        return filter;
+        return new Filter(retrieveFilterOperation(operator, indexed), relation);
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Boolean data, boolean indexed) {
+                                      Boolean data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         BooleanSelector rightSelector = new BooleanSelector(data);
 
         Relation relation = new Relation(leftSelector, operator, rightSelector);
 
-        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
-
-        return filter;
+        return new Filter(retrieveFilterOperation(operator, indexed), relation);
     }
 
     public static Filter createFilter(String catalogName, String tableName, String columnName, Operator operator,
-            Long data, boolean indexed) {
+                                      Long data, boolean indexed) {
 
         ColumnSelector leftSelector = new ColumnSelector(new ColumnName(catalogName, tableName, columnName));
         IntegerSelector rightSelector = new IntegerSelector(data.toString());
 
-        Relation relation = new Relation(leftSelector, operator, rightSelector);
-
-        Filter filter = new Filter(retrieveFilterOperation(operator, indexed), relation);
-
-        return filter;
+        return new Filter(retrieveFilterOperation(operator, indexed), new Relation(leftSelector, operator, rightSelector));
     }
 
     /**
      * Get the related {@link Operations} to the given {@link Operator}
-     * 
+     *
      * @param operator
      *            Relation operator
      * @return Operation related to the operator
      */
-    public static Operations retrieveFilterOperation(Operator operator, boolean indexed) {
+    public static Set<Operations> retrieveFilterOperation(Operator operator, boolean indexed) {
 
-        Operations operation = null;
+        Set<Operations> operations = new HashSet<>();
         switch (operator) {
-        case EQ:
-            operation = indexed ? Operations.FILTER_INDEXED_EQ : Operations.FILTER_NON_INDEXED_EQ;
+            case EQ:
+                if (indexed)
+                    operations.add(Operations.FILTER_INDEXED_EQ);
+                else
+                    operations.add(Operations.FILTER_NON_INDEXED_EQ);
             break;
-        case GET:
-            operation = indexed ? Operations.FILTER_INDEXED_GET : Operations.FILTER_NON_INDEXED_GET;
+            case GET:
+                if (indexed)
+                    operations.add(Operations.FILTER_INDEXED_GET);
+                else
+                    operations.add(Operations.FILTER_NON_INDEXED_GET);
+                break;
+            case GT:
+                if (indexed)
+                    operations.add(Operations.FILTER_INDEXED_GT);
+                else
+                    operations.add(Operations.FILTER_NON_INDEXED_GT);
             break;
-        case GT:
-            operation = indexed ? Operations.FILTER_INDEXED_GT : Operations.FILTER_NON_INDEXED_GT;
+            case LET:
+                if (indexed)
+                    operations.add(Operations.FILTER_INDEXED_LET);
+                else
+                    operations.add(Operations.FILTER_NON_INDEXED_LET);
             break;
-        case LET:
-            operation = indexed ? Operations.FILTER_INDEXED_LET : Operations.FILTER_NON_INDEXED_LET;
+            case LT:
+                if (indexed)
+                    operations.add(Operations.FILTER_INDEXED_LT);
+                else
+                    operations.add(Operations.FILTER_NON_INDEXED_LT);
             break;
-        case LT:
-            operation = indexed ? Operations.FILTER_INDEXED_LT : Operations.FILTER_NON_INDEXED_LT;
+            case DISTINCT:
+                if (indexed)
+                    operations.add(Operations.FILTER_INDEXED_DISTINCT);
+                else
+                    operations.add(Operations.FILTER_NON_INDEXED_DISTINCT);
             break;
-        case DISTINCT:
-            operation = indexed ? Operations.FILTER_INDEXED_DISTINCT : Operations.FILTER_NON_INDEXED_DISTINCT;
+            case MATCH:
+                operations.add(Operations.FILTER_INDEXED_MATCH);
             break;
-        case MATCH:
-            operation = Operations.FILTER_INDEXED_MATCH;
-            break;
-        default:
-            break;
+            default:
+                break;
         }
 
-        return operation;
+        return operations;
     }
 
     public static Join createJoin(String joinId, ColumnName leftSource, ColumnName rightSource) {
@@ -192,7 +190,10 @@ public class LogicalWorkflowBuilder {
 
         Relation relation = new Relation(leftSelector, Operator.EQ, rightSelector);
 
-        Join join = new Join(Operations.SELECT_INNER_JOIN, joinId);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_INNER_JOIN);
+
+        Join join = new Join(operations, joinId);
         join.addJoinRelation(relation);
         join.addSourceIdentifier(leftSource.getTableName().getQualifiedName());
         join.addSourceIdentifier(rightSource.getTableName().getQualifiedName());
@@ -201,19 +202,25 @@ public class LogicalWorkflowBuilder {
     }
 
     public static Join createJoinPartialResults(String joinId, ColumnName leftSource, ColumnName rightSource,
-            List<ColumnMetadata> columnMetadata, List<Row> rows) {
+                                                List<ColumnMetadata> columnMetadata, List<Row> rows) {
 
         ColumnSelector leftSelector = new ColumnSelector(leftSource);
         ColumnSelector rightSelector = new ColumnSelector(rightSource);
 
         Relation relation = new Relation(rightSelector, Operator.EQ, leftSelector);
 
-        Join join = new Join(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS, joinId);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS);
+
+        Join join = new Join(operations, joinId);
         join.addJoinRelation(relation);
         join.addSourceIdentifier(leftSource.getTableName().getQualifiedName());
         join.addSourceIdentifier(rightSource.getTableName().getQualifiedName());
 
-        PartialResults partialResults = new PartialResults(Operations.PARTIAL_RESULTS);
+        Set<Operations> operations2 = new HashSet<>();
+        operations2.add(Operations.PARTIAL_RESULTS);
+
+        PartialResults partialResults = new PartialResults(operations2);
         ResultSet resultSet = new ResultSet();
         resultSet.setColumnMetadata(columnMetadata);
         resultSet.setRows(rows);
@@ -243,9 +250,10 @@ public class LogicalWorkflowBuilder {
             typeMapFromColumnName.put(columnSelector, new ColumnType(DataType.TEXT));
         }
 
-        Select select = new Select(Operations.PROJECT, columnsAliases, columnsTypes, typeMapFromColumnName);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.PROJECT);
 
-        return select;
+        return new Select(operations, columnsAliases, columnsTypes, typeMapFromColumnName);
     }
 
     public static GroupBy createGroupBy(List<ColumnName> columnsList) {
@@ -256,13 +264,19 @@ public class LogicalWorkflowBuilder {
             selectorsList.add(selector);
         }
 
-        return new GroupBy(Operations.SELECT_GROUP_BY, selectorsList);
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_GROUP_BY);
+
+        return new GroupBy(operations, selectorsList);
     }
 
     public static  OrderBy createOrderBy(String keyspace, String table, LinkedHashMap<String,
             OrderDirection> orderByFields) {
 
-        OrderBy  orderBy = new OrderBy(Operations.SELECT_ORDER_BY, new LinkedList<OrderByClause>());
+        Set<Operations> operations = new HashSet<>();
+        operations.add(Operations.SELECT_ORDER_BY);
+
+        OrderBy  orderBy = new OrderBy(operations, new LinkedList<OrderByClause>());
 
         List<OrderByClause> previousList = orderBy.getIds();
 
