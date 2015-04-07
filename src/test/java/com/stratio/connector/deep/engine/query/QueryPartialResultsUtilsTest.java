@@ -3,7 +3,9 @@ package com.stratio.connector.deep.engine.query;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -74,7 +76,9 @@ public class QueryPartialResultsUtilsTest {
         ColumnMetadata colMetadata = metaMetadata(CATALOG, TABLE, ROW1, new ColumnType(DataType.INT));
         ColumnMetadata colMetadata2 = metaMetadata(CATALOG, TABLE, ROW2, new ColumnType(DataType.INT));
         resultSet.setColumnMetadata(Arrays.asList(colMetadata, colMetadata2));
-        PartialResults partialResults = new PartialResults(Operations.PARTIAL_RESULTS);
+        Set<Operations> operation = new HashSet<>();
+        operation.add(Operations.PARTIAL_RESULTS);
+        PartialResults partialResults = new PartialResults(operation);
         partialResults.setResults(resultSet);
 
         List<Relation> orderedRelations = QueryPartialResultsUtils.getOrderedRelations(partialResults, listRelations);

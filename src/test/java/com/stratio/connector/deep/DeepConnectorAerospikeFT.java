@@ -3,7 +3,8 @@ package com.stratio.connector.deep;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createColumn;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createProject;
 import static com.stratio.connector.deep.LogicalWorkflowBuilder.createSelect;
-import static org.jgroups.util.Util.assertEquals;
+import static junit.framework.TestCase.assertEquals;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
