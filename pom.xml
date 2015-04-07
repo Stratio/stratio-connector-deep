@@ -120,6 +120,7 @@
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
+
             </exclusions>
         </dependency>
         <dependency>
@@ -171,7 +172,7 @@
         </dependency>
         <dependency>
             <groupId>com.stratio.connector</groupId>
-            <artifactId>stratio-connector-commons-core</artifactId>
+            <artifactId>stratio-connector-commons</artifactId>
             <version>${version.connector.commons}</version>
         </dependency>
 
