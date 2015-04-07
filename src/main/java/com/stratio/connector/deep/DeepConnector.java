@@ -30,7 +30,6 @@ import com.stratio.crossdata.common.connector.IConfiguration;
 import com.stratio.crossdata.common.connector.IConnector;
 import com.stratio.crossdata.common.connector.IMetadataEngine;
 import com.stratio.crossdata.common.connector.IQueryEngine;
-import com.stratio.crossdata.common.connector.ISqlEngine;
 import com.stratio.crossdata.common.connector.IStorageEngine;
 import com.stratio.crossdata.common.data.ClusterName;
 import com.stratio.crossdata.common.exceptions.ConnectionException;
@@ -148,14 +147,7 @@ public class DeepConnector implements IConnector {
 
 
 
-    /**
-	 * Connect with the config expecified associate to a clusterName {ConnectionHandler}
-	 * {@link com.stratio.connector.deep.connection.DeepConnectionHandler.createNativeConnection}.
-	 * 
-	 * @param credentials
-	 * @param config
-	 *            {@link com.stratio.crossdata.common.connector.ConnectorClusterConfig}
-	 */
+    
 	@Override
 	public void connect(ICredentials credentials, ConnectorClusterConfig config) throws ConnectionException {
 
@@ -197,15 +189,7 @@ public class DeepConnector implements IConnector {
 		deepContext.stop();
 	}
 
-	/**
-	 * Check if the connection associate to the clusterName is connected
-	 * {@link com.stratio.connector.commons.connection.ConnectionHandler.isConnected}.
-	 * 
-	 * @param name
-	 *            {@link com.stratio.crossdata.common.data.ClusterName}
-	 * @return boolean
-	 * 
-	 */
+
 	@Override
 	public boolean isConnected(ClusterName name) {
 
@@ -253,8 +237,5 @@ public class DeepConnector implements IConnector {
      *
      * @return IMetadataEngine
      */
-    @Override public ISqlEngine getSqlEngine() throws UnsupportedException {
-        throw new UnsupportedException("getSqlEngine not yet supported");
-    }
 
 }
