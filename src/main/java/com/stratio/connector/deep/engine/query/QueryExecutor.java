@@ -19,12 +19,7 @@
 package com.stratio.connector.deep.engine.query;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.spark.api.java.JavaRDD;
@@ -109,7 +104,8 @@ public class QueryExecutor {
 	 * 
 	 * @param workflow
 	 *            The {@link com.stratio.crossdata.common.logicalplan.LogicalWorkflow} that contains the
-	 *            {@link com.stratio.crossdata
+
+	 *            {@link com.stratio.crossdata}
 	 *            ommon.logicalplan.LogicalStep} to be executed.
 	 * @return A {@link com.stratio.crossdata.common.result.QueryResult}.
 	 * @throws UnsupportedException
@@ -181,8 +177,11 @@ public class QueryExecutor {
 
 		LogicalStep nextStep = step;
 
+
 		while (nextStep instanceof Filter) {
-            for(Operations operation:nextStep.getOperations())
+
+            Operations operation = recoveredOperation((Filter)nextStep);
+
 			switch (operation) {
 			case FILTER_INDEXED_EQ:
 			case FILTER_INDEXED_DISTINCT:
@@ -211,14 +210,14 @@ public class QueryExecutor {
 			case FILTER_NON_INDEXED_LET:
 			case FILTER_NON_INDEXED_LT:
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("add ["+operation.name()+"] ["+((Filter)nextStep).toString()+"] to" +
-                            " " +
-                            "NON  indexed filters");
+
+                    LOGGER.debug("add ["+operation.name()+"] ["+((Filter)nextStep).toString()+"] to NON  indexed filters");
                 }
 				nonIndexFilters.add((Filter) nextStep);
 				break;
 			default:
-				throw new ExecutionException("Unexpected filter type [" + nextStep.getOperations().toString() + "]");
+
+				throw new ExecutionException("Unexpected filter type [" + operation.toString() + "]");
 			}
 
 			nextStep = nextStep.getNextStep();
@@ -227,11 +226,28 @@ public class QueryExecutor {
 		return nextStep;
 	}
 
-	/**
+    /**
+     * This method must recovered the operation from a filter
+     * @param filter the filter.
+     * @return the operation.
+     * @throws ExecutionException if any operation is not supported.
+     */
+    private Operations recoveredOperation(Filter filter) throws ExecutionException {
+        Set<Operations> operations = filter.getOperations();
+        if (operations.size()!=1) {
+            String message = "Deep connector only support one operation in a filter.";
+            LOGGER.error(message);
+            throw new ExecutionException(message);
+        }
+        return operations.toArray(new Operations[0])[0];
+    }
+
+    /**
 	 *
 	 *
 	 * @param step
-	 *             {@link LogicalStep} to the project.
+
+	 *            Next {@link LogicalStep} to the project.
 	 * @throws ExecutionException
 	 *             If the execution of the required steps fails.
 	 */
@@ -589,8 +605,8 @@ public class QueryExecutor {
 					if (unionStep instanceof Join) {
 						stepId = ((Join) unionStep).getId();
 					} else {
-						throw new ExecutionException("Unknown union step found [" + unionStep.getOperations().toString()
-						                                                        + "]");
+
+						throw new ExecutionException("Unknown union step found [" + unionStep + "]");
 					}
 				}
 			} else if (currentStep instanceof GroupBy) {
@@ -600,7 +616,9 @@ public class QueryExecutor {
 			} else if (currentStep instanceof Select) {
 				resultRdd = prepareResult((Select) currentStep, resultRdd);
 			} else {
-				throw new ExecutionException("Unexpected step found [" + currentStep.getOperations().toString() + "]");
+
+				throw new ExecutionException("Unexpected step found [" + currentStep + "]");
+
 			}
 
 			currentStep = currentStep.getNextStep();
@@ -634,8 +652,9 @@ public class QueryExecutor {
 
 
 		if (!(unionStep instanceof Join)) {
-            throw new ExecutionException("Unknown union step found [" + unionStep.getOperations()
-                    .toString() + "]");
+
+            throw new ExecutionException("Unknown union step found [" + unionStep+ "]");
+
         }
 
 
@@ -646,7 +665,9 @@ public class QueryExecutor {
         List<Relation> relations;
 
 
-        if (joinStep.getOperations().contains(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS)) {
+
+        if (joinStep.getOperations().contains(Operations.SELECT_INNER_JOIN_PARTIALS_RESULTS)){
+
 
             PartialResults partialResults = QueryPartialResultsUtils.getPartialResult(joinStep);
              leftPartialRdd = QueryPartialResultsUtils.createRDDFromResultSet(deepContext,
@@ -682,8 +703,7 @@ public class QueryExecutor {
 	 *            right {@link org.apache.spark.api.java.JavaRDD}.
 	 * @param joinRelations
 	 *            List of relations to take into account when joining.
-	 *
-	 * @param
+
      * @return Joined {@link JavaRDD}.
 	 */
 	private JavaRDD<Cells> executeJoin(JavaRDD<Cells> leftRdd, JavaRDD<Cells> rdd, List<Relation> joinRelations) {
@@ -707,6 +727,17 @@ public class QueryExecutor {
 	}
 
 
+
+	/**
+	 * Order the result by the given fields.
+	 *
+	 * @param orderByStep
+	 *            orderBy step.
+	 * @param rdd
+	 *            Initial {@link JavaRDD}.
+	 *
+	 * @return Grouped {@link JavaRDD}.
+	 */
 
 	private List<Cells> executeOrderBy(OrderBy orderByStep, JavaRDD<Cells> rdd) {
 

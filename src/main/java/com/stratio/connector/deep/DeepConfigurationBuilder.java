@@ -5,7 +5,6 @@ import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkConfig;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,67 +76,158 @@ public class DeepConfigurationBuilder {
      * @return the DeepSparkConf.
      */
     public DeepSparkConfig createDeepSparkConf() {
-        String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
 
-        String sparkHome = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
-        String sparkDriverMemory = connectorConfig.getString(DeepConnectorConstants.SPARK_DRIVER_MEMORY);
-        String sparkExecutorMemory = connectorConfig.getString(DeepConnectorConstants.SPARK_EXECUTOR_MEMORY);
-        String sparkTaskCpus = connectorConfig.getString(DeepConnectorConstants.SPARK_TASK_CPUS);
-        String spatkDefaultParalelism = connectorConfig.getString(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM);
-        String spatkCoresMax = connectorConfig.getString(DeepConnectorConstants.SPARK_CORES_MAX);
-        String spatkResultSize = connectorConfig.getString(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE);
+        DeepSparkConfig deepSparkConf = createDeepSpakConfConfigured(new Configuration(connectorConfig));
 
+        return deepSparkConf;
+    }
 
-        String[] jarsArray = setJarPath();
+    /**
+     * Create the deepSparConf·
+     * @param configuration the configuration.
+     * @return a DeepSparkConfig configured.
+     */
+    private DeepSparkConfig createDeepSpakConfConfigured(Configuration configuration) {
+        DeepSparkConfig deepSparkConf = new DeepSparkConfig();
+        String sparkHome = configuration.sparkHome;
+        if (sparkHome !=null && !sparkHome.isEmpty()) {
+            deepSparkConf.setSparkHome(sparkHome);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Property sparkHome has been added to DeepSparkContext with value %s", sparkHome));
+            }
 
-        LOGGER.info("Creating DeepSparkContest");
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("spark.serializer: [" + System.getProperty("spark.serializer")+"]");
-            LOGGER.debug("spark.kryo.registrator: [" + System.getProperty("spark.kryo.registrator")+"]");
-            LOGGER.debug("spark.executor.memory [" +sparkExecutorMemory+"]");
-            LOGGER.debug("spark.driver.memory [" +sparkDriverMemory+"]");
-            LOGGER.debug(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM +" [" +spatkDefaultParalelism+"]");
-            LOGGER.debug(DeepConnectorConstants.SPARK_CORES_MAX +" [" +spatkCoresMax+"]");
-            LOGGER.debug(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE +" [" +spatkResultSize+"]");
-            LOGGER.debug("spark.task.cpus [" +sparkTaskCpus+"]");
-            LOGGER.debug("SPARK-Master [" + sparkMaster + "]");
-            LOGGER.debug("SPARK-Home   [" + sparkHome + "]");
-            LOGGER.debug("Jars "+ Arrays.toString(jarsArray));
+        }else{
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Property sparkHome is void. It doesn't  add to DeepSparkContext");
+            }
 
         }
+        String sparkMaster = configuration.sparkMaster;
+        if (sparkMaster !=null && !sparkMaster.isEmpty()) {
+            deepSparkConf.setMaster(sparkMaster);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Property sparkMaster has been added to DeepSparkContext with value %s", sparkMaster));
+            }
+        }else{
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Property sparkMaster is void. It doesn't  add to DeepSparkContext");
+            }
 
+        }
+        deepSparkConf.setAppName(DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT);
 
-        DeepSparkConfig sparkConf = new DeepSparkConfig();
-        sparkConf.setSparkHome(sparkHome);
-        sparkConf.setMaster(sparkMaster);
-        sparkConf.setAppName(DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT);
-        sparkConf.setJars(jarsArray);
-        sparkConf.set(DeepConnectorConstants.SPARK_EXECUTOR_MEMORY, sparkExecutorMemory);
-        sparkConf.set(DeepConnectorConstants.SPARK_DRIVER_MEMORY, sparkDriverMemory);
-        sparkConf.set(DeepConnectorConstants.SPARK_TASK_CPUS, sparkTaskCpus);
-        sparkConf.set(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM, spatkDefaultParalelism);
-        sparkConf.set(DeepConnectorConstants.SPARK_CORES_MAX, spatkCoresMax);
-        sparkConf.set(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE, spatkResultSize);
-
-        return sparkConf;
+        String[] jarsArray = configuration.jarsArray;
+        if (jarsArray !=null && jarsArray.length!=0) {
+            deepSparkConf.setJars(jarsArray);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Property jarsArray has been added to DeepSparkContext with value %s", Arrays.deepToString(jarsArray)));
+            }
+        }else{
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Property jarsArray is void. It doesn't  add to DeepSparkContext");
+            }
+        }
+        addPropertyToDeepSparConfig(deepSparkConf,DeepConnectorConstants.SPARK_EXECUTOR_MEMORY, configuration.sparkExecutorMemory);
+        addPropertyToDeepSparConfig(deepSparkConf, DeepConnectorConstants.SPARK_DRIVER_MEMORY, configuration.sparkDriverMemory);
+        addPropertyToDeepSparConfig(deepSparkConf, DeepConnectorConstants.SPARK_TASK_CPUS, configuration.sparkTaskCpus);
+        addPropertyToDeepSparConfig(deepSparkConf, DeepConnectorConstants.SPARK_DEFAULT_PARALELISM, configuration.spatkDefaultParalelism);
+        addPropertyToDeepSparConfig(deepSparkConf, DeepConnectorConstants.SPARK_CORES_MAX, configuration.spatkCoresMax);
+        addPropertyToDeepSparConfig(deepSparkConf,DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE, configuration.spatkResultSize);
+        return deepSparkConf;
     }
 
 
-
-    private String[] setJarPath() {
-
-        String[] jarsArray = new String[0];
-
-        try {
-
-
-            List<String> sparkJars = connectorConfig.getStringList(DeepConnectorConstants.SPARK_JARS);
-            jarsArray = new String[sparkJars.size()];
-            sparkJars.toArray(jarsArray);
-
-        } catch (ConfigException e) {
-            LOGGER.info("--No spark Jars added--", e);
+    /**
+     * Add the property to DeepSparkContext if the property is not null.
+     * @param deepSparkConf DeepSparkContext
+     * @param value the proper tyValue.
+     * @param property the property.
+     */
+    private void addPropertyToDeepSparConfig(DeepSparkConfig deepSparkConf, String property, String value){
+        if (value!=null && !value.isEmpty()) {
+            deepSparkConf.set(property, value);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Property %s has been added to DeepSparkContext with value %s", property,value));
+            }
+        }else{
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Property %s is void. It doesn't  add to DeepSparkContext", property));
+            }
         }
-        return jarsArray;
     }
+
+}
+
+    class Configuration{
+
+        /**
+         * The log.
+         */
+        private static transient final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+
+          String sparkMaster;
+          String sparkHome;
+          String sparkDriverMemory;
+          String sparkExecutorMemory;
+          String sparkTaskCpus;
+          String spatkDefaultParalelism;
+          String spatkCoresMax;
+          String spatkResultSize;
+          String[] jarsArray;
+         Config connectorConfig;
+        public Configuration(Config connectorConfig){
+            this.connectorConfig = connectorConfig;
+
+             sparkMaster = getProperty(DeepConnectorConstants.SPARK_MASTER);
+             sparkHome = getProperty(DeepConnectorConstants.SPARK_HOME);
+             sparkDriverMemory = getProperty(DeepConnectorConstants.SPARK_DRIVER_MEMORY);
+             sparkExecutorMemory = getProperty(DeepConnectorConstants.SPARK_EXECUTOR_MEMORY);
+             sparkTaskCpus = getProperty(DeepConnectorConstants.SPARK_TASK_CPUS);
+             spatkDefaultParalelism = getProperty(DeepConnectorConstants.SPARK_DEFAULT_PARALELISM);
+             spatkCoresMax = getProperty(DeepConnectorConstants.SPARK_CORES_MAX);
+             spatkResultSize = getProperty(DeepConnectorConstants.SPARK_DRIVER_RESULTSIZE);
+             jarsArray = setJarPath();
+        }
+
+
+        /**
+         * Return a property.
+         *
+         * @param  property the property
+         * @return a property value or a empty string if no property exists.
+         */
+        private String getProperty(String property){
+            String value ="";
+            if (connectorConfig.hasPath(property)){
+                value = connectorConfig.getString(property);
+                LOGGER.info(String.format("property [%s] has value [%s]",property,value));
+            }else{
+                LOGGER.info(String.format("No property [%s] added",property,value));
+            }
+
+            return value;
+        }
+
+        /**
+         * recovered the jarPath.
+         * @return the jarPath.
+         */
+        private String[] setJarPath() {
+
+            String[] jarsArray = new String[0];
+
+            if (connectorConfig.hasPath(DeepConnectorConstants.SPARK_JARS)) {
+                List<String> sparkJars = connectorConfig.getStringList(DeepConnectorConstants.SPARK_JARS);
+                jarsArray = new String[sparkJars.size()];
+                sparkJars.toArray(jarsArray);
+                LOGGER.info(String.format("property jars has value [%s]",Arrays.deepToString(jarsArray)));
+
+            }else {
+                LOGGER.info("--No spark Jars added--");
+            }
+
+
+            return jarsArray;
+
+        }
 }
