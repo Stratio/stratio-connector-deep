@@ -220,7 +220,7 @@ public class QueryExecutor {
         extractorConfig.putValue(ExtractorConstants.TABLE, project.getTableName().getName());
         extractorConfig.putValue(ExtractorConstants.CATALOG, project.getCatalogName());
 
-        extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList));
+        extractorConfig.putValue(ExtractorConstants.FILTER_QUERY, generateFilters(filtersList).length>0?generateFilters(filtersList):null);
 
         if(extractorConfig.getExtractorImplClassName()!=null && extractorConfig.getExtractorImplClassName().equals
                 (DeepConnectorConstants.HDFS)){
@@ -295,7 +295,7 @@ public class QueryExecutor {
 
         com.stratio.deep.commons.filter.Filter[] resultArray = new com.stratio.deep.commons.filter.Filter[resultList
                 .size()];
-        return null;
+        return resultList.toArray(resultArray);
     }
 
     /**

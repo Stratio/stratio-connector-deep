@@ -18,10 +18,9 @@
 
 package com.stratio.connector.deep.connection;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Properties;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,11 @@ import com.stratio.crossdata.common.exceptions.InitializationException;
 import com.stratio.crossdata.common.exceptions.UnsupportedException;
 import com.stratio.crossdata.common.security.ICredentials;
 import com.stratio.crossdata.connectors.ConnectorApp;
+import com.stratio.deep.commons.extractor.utils.ExtractorConstants;
 import com.stratio.deep.core.context.DeepSparkContext;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * Class implements Crossdata Interface to connect. {@link com.stratio.crossdata.common.connector.IConnector}.
@@ -67,7 +70,7 @@ public class DeepConnector implements IConnector {
     /**
      * Connector configuration from the properties file
      */
-    private final Properties connectorConfig = new Properties();
+    private Config connectorConfig;
 
     /**
      * Main uses to asociate the connector to crossdata.
@@ -85,14 +88,15 @@ public class DeepConnector implements IConnector {
 
         // Retrieving configuration
         InputStream input = DeepConnector.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_CONSTANT);
+
         if (input == null) {
             logger.error("Sorry, unable to find [" + CONFIGURATION_FILE_CONSTANT + "]");
             return;
         }
 
         try {
-            connectorConfig.load(input);
-        } catch (IOException e) {
+            connectorConfig = ConfigFactory.load(CONFIGURATION_FILE_CONSTANT);
+        } catch (Exception e) {
             logger.error("Error loading configuration from: [" + CONFIGURATION_FILE_CONSTANT + "]");
             return;
         }
@@ -124,13 +128,28 @@ public class DeepConnector implements IConnector {
         logger.info("spark.serializer: " + System.getProperty("spark.serializer"));
         logger.info("spark.kryo.registrator: " + System.getProperty("spark.kryo.registrator"));
 
-        String sparkMaster = connectorConfig.getProperty(DeepConnectorConstants.SPARK_MASTER);
-        String sparkHome = connectorConfig.getProperty(DeepConnectorConstants.SPARK_HOME);
-        String sparkJars = connectorConfig.getProperty(DeepConnectorConstants.SPARK_JARS);
+        String sparkMaster = connectorConfig.getString(DeepConnectorConstants.SPARK_MASTER);
+        String sparkHome   = connectorConfig.getString(DeepConnectorConstants.SPARK_HOME);
+        List<String> sparkJars   = null;
+        String[] jarsArray = new String[0];
+        try{
+            sparkJars = connectorConfig.getConfig(DeepConnectorConstants.SPARK).getStringList(DeepConnectorConstants
+                    .SPARK_JARS);
+
+        }catch (ConfigException e){
+            logger.info("--No spark Jars added--");
+        }
+        if(sparkJars!=null) {
+            jarsArray = new String[sparkJars.size()];
+            sparkJars.toArray(jarsArray);
+        }
+
+        logger.info("---SPARK-Master---->"+sparkMaster);
+        logger.info("---SPARK-Home---->"+sparkHome);
 
         this.deepContext = new DeepSparkContext(sparkMaster, DeepConnectorConstants.DEEP_CONNECTOR_JOB_CONSTANT,
-                sparkHome, sparkJars);
-
+                sparkHome, jarsArray);
+        
         logger.info("-------------End StartUp the SparkContext------------ ");
     }
 
@@ -148,10 +167,17 @@ public class DeepConnector implements IConnector {
         try {
             // Setting the extractor class
             String dataSourceName = config.getDataStoreName().getName();
-            String extractorImplClassName = connectorConfig.getProperty(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT
-                    + dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
+
+            String extractorImplClassName = connectorConfig.getConfig(DeepConnectorConstants.CLUSTER_PREFIX_CONSTANT)
+                    .getString(dataSourceName + DeepConnectorConstants.IMPL_CLASS_SUFIX_CONSTANT);
 
             config.getClusterOptions().put(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS, extractorImplClassName);
+
+            if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+                config.getClusterOptions().put(ExtractorConstants.HDFS_FILE_PATH,
+                        connectorConfig.getConfig(ExtractorConstants.HDFS).getString(ExtractorConstants.HDFS_FILE_PATH));
+            }
+
 
             connectionHandler.createConnection(credentials, config);
 

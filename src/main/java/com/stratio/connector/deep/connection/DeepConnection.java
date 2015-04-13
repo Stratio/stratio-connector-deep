@@ -91,8 +91,6 @@ public class DeepConnection extends Connection<Object> {
 
         }
 
-
-
         if (clusterOptions.get(ExtractorConstants.HDFS_SCHEMA) != null) {
             values.put(ExtractorConstants.HDFS_SCHEMA, clusterOptions.get(ExtractorConstants.HDFS_SCHEMA));
         }
@@ -107,13 +105,29 @@ public class DeepConnection extends Connection<Object> {
                     clusterOptions.get(ExtractorConstants.HDFS_FILE_EXTENSION));
         }
 
+
+
         String extractorImplClassName = config.getClusterOptions().get(DeepConnectorConstants.EXTRACTOR_IMPL_CLASS);
 
         //TODO: Revision of Bug Atach Clusters, Deep only accept the port 9200 for elasticSearch connection
         // and Native Connector uses 9300
         if(extractorImplClassName!=null && extractorImplClassName.equals("com.stratio.deep.es.extractor" +
-                ".ESCellExtractor")  && clusterOptions.get(ExtractorConstants.PORT).equals("9300")){
-            values.put(ExtractorConstants.PORT, "9200");
+                ".ESCellExtractor")  && clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS)!=null){
+            if (clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS) != null) {
+                values.put(ExtractorConstants.PORTS, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
+
+                String[] ports = ConnectorParser.ports(clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
+
+                values.put(ExtractorConstants.PORT, ports[0]);
+
+            } else {
+                values.put(ExtractorConstants.PORT, clusterOptions.get(DeepConnectorConstants.ES_REST_PORTS));
+
+            }
+        }
+
+        if (extractorImplClassName!=null && extractorImplClassName.equals(ExtractorConstants.HDFS)) {
+            values.put(ExtractorConstants.HDFS_FILE_PATH, clusterOptions.get(ExtractorConstants.HDFS_FILE_PATH));
         }
 
         if (extractorImplClassName == null) {

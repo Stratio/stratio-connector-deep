@@ -24,7 +24,7 @@
     <name>Deep Connector</name>
     <groupId>com.stratio.connector</groupId>
     <artifactId>stratio-connector-deep</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.2</version>
     <description>Deep connector for multiple data sources</description>
     <url>http://www.stratio.com</url>
     <packaging>jar</packaging>
@@ -45,7 +45,7 @@
     <properties>
         <version.crossdata>0.1.1</version.crossdata>
         <version.connector.commons>0.2.0</version.connector.commons>
-        <version.deep>0.6.1</version.deep>
+        <version.deep>0.6.2</version.deep>
         <version.hadoop>2.4.1</version.hadoop>
     </properties>
 
@@ -173,11 +173,6 @@
         </dependency>
     </dependencies>
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/config</directory>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
